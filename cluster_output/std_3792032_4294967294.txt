@@ -1,0 +1,30 @@
+12
+
+
+###############################################################################
+Science Cluster
+Job 3792032 for user 'tgerstel'
+Finished at: Wed Nov 17 16:19:02 CET 2021
+
+Job details:
+============
+
+Name                : job.sh
+User                : tgerstel
+Partition           : hefstud
+Nodes               : cn96
+Cores               : 1
+State               : COMPLETED
+Submit              : 2021-11-17T16:19:01
+Start               : 2021-11-17T16:19:01
+End                 : 2021-11-17T16:19:02
+Reserved walltime   : 02:00:00
+Used walltime       : 00:00:01
+Used CPU time       : --
+% User (Computation): 75.00%
+% System (I/O)      : 20.83%
+Mem reserved        : 100M/node
+Max Mem used        : 0.00  (cn96)
+Max Disk Write      : 0.00  (cn96)
+Max Disk Read       : 0.00  (cn96)
+
