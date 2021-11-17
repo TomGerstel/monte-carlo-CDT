@@ -1,3 +1,4 @@
+#!/bin/bash
 cd ~/Documents/monte-carlo-CDT
 git fetch
 git reset --hard HEAD
