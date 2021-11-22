@@ -1,8 +1,8 @@
 
-- Topic theme: What is the research area? What are the challenges in the field relevant to your project?
-- Topic goal: What is the goal of your project in physics terms?
-- Model: What is the precise model that you will simulate? What are the parameters (and their interpretation)?
-- Implementation: What (Monte Carlo) algorithm(s) will you use? Are they described in the literature in the form you need or do they require adaptation to your problem?
-- Parameter range: Given the goal of your project and the computing resources that are available to you, what ranges of parameters / lattice sizes / data points do you think are realistic?
-- Data & code management: What kind of data do you intend to store? How will you store and share code and data (among each other and with us at the end of the project)?
-- Data analysis: What will be the main ingredients in the data analysis (finite-size scaling, function fitting, parameter estimation, ...)? How do you intend to estimate errors (batching, bootstrap, jackknife, only working with i.i.d. random variables)?
+- Topic theme: 2D Quantum Gravity using Causal Dynamical Triangulations. Challenges include finding meaningful observables and interpreting them.
+- Topic goal: Create a MCMC that generates triangulations according to the desired distribution. Measure observables such as timeslice sizes, lightcone structure, curvature, etc. Potentially study effects of switching to a toroidal topology.
+- Model: Either a cylindrical or toroidal 2D CDT QG. Parameters include the coupling lambda, number of time slices T, number (or distribution) of triangles. For the cylindrical model also the spatial size of the initial time slice is an input parameter.
+- Implementation: A MCMC model exists for our use case. The potential for direct sampling algorithms is also considered.
+- Parameter range: This depends on our implementation, we will mainly investigate this as we go. 
+- Data & code management: We use this GitHub repository to store our code, report and data. The data we record will likely have to be the entire triangulation for various timesteps, the MC timestep of the measurement, as well as all input parameters for the given simulation.
+- Data analysis: Data analysis will mainly consist of finite-size scaling approaches. Error analysis can be done using batching.
