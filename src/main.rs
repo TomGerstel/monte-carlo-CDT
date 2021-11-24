@@ -19,3 +19,22 @@ fn main() {
     let b = opt.beta;
     println!("{:#?}", a + b);
 }
+
+struct Universe {
+    slices: Vec<Timeslice>,
+    order_four: Vec<Vertex>,
+}
+
+struct Timeslice {
+    vertices: Vec<Vertex>,
+}
+
+struct Vertex {
+    neighbours_up: Vec<VertexPos>,
+    neighbours_down: Vec<VertexPos>,
+}
+
+struct VertexPos {
+    time: usize,
+    space: usize,
+}
