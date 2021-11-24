@@ -1,4 +1,5 @@
 use structopt::StructOpt;
+use std::ops::Index;
 
 /// A test to add two numbers
 #[derive(StructOpt, Debug)]
@@ -25,8 +26,24 @@ struct Universe {
     order_four: Vec<Vertex>,
 }
 
+impl Index<VertexPos> for Universe {
+    type Output = Vertex;
+
+    fn index(&self, pos: VertexPos) -> &Self::Output {
+        &self.slices[pos.time][pos.space]
+    }
+}
+
 struct Timeslice {
     vertices: Vec<Vertex>,
+}
+
+impl Index<usize> for Timeslice {
+    type Output = Vertex;
+
+    fn index(&self, space: usize) -> &Self::Output {
+        &self[space]
+    }
 }
 
 struct Vertex {
