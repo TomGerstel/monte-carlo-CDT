@@ -1,4 +1,6 @@
 use structopt::StructOpt;
+mod universe;
+pub use universe::*;
 
 /// A test to add two numbers
 #[derive(StructOpt, Debug)]
@@ -18,4 +20,7 @@ fn main() {
     let a = opt.alpha;
     let b = opt.beta;
     println!("{:#?}", a + b);
+
+    let universe = universe::Universe::new(3, 2);
+    dbg!(universe);
 }
