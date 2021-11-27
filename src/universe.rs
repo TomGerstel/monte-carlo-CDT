@@ -33,21 +33,21 @@ impl IndexMut<VertexPos> for Universe {
 }
 
 impl Universe {
-    pub fn new(n_vertex: usize, max_time: usize) -> Self {
+    pub fn new(n_vertex: usize, timespan: usize) -> Self {
         assert!(
-            n_vertex >= max_time,
+            n_vertex >= timespan,
             "given vertex number ({}) is too small, must be at least as big as the max time ({})",
             n_vertex,
-            max_time
+            timespan
         );
 
         let mut universe = Universe {
             slices: vec![],
             order_four: vec![],
         };
-        for t in 0..max_time {
-            let pos_next = VertexPos::new((t + 1) % max_time, 0);
-            let pos_prev = VertexPos::new((t + max_time - 1) % max_time, 0);
+        for t in 0..timespan {
+            let pos_next = VertexPos::new((t + 1) % timespan, 0);
+            let pos_prev = VertexPos::new((t + timespan - 1) % timespan, 0);
             let vertex = Vertex {
                 neighbours_next: vec![pos_next, pos_next],
                 neighbours_prev: vec![pos_prev, pos_prev],
@@ -56,9 +56,9 @@ impl Universe {
             universe.slices.push(slice);
         }
 
-        let n_free = n_vertex - max_time;
+        let n_free = n_vertex - timespan;
         let pos_next = VertexPos::new(1, 0);
-        let pos_prev = VertexPos::new(max_time - 1, 0);
+        let pos_prev = VertexPos::new(timespan - 1, 0);
         for s in 0..n_free {
             let vertex = Vertex {
                 neighbours_next: vec![pos_next],
@@ -72,6 +72,14 @@ impl Universe {
             universe[pos_prev].neighbours_next.push(pos);
         }
         universe
+    }
+
+    pub fn volume(&self) -> usize {
+        self.slices.iter().map(|x| x.len()).sum()
+    }
+
+    pub fn timespan(&self) -> usize {
+        self.slices.len()
     }
 }
 

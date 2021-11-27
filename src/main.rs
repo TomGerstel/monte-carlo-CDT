@@ -16,11 +16,12 @@ struct Opt {
 }
 
 fn main() {
-    let opt = Opt::from_args();
-    let a = opt.alpha;
-    let b = opt.beta;
-    println!("{:#?}", a + b);
+    //let opt = Opt::from_args();
+    //let a = opt.alpha;
+    //let b = opt.beta;
+    //println!("{:#?}", a + b);
 
     let universe = universe::Universe::new(3, 2);
-    dbg!(universe);
+    dbg!(universe.volume());
+    dbg!(universe.timespan());
 }
