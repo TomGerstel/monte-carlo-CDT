@@ -24,4 +24,5 @@ fn main() {
     let universe = universe::Universe::new(3, 2);
     dbg!(universe.vertex_count());
     dbg!(universe.timespan());
+    dbg!(universe);
 }

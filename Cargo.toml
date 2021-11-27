@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 structopt = "0.3"
+fastrand = "1.5.0"
