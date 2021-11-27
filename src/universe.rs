@@ -2,13 +2,8 @@ use std::ops::{Index, IndexMut};
 
 #[derive(Debug)]
 pub struct Universe {
-    slices: Vec<TimeSlice>,
+    slices: Vec<Vec<Vertex>>,
     order_four: Vec<VertexPos>,
-}
-
-#[derive(Debug)]
-struct TimeSlice {
-    vertices: Vec<Vertex>,
 }
 
 #[derive(Debug)]
@@ -29,45 +24,17 @@ struct Time(usize);
 #[derive(Copy, Clone, Debug)]
 struct Space(usize);
 
-impl Index<Time> for Universe {
-    type Output = TimeSlice;
-
-    fn index(&self, time: Time) -> &Self::Output {
-        &self.slices[time.0]
-    }
-}
-
-impl IndexMut<Time> for Universe {
-    fn index_mut(&mut self, time: Time) -> &mut Self::Output {
-        &mut self.slices[time.0]
-    }
-}
-
 impl Index<VertexPos> for Universe {
     type Output = Vertex;
 
     fn index(&self, pos: VertexPos) -> &Self::Output {
-        &self[pos.time][pos.space]
+        &self.slices[pos.time.0][pos.space.0]
     }
 }
 
 impl IndexMut<VertexPos> for Universe {
     fn index_mut(&mut self, pos: VertexPos) -> &mut Self::Output {
-        &mut self[pos.time][pos.space]
-    }
-}
-
-impl Index<Space> for TimeSlice {
-    type Output = Vertex;
-
-    fn index(&self, space: Space) -> &Self::Output {
-        &self.vertices[space.0]
-    }
-}
-
-impl IndexMut<Space> for TimeSlice {
-    fn index_mut(&mut self, space: Space) -> &mut Self::Output {
-        &mut self.vertices[space.0]
+        &mut self.slices[pos.time.0][pos.space.0]
     }
 }
 
@@ -97,9 +64,7 @@ impl Universe {
                 neighbours_next: vec![pos_next, pos_next],
                 neighbours_prev: vec![pos_prev, pos_prev],
             };
-            let slice = TimeSlice {
-                vertices: vec![vertex],
-            };
+            let slice = vec![vertex];
             universe.slices.push(slice);
         }
 
@@ -117,17 +82,15 @@ impl Universe {
                 neighbours_next: vec![pos_next],
                 neighbours_prev: vec![pos_prev],
             };
-            universe[Time(0)].vertices.push(vertex);
+            universe.slices[0].push(vertex);
 
             let pos = VertexPos {
                 time: Time(0),
                 space: Space(s + 1),
             };
             universe.order_four.push(pos);
-            universe[Time(1)][Space(0)].neighbours_prev.push(pos);
-            universe[Time(max_time - 1)][Space(0)]
-                .neighbours_next
-                .push(pos);
+            universe[pos_next].neighbours_prev.push(pos);
+            universe[pos_prev].neighbours_next.push(pos);
         }
         universe
     }
