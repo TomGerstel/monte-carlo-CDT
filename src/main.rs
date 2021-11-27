@@ -22,6 +22,6 @@ fn main() {
     //println!("{:#?}", a + b);
 
     let universe = universe::Universe::new(3, 2);
-    dbg!(universe.volume());
+    dbg!(universe.vertex_count());
     dbg!(universe.timespan());
 }

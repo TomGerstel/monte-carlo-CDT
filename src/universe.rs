@@ -33,11 +33,11 @@ impl IndexMut<VertexPos> for Universe {
 }
 
 impl Universe {
-    pub fn new(n_vertex: usize, timespan: usize) -> Self {
+    pub fn new(vertex_count: usize, timespan: usize) -> Self {
         assert!(
-            n_vertex >= timespan,
-            "given vertex number ({}) is too small, must be at least as big as the max time ({})",
-            n_vertex,
+            vertex_count >= timespan,
+            "given vertex count ({}) is too small, must be at least as big as the timespan ({})",
+            vertex_count,
             timespan
         );
 
@@ -56,7 +56,7 @@ impl Universe {
             universe.slices.push(slice);
         }
 
-        let n_free = n_vertex - timespan;
+        let n_free = vertex_count - timespan;
         let pos_next = VertexPos::new(1, 0);
         let pos_prev = VertexPos::new(timespan - 1, 0);
         for s in 0..n_free {
@@ -74,7 +74,7 @@ impl Universe {
         universe
     }
 
-    pub fn volume(&self) -> usize {
+    pub fn vertex_count(&self) -> usize {
         self.slices.iter().map(|x| x.len()).sum()
     }
 
