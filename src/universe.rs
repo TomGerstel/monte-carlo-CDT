@@ -51,7 +51,7 @@ impl Universe {
         };
         for t in 0..timespan {
             let pos_next = VertexPos::new((t + 1) % timespan, 0);
-            let pos_prev = VertexPos::new((t + timespan - 1) % timespan, 0);
+            let pos_prev = VertexPos::new((t + timespan - 1) % timespan, 0); // Ik weet vrij zeker dat je gewoon negatieve getallen kunt modulo'en
             let vertex = Vertex {
                 position: VertexPos::new(t, 0),
                 neighbours_next: vec![pos_next, pos_next],
