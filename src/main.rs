@@ -6,11 +6,11 @@ pub use universe::*;
 #[derive(StructOpt, Debug)]
 #[structopt(name = "add_test")]
 struct Opt {
-    ///First number to add
+    /// First number to add
     #[structopt(short, long)]
     alpha: usize,
 
-    ///Second number to add
+    /// Second number to add
     #[structopt(short, long)]
     beta: usize,
 }
@@ -21,8 +21,7 @@ fn main() {
     //let b = opt.beta;
     //println!("{:#?}", a + b);
 
-    let universe = universe::Universe::new(3, 2);
+    let universe = universe::Universe::new(1000);
     dbg!(universe.vertex_count());
-    dbg!(universe.timespan());
     dbg!(universe);
 }
