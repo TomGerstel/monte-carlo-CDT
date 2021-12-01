@@ -20,39 +20,94 @@ impl Universe {
         assert!(timespan > 1);
 
         // create slotmap and empty vertex vector
-        let mut sm = SlotMap::with_capacity(timespan);
-        let vertices = (0..timespan)
+        let vertex_count = timespan * timespan;
+        let mut sm = SlotMap::new();
+        let vertices = (0..vertex_count)
             .map(|_| Vertex::default())
             .map(|v| sm.insert(v))
             .collect::<Vec<_>>();
 
-        // assign neighbours to vertices
-        vertices.windows(3).for_each(|window| {
-            let prev = window[0];
-            let curr = window[1];
-            let next = window[2];
+        // assign spacelike neighbours
+        vertices.chunks_exact(timespan).for_each(|timeslice| {
+            timeslice.windows(3).for_each(|window| {
+                let left = window[0];
+                let curr = window[1];
+                let right = window[2];
 
-            sm[curr] = Vertex {
-                prev: vec![prev; 2],
-                next: vec![next; 2],
-                left: Some(curr),
-                right: Some(curr),
-            };
+                sm[curr].left = Some(left);
+                sm[curr].right = Some(right);
+            })
         });
 
-        // patch the ends together
-        sm[*vertices.first().unwrap()] = Vertex {
-            prev: vec![*vertices.last().unwrap(); 2],
-            next: vec![*vertices.get(1).unwrap(); 2],
-            left: Some(*vertices.first().unwrap()),
-            right: Some(*vertices.first().unwrap()),
-        };
-        sm[*vertices.last().unwrap()] = Vertex {
-            prev: vec![*vertices.get(timespan - 2).unwrap(); 2],
-            next: vec![*vertices.first().unwrap(); 2],
-            left: Some(*vertices.last().unwrap()),
-            right: Some(*vertices.last().unwrap()),
-        };
+        // patch spacelike neighbours
+        vertices.chunks_exact(timespan).for_each(|timeslice| {
+            let first = *timeslice.first().unwrap();
+            let second = *timeslice.get(1).unwrap();
+            let second_to_last = *timeslice.get(timespan - 2).unwrap();
+            let last = *timeslice.last().unwrap();
+            sm[first].left = Some(last);
+            sm[first].right = Some(second);
+            sm[last].left = Some(second_to_last);
+            sm[last].right = Some(first);
+        });
+
+        // assign timelike neighbours
+        vertices
+            .chunks_exact(timespan)
+            .collect::<Vec<_>>()
+            .windows(3)
+            .for_each(|window| {
+                let prev = window[0];
+                let curr = window[1];
+                let next = window[2];
+
+                curr.iter().enumerate().for_each(|(i, &key)| {
+                    sm[key].prev = vec![prev[i]];
+                    sm[key].next = vec![next[i]];
+                })
+            });
+
+        // patch timelike neighbours
+        let first = *vertices
+            .chunks_exact(timespan)
+            .collect::<Vec<_>>()
+            .first()
+            .unwrap();
+        let second = *vertices
+            .chunks_exact(timespan)
+            .collect::<Vec<_>>()
+            .get(1)
+            .unwrap();
+        let second_to_last = *vertices
+            .chunks_exact(timespan)
+            .collect::<Vec<_>>()
+            .get(timespan - 2)
+            .unwrap();
+        let last = *vertices
+            .chunks_exact(timespan)
+            .collect::<Vec<_>>()
+            .last()
+            .unwrap();
+        first
+            .iter()
+            .zip(second)
+            .zip(second_to_last)
+            .zip(last)
+            .for_each(|(((&f, &s), &sl), &l)| {
+                sm[f].prev = vec![l];
+                sm[f].next = vec![s];
+                sm[l].prev = vec![sl];
+                sm[l].next = vec![f];
+            });
+
+        // assign diagonal neighbours
+        vertices.iter().for_each(|&key| {
+            let key_diag_next = sm[sm[key].next[0]].right.unwrap();
+            let key_diag_prev = sm[sm[key].prev[0]].left.unwrap();
+
+            sm[key].next.push(key_diag_next);
+            sm[key].prev.insert(0, key_diag_prev);
+        });
 
         let order_four = vec![];
 
@@ -68,22 +123,19 @@ impl Universe {
     }
 
     pub fn mcmc_step(&mut self, move_ratio: f32) {
-        let is_inv_move = fastrand::bool();
         let is_22_move = fastrand::f32() < move_ratio;
-        if is_inv_move {
-            if is_22_move || self.order_four.is_empty() {
-                let key = self.key_22();
-                self.move_22b(key);
-            } else {
-                let key = self.key_42();
-                self.move_42(key);
-            }
-        } else if is_22_move {
+        if is_22_move || self.order_four.is_empty() {
             let key = self.key_22();
-            self.move_22a(key);
+            if fastrand::bool() {
+                self.move_22a(key);
+            } else {
+                self.move_22b(key);
+            }
         } else {
-            let key = self.key_random();
-            self.move_24(key);
+            let key_42 = self.key_42();
+            let key_24 = self.key_random();
+            self.move_24(key_24);
+            self.move_42(key_42);
         }
     }
 
