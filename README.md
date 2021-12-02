@@ -1,4 +1,3 @@
-
 - Topic theme: 2D Quantum Gravity using Causal Dynamical Triangulations. Challenges include finding meaningful observables and interpreting them. 
 - Topic goal: Create a MCMC that generates triangulations according to the desired distribution. Measure observables such as correlations of timeslice sizes, lightcone structure, curvature, etc. Potentially study effects of switching to a different topology or different boundary conditions.
 - Model: Either a cylindrical or toroidal 2D CDT QG. Parameters include the coupling lambda (cosmological constant), number of time slices T (should be large enough in order to obtain meaningful data), number (or distribution, requiring mean and width parameter) of triangles (should also be large enough). For the cylindrical model also the spatial size of the initial and final time slice is an input parameter.
