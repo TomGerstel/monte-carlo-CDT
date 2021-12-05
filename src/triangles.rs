@@ -85,24 +85,72 @@ impl Universe {
         return Vec::new();
     }
 
-    fn move_22(&mut self, position: usize) {
-        // Perform a 2,2 move at position 'pos', if position is not suitable nothing is changed
+    fn do_move(&mut self, position: usize, new_position: usize) {
         let neighbour: usize = self.triangles[position].right;
-        if self.triangles[position].direction == Direction::Up && self.triangles[neighbour].direction == Direction::Down {
-            // Up - Down pair, so change to Down - Up
-            self.triangles[position].direction = Direction::Down;
-            self.triangles[neighbour].direction = Direction::Up;
-            let below: usize = self.triangles[position].time; // Neighbour in the previous time-slice
-            self.triangles[position].time = self.triangles[neighbour].time;
-            self.triangles[neighbour].time = below;
-        } else if self.triangles[position].direction == Direction::Down && self.triangles[neighbour].direction == Direction::Up {
-            // Down - Up pair, so change to Up - Down
-            self.triangles[position].direction = Direction::Up;
-            self.triangles[neighbour].direction = Direction::Down;
-            let above: usize = self.triangles[position].time; //Neighbour in the next time-slice
-            self.triangles[position].time = self.triangles[neighbour].time;
-            self.triangles[neighbour].time = above;
+        if self.triangles[position].direction == Direction::Up {
+            if self.triangles[neighbour].direction == Direction::Down {
+                self.flip_triangles(neighbour, position) // Up - Down pair, so change to Down - Up
+            } else {
+                self.move_shard(position, neighbour, new_position) // Up - Up, so move shard
+            }
+        } else {
+            if self.triangles[neighbour].direction == Direction::Up {    
+                self.flip_triangles(position, neighbour) // Down - Up pair, so change to Up - Down
+            } else {
+                self.move_shard(position, neighbour, new_position) // Down - Down, so move shard
+            }
         }
+    }
+    fn move_shard(&mut self, old_position: usize, old_neighbour_right: usize, new_position: usize) {
+        // Remove shard from old position
+        // Set connections between direct neighbours
+        let old_neighbour_left = self.triangles[old_position].left;
+        self.triangles[old_neighbour_right].left = old_neighbour_left;
+        self.triangles[old_neighbour_left].right = old_neighbour_right;
+        // Find timelike neighbour/other part of the shard
+        let old_position_time: usize = self.triangles[old_position].time;
+        // Set connections between neighbours of timelike neighbour
+        let old_time_right = self.triangles[old_position_time].right;
+        let old_time_left = self.triangles[old_position_time].left;
+        self.triangles[old_time_right].left = old_time_left;
+        self.triangles[old_time_left].right = old_time_right;
+
+        // Add shard at new position (to the right of the shard at new_position)
+        // Select similarly oriented part of the shard to original position
+        let (new_neighbour_left, new_time_left) = if {
+            self.triangles[new_position].direction == self.triangles[old_position].direction
+        } {
+            (new_position, self.triangles[new_position].time)
+        } else {
+            (self.triangles[new_position].time, new_position)
+        };
+        // Get neighbours of the old shard
+        let new_neighbour_right = self.triangles[new_neighbour_left].right;
+        let new_time_right = self.triangles[new_time_left].right;
+        // Set connections to new inserted shard
+        self.triangles[new_neighbour_left].right = old_position;
+        self.triangles[new_time_left].right = old_position_time;
+        self.triangles[new_neighbour_right].left = old_position;
+        self.triangles[new_time_right].left = old_position_time;
+        // Set connections on new inserted shard
+        self.triangles[old_position].left = new_neighbour_left;
+        self.triangles[old_position].right = new_neighbour_right;
+        self.triangles[old_position_time].left = new_time_left;
+        self.triangles[old_position_time].right = new_time_right;
+    }
+
+    fn flip_triangles(&mut self, toup: usize, todown: usize) {
+        // Flip triangle pair toup, todown: upward and downward respectively
+        // Triangles must be beside one other, and toup must be down and todown up.
+        self.triangles[toup].direction = Direction::Up;
+        self.triangles[todown].direction = Direction::Down;
+        // Interchange timelike neighbours
+        let above: usize = self.triangles[toup].time; 
+        let below: usize = self.triangles[todown].time;
+        self.triangles[toup].time = below;
+        self.triangles[todown].time = above;
+        self.triangles[above].time = todown;
+        self.triangles[below].time = toup;
     }
 }
 
@@ -116,12 +164,38 @@ fn test_universe_lengths() {
 }
 
 #[test]
-fn test_move_22() {
+fn test_moves01() {
     let mut universe = Universe::new(10, 100);
+
+    // First check the flip move
     assert_eq!(universe.triangles[10].time, 20);
-    universe.move_22(10);
+    universe.do_move(10, 1);
     assert_eq!(universe.triangles[10].time, 1);
+    assert_eq!(universe.triangles[1].time, 10);
     assert_eq!(universe.triangles[11].time, 20);
-    universe.move_22(11);
+    assert_eq!(universe.triangles[20].time, 11);
+
+    // Then check the shard-move move
+    universe.do_move(11, 1);
     assert_eq!(universe.triangles[11].time, 20);
+    assert_eq!(universe.triangles[11].left, 1);
+    assert_eq!(universe.triangles[11].right, 2);
+    assert_eq!(universe.triangles[20].left, 10);
+    assert_eq!(universe.triangles[20].right, 12);
+    assert_eq!(universe.triangles[21].left, 29);
+}
+
+#[test]
+fn test_moves02() {
+    let mut universe = Universe::new(10, 100);
+
+    // Check shard move to triangle with opposite orientation
+    universe.do_move(10, 1);
+    universe.do_move(11, 10);
+    assert_eq!(universe.triangles[11].time, 20);
+    assert_eq!(universe.triangles[11].left, 1);
+    assert_eq!(universe.triangles[11].right, 2);
+    assert_eq!(universe.triangles[20].left, 10);
+    assert_eq!(universe.triangles[20].right, 12);
+    assert_eq!(universe.triangles[21].left, 29);
 }
