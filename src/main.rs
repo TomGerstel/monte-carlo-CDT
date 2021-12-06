@@ -21,9 +21,9 @@ fn main() {
     //let b = opt.beta;
     //println!("{:#?}", a + b);
 
-    let mut universe = universe::Universe::new(100);
-    for _ in 0..1_000_000 {
+    let mut universe = universe::Universe::new(2, 8);
+    //dbg!(universe.clone());
+    for _ in 0..20 {
         universe.mcmc_step(0.5);
     }
-    dbg!(universe.vertex_count());
 }
