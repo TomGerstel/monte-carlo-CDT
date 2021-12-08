@@ -62,8 +62,8 @@ impl Universe {
         }
     }
 
-    pub fn mcmc_step(&mut self, move_ratio: f64) {
-        if self.order_four.is_empty() || (fastrand::f64() < move_ratio) {
+    pub fn mcmc_step(&mut self, move_ratio: f32) {
+        if self.order_four.is_empty() || (fastrand::f32() > move_ratio) {
             let left = self.sample_triangle_flip();
             self.triangle_flip(left);
         } else {
