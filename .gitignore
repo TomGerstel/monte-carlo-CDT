@@ -1,4 +1,5 @@
 /target
+__latexindent_temp.tex
 *.aux
 *.bbl
 *.bcf
@@ -10,4 +11,5 @@
 *.pdf
 *.run.xml
 *.synctex.gz
+*.synctex(busy)
 *.toc
