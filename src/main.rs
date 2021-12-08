@@ -21,11 +21,8 @@ fn main() {
     //let b = opt.beta;
     //println!("{:#?}", a + b);
 
-    let mut universe = universe::Universe::new(200, 80_000);
+    let mut universe = universe::Universe::new(20, 800);
     for _ in 0..500_000 {
         universe.mcmc_step(0.5);
-        // assert!(universe.check_order_four_list(), "The order four list contains none order four things");
-        // assert!(universe.check_all_order_four(), "The order four list is no longer correct");
     }
-    // println!("{:?}", universe.lengths(0));
 }
