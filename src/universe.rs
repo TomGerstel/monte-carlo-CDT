@@ -221,7 +221,7 @@ impl Universe {
 
         let mut marker = origin;
         loop {
-            lengths.push(1);
+            lengths.push(0);
             let t = lengths.len() - 1;
 
             // find a down triangle and mark it as origin of the slice
@@ -236,6 +236,9 @@ impl Universe {
             // walk through the slice and count the triangles
             // break loop if slice_origin is found
             // return if origin is found
+            if self.triangles[slice_origin].orientation == Orientation::Up {
+                lengths[t] += 1;
+            }
             let mut slice_walker = self.triangles[slice_origin].right;
             'slice_walk: loop {
                 if slice_walker == origin && t > 0 {
@@ -244,8 +247,10 @@ impl Universe {
                 } else if slice_walker == slice_origin {
                     break 'slice_walk;
                 } else {
+                    if self.triangles[slice_walker].orientation == Orientation::Up {
+                        lengths[t] += 1;
+                    }
                     slice_walker = self.triangles[slice_walker].right;
-                    lengths[t] += 1;
                 }
             }
 
