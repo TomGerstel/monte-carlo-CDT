@@ -21,32 +21,24 @@ enum Orientation {
 }
 
 impl Universe {
-    pub fn new(timespan: usize, triangle_count: usize) -> Self {
-        assert!(
-            triangle_count % (2 * timespan) == 0,
-            "triangle count must be an integer multiple of 2 times the timespan"
-        );
-
-        let length = triangle_count / timespan;
+    pub fn new(timespan: usize) -> Self {
+        let triangle_count = 2 * timespan * timespan;
         let mut triangles = Vec::with_capacity(triangle_count);
         for t in 0..timespan {
-            for i in 0..length {
+            for i in 0..timespan {
                 let (orientation, time) = match i % 2 {
                     0 => (
                         Orientation::Up,
-                        (((t + timespan - 1) % timespan) * length + i + 1),
+                        (((t + timespan - 1) % timespan) * timespan + i + 1),
                     ),
                     1 => (
                         Orientation::Down,
-                        (((t + timespan + 1) % timespan) * length + i - 1),
+                        (((t + timespan + 1) % timespan) * timespan + i - 1),
                     ),
-                    _ => panic!(
-                        "input was likely invalid: timespan = {}, triangle_count = {}",
-                        timespan, triangle_count
-                    ),
+                    _ => panic!("input was likely invalid: timespan = {}", timespan),
                 };
-                let left = t * length + ((i + length - 1) % length);
-                let right = t * length + ((i + length + 1) % length);
+                let left = t * timespan + ((i + timespan - 1) % timespan);
+                let right = t * timespan + ((i + timespan + 1) % timespan);
                 triangles.push(Triangle {
                     orientation,
                     time,
