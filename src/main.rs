@@ -1,5 +1,7 @@
 use structopt::StructOpt;
 mod universe;
+use serde_json::json;
+use std::time::SystemTime;
 
 /// A Markov Chain Monte Carlo simulation of 2-dimensional Causal Dynamical Triangulations.
 #[derive(StructOpt, Debug)]
@@ -8,6 +10,10 @@ struct Opt {
     /// Number of timeslices
     #[structopt(short = "t", long)]
     timespan: usize,
+
+    /// Number of measurements to be performed
+    #[structopt(short = "n", long)]
+    n_meas: usize,
 
     /// Probability of performing a shard move for a single Markov chain step
     /// in the equilibration phase
@@ -25,29 +31,25 @@ struct Opt {
     #[structopt(short = "e", long, default_value = "0")]
     eq_sweeps: usize,
 
-    /// Number of measurements to be performed
-    #[structopt(short = "m", long)]
-    measurements: usize,
-
     /// Number of sweeps inbetween measurements
     #[structopt(short = "p", long, default_value = "0")]
     pause: usize,
 }
 
 // example command (on Windows):
-// target\release\monte-carlo-cdt.exe -t 20 -m 100
+// target\release\monte-carlo-cdt.exe -t 20 -n 100
 fn main() {
-    measurement();
+    let _ = measurement();
 }
 
-fn measurement() {
+fn measurement() -> std::io::Result<()> {
     // set parameters
     let opt = Opt::from_args();
     let timespan = opt.timespan;
+    let n_meas = opt.n_meas;
     let move_ratio_eq = opt.move_ratio_eq;
     let move_ratio_meas = opt.move_ratio_meas;
     let eq_sweeps = opt.eq_sweeps;
-    let measurements = opt.measurements;
     let pause = opt.pause;
 
     // check move ratio parameters
@@ -72,12 +74,47 @@ fn measurement() {
         universe.mcmc_step(move_ratio_eq);
     }
 
+    // create data structures to store generated data
+    #[derive(serde::Serialize)]
+    struct Datum {
+        t_mc: usize,
+        lengths: Vec<usize>,
+    }
+    let mut data = Vec::with_capacity(n_meas);
+
     // measurement phase
-    for _ in 0..measurements {
+    for _ in 0..n_meas {
         for _ in 0..(pause * sweep + 1) {
             universe.mcmc_step(move_ratio_meas);
             t_mc += 1;
         }
-        // TODO: do measurments here
+        // perform measurements
+        let origin = fastrand::usize(0..(2 * timespan * timespan));
+        let lengths = universe.lengths(origin);
+        let datum = Datum { t_mc, lengths };
+        data.push(datum);
     }
+
+    // put everything in json format
+    let measurement = json!({
+        "parameters": {
+            "timespan": timespan,
+            "n_meas": n_meas,
+            "move_ratio_eq": move_ratio_eq,
+            "move_ratio_meas": move_ratio_meas,
+            "eq_sweeps": eq_sweeps,
+            "pause": pause,
+        },
+        "data": data
+    });
+
+    // write to file
+    let time = match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
+        Ok(n) => n.as_secs(),
+        Err(_) => panic!("SystemTime before UNIX EPOCH!"),
+    };
+    let path = format!("data/{}.json", time);
+    let content = measurement.to_string();
+    std::fs::write(path, content)?;
+    Ok(())
 }
