@@ -56,12 +56,17 @@ struct OptSimple {
 // example command (on Windows):
 // target\release\monte-carlo-cdt.exe -t 20 -n 800 -b 0.7 -r 0.5 -e 10 -m 100
 fn main() {
-    simple_measurement();
+    //simple_measurement();
+    let mut universe = universe::Universe::new(2, 8);
+    for _ in 0..100000 {
+        universe.mcmc_step(0.5);
+    }
+    dbg!(universe.lengths(5));
 }
 
 fn simple_measurement() {
     // A simpler CLI for preliminary data-analysis which simply performs the model for a given amount of steps
-    
+
     // set parameters
     let opt = OptSimple::from_args();
     let timespan = opt.timespan;
@@ -84,10 +89,8 @@ fn simple_measurement() {
             print!("{} ", length);
         }
         println!("");
-        
     }
 }
-
 
 fn full_measurement() {
     // set parameters

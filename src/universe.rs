@@ -64,13 +64,26 @@ impl Universe {
 
     pub fn mcmc_step(&mut self, move_ratio: f32) {
         if self.order_four.is_empty() || (fastrand::f32() > move_ratio) {
-            let left = self.sample_triangle_flip();
-            self.triangle_flip(left);
+            let left = self.sample_uniform();
+            // only flip when possible, do nothing otherwise
+            // this is to ensure detailed balance
+            if self.is_flippable(left) {
+                self.triangle_flip(left);
+            }
         } else {
-            let shard_up = self.sample_shard_move();
+            let shard_up = self.sample_shard();
             let dest_up = self.sample_dest(shard_up);
             self.shard_move(shard_up, dest_up);
         }
+    }
+
+    fn sample_uniform(&self) -> usize {
+        fastrand::usize(..self.triangles.len())
+    }
+
+    fn is_flippable(&self, left: usize) -> bool {
+        let right = self.triangles[left].right;
+        self.triangles[left].orientation != self.triangles[right].orientation
     }
 
     fn sample_dest(&self, shard: usize) -> usize {
@@ -86,21 +99,7 @@ impl Universe {
         }
     }
 
-    fn sample_triangle_flip(&self) -> usize {
-        // Note: In random triangulation the probablity of having opposite
-        // orientation on the right is 50%, so on average 2 searches are
-        // necessary, alternative is to keep a list of possible pairs, but this
-        // is likely less efficient.
-        loop {
-            let attempt = fastrand::usize(..self.triangles.len());
-            let right = self.triangles[attempt].right;
-            if self.triangles[attempt].orientation != self.triangles[right].orientation {
-                return attempt;
-            }
-        }
-    }
-
-    fn sample_shard_move(&self) -> usize {
+    fn sample_shard(&self) -> usize {
         let index = fastrand::usize(..self.order_four.len());
         self.triangles[*self.order_four.iter().nth(index).unwrap()].right
     }
@@ -121,7 +120,6 @@ impl Universe {
         self.triangles[right].time = left_nbr;
 
         // update order_four, depending on how the flip was performed
-
         match self.triangles[left].orientation {
             Orientation::Up => {
                 // original orientiation: down-up
