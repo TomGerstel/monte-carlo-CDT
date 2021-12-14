@@ -11,6 +11,10 @@ struct Opt {
     #[structopt(short = "t", long)]
     timespan: usize,
 
+    /// Average number of links per timeslice
+    #[structopt(short = "l", long)]
+    length: usize,
+
     /// Number of Markov Chain timesteps to save
     #[structopt(short = "n", long)]
     n_save: usize,
@@ -40,8 +44,9 @@ struct Opt {
     pause: usize,
 }
 
-// example command (on Windows):
-// target\release\monte-carlo-cdt.exe -t 20 -n 100 -r 0.5
+// example commands (on Windows):
+// cargo build --release
+// target\release\monte-carlo-cdt.exe -t 10 -l 100 -n 100 -r 0.5
 fn main() {
     let _ = measurement();
 }
@@ -50,6 +55,7 @@ fn measurement() -> std::io::Result<()> {
     // set parameters
     let opt = Opt::from_args();
     let timespan = opt.timespan;
+    let length = opt.length;
     let n_save = opt.n_save;
     let move_ratio = opt.move_ratio;
     let is_measurement = opt.is_measurement;
@@ -69,7 +75,8 @@ fn measurement() -> std::io::Result<()> {
     }
 
     // big bang
-    let mut universe = universe::Universe::new(timespan);
+    let mut universe = universe::Universe::new(timespan, length);
+    let sweep = 2 * timespan * length;
 
     // do equilibration phase if required
     if is_measurement {
@@ -84,15 +91,14 @@ fn measurement() -> std::io::Result<()> {
         );
 
         // equilibration phase
-        let mut universe = universe::Universe::new(timespan);
-        for _ in 0..(eq_sweeps * timespan * timespan) {
+        for _ in 0..(eq_sweeps * sweep) {
             universe.mcmc_step(move_ratio_eq);
         }
     }
 
     // determine the number of timesteps between measurements
     let pause = match is_measurement {
-        true => opt.pause * timespan * timespan,
+        true => opt.pause * sweep,
         false => 1,
     };
 
@@ -104,7 +110,7 @@ fn measurement() -> std::io::Result<()> {
         }
         let datum = match is_measurement {
             true => {
-                let origin = fastrand::usize(0..(2 * timespan * timespan));
+                let origin = fastrand::usize(0..sweep);
                 Datum::LengthProfile(universe.length_profile(origin))
             }
             false => Datum::LengthVar(universe.length_var()),
