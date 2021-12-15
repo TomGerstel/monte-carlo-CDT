@@ -1,6 +1,7 @@
 mod universe;
 use serde_json::json;
 use std::fs::File;
+use std::io::BufWriter;
 use std::io::Write;
 use std::time::SystemTime;
 use structopt::StructOpt;
@@ -108,7 +109,6 @@ fn measurement() -> std::io::Result<()> {
     );
     let data_path = format!("data/{}.csv", name);
     let config_path = format!("data/{}.json", name);
-    let mut output = File::create(data_path)?;
 
     // put everything in json format
     let measurement = json!({
@@ -135,6 +135,9 @@ fn measurement() -> std::io::Result<()> {
         }
     }
 
+    // open buffer to write into
+    let mut output = BufWriter::new(File::create(data_path).unwrap());
+
     // measurement phase
     for _ in 0..n_save {
         for _ in 0..pause {
@@ -151,6 +154,9 @@ fn measurement() -> std::io::Result<()> {
             false => writeln!(output, "{}, ", length_profile.stdev()),
         };
     }
+
+    // flush buffer
+    output.flush().unwrap();
 
     Ok(())
 }
