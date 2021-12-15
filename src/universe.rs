@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::fmt;
 
 #[derive(Clone, Debug)]
 pub struct Universe {
@@ -19,6 +20,9 @@ enum Orientation {
     Up,
     Down,
 }
+
+#[derive(Clone)]
+pub struct LengthProfile(Vec<usize>);
 
 impl Universe {
     pub fn new(timespan: usize, length: usize) -> Self {
@@ -201,7 +205,7 @@ impl Universe {
                 == self.triangles[self.triangles[label].right].time
     }
 
-    pub fn length_profile(&self, origin: usize) -> Vec<usize> {
+    pub fn length_profile(&self, origin: usize) -> LengthProfile {
         // look at the lengths of the timeslices starting from an origin
         // do this by walking through each slice, and thereafter advancing
         // to the next slice until back to starting point
@@ -233,7 +237,7 @@ impl Universe {
             'slice_walk: loop {
                 if slice_walker == origin && t > 0 {
                     lengths.pop(); // a slice was counted double, remove it
-                    return lengths;
+                    return LengthProfile(lengths);
                 } else if slice_walker == slice_origin {
                     break 'slice_walk;
                 } else {
@@ -248,13 +252,27 @@ impl Universe {
             marker = self.triangles[slice_origin].time;
         }
     }
+}
 
-    pub fn length_var(&self) -> f32 {
-        let lengths = self.length_profile(0);
+impl LengthProfile {
+    pub fn stdev(&self) -> f32 {
+        let lengths = &self.0;
         let n = lengths.len();
         let mean = lengths.iter().sum::<usize>() / n;
-        let dev = lengths.iter().map(|&x| x - mean).collect::<Vec<_>>();
-        let sum_square_dev = dev.iter().map(|&x| x * x).sum::<usize>();
-        sum_square_dev as f32 / ((n * n) as f32)
+        (lengths
+            .iter()
+            .map(|&x| (x - mean) * (x - mean))
+            .sum::<usize>() as f32
+            / (n as f32))
+            .sqrt()
+    }
+}
+
+impl fmt::Display for LengthProfile {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for v in &self.0 {
+            write!(f, "{}, ", v)?;
+        }
+        Ok(())
     }
 }

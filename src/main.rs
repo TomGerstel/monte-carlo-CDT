@@ -1,7 +1,9 @@
-use structopt::StructOpt;
 mod universe;
 use serde_json::json;
+use std::fs::File;
+use std::io::Write;
 use std::time::SystemTime;
+use structopt::StructOpt;
 
 /// A Markov Chain Monte Carlo simulation of 2-dimensional Causal Dynamical Triangulations.
 #[derive(StructOpt, Debug, serde::Serialize)]
@@ -40,7 +42,7 @@ struct Opt {
     eq_sweeps: usize,
 
     /// Number of sweeps inbetween measurements (pause)
-    #[structopt(short = "p", long, default_value = "0")]
+    #[structopt(short = "p", long, default_value = "1")]
     pause: usize,
 }
 
@@ -59,70 +61,33 @@ fn measurement() -> std::io::Result<()> {
     let n_save = opt.n_save;
     let move_ratio = opt.move_ratio;
     let is_measurement = opt.is_measurement;
+    let move_ratio_eq = opt.move_ratio_eq;
+    let eq_sweeps = opt.eq_sweeps;
 
-    // check move ratio parameter
+    let sweep = 2 * timespan * length;
+
+    // check parameters
     assert!(
         (0.0..=1.0).contains(&move_ratio),
         "given move ratio ({}) is outside valid range [0.0, 1.0]",
         move_ratio
     );
-
-    // define data structures to store data and parameters
-    #[derive(serde::Serialize)]
-    enum Datum {
-        LengthProfile(Vec<usize>),
-        LengthVar(f32),
-    }
-
-    // big bang
-    let mut universe = universe::Universe::new(timespan, length);
-    let sweep = 2 * timespan * length;
-
-    // do equilibration phase if required
-    if is_measurement {
-        let move_ratio_eq = opt.move_ratio_eq;
-        let eq_sweeps = opt.eq_sweeps;
-
-        // check equilibration move ratio parameter
-        assert!(
-            (0.0..=1.0).contains(&move_ratio_eq),
-            "given move ratio ({}) is outside valid range [0.0, 1.0]",
-            move_ratio_eq
-        );
-
-        // equilibration phase
-        for _ in 0..(eq_sweeps * sweep) {
-            universe.mcmc_step(move_ratio_eq);
-        }
-    }
+    assert!(
+        (0.0..=1.0).contains(&move_ratio_eq),
+        "given move ratio ({}) is outside valid range [0.0, 1.0]",
+        move_ratio_eq
+    );
 
     // determine the number of timesteps between measurements
     let pause = match is_measurement {
         true => opt.pause * sweep,
         false => 1,
     };
-
-    // measurement phase
-    let mut data = Vec::with_capacity(n_save);
-    for _ in 0..n_save {
-        for _ in 0..pause {
-            universe.mcmc_step(move_ratio);
-        }
-        let datum = match is_measurement {
-            true => {
-                let origin = fastrand::usize(0..sweep);
-                Datum::LengthProfile(universe.length_profile(origin))
-            }
-            false => Datum::LengthVar(universe.length_var()),
-        };
-        data.push(datum);
-    }
-
-    // put everything in json format
-    let measurement = json!({
-        "parameters": opt,
-        "data": data
-    });
+    assert!(
+        pause > 0,
+        "the given value {} for pause results in no MC steps",
+        pause
+    );
 
     // get the current time to put into the filename
     let now = match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
@@ -136,11 +101,56 @@ fn measurement() -> std::io::Result<()> {
         false => "test",
     };
 
-    // define the path
-    let path = format!(
-        "data/{}_t{}_r{}_{}.json",
-        data_type, timespan, move_ratio, now
+    // create the filename and path strings
+    let name = format!(
+        "{}_t{}_l{}_n{}_r{}_{}",
+        data_type, timespan, length, n_save, move_ratio, now
     );
-    std::fs::write(path, measurement.to_string())?;
+    let data_path = format!("data/{}.csv", name);
+    let config_path = format!("data/{}.json", name);
+    let mut output = File::create(data_path)?;
+
+    // put everything in json format
+    let measurement = json!({
+        "name": name,
+        "is_measurement": is_measurement,
+        "timespan": timespan,
+        "length": length,
+        "move_ratio": move_ratio,
+        "n_save": n_save,
+        "pause": pause,
+        "move_ratio_eq": move_ratio_eq,
+        "eq_sweeps": eq_sweeps,
+    });
+
+    std::fs::write(config_path, measurement.to_string())?;
+
+    // big bang
+    let mut universe = universe::Universe::new(timespan, length);
+
+    // do equilibration phase if required
+    if is_measurement {
+        for _ in 0..(eq_sweeps * sweep) {
+            universe.mcmc_step(move_ratio_eq);
+        }
+    }
+
+    // measurement phase
+    for _ in 0..n_save {
+        for _ in 0..pause {
+            universe.mcmc_step(move_ratio);
+        }
+        // do the measurement
+        let origin = fastrand::usize(0..sweep);
+        let length_profile = universe.length_profile(origin);
+
+        // write to file
+        let _ = match is_measurement {
+            true => writeln!(output, "{}", length_profile),
+
+            false => writeln!(output, "{}, ", length_profile.stdev()),
+        };
+    }
+
     Ok(())
 }
