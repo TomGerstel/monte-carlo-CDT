@@ -158,7 +158,7 @@ fn measurement() -> std::io::Result<()> {
     // flush buffer
     output.flush().unwrap();
 
-    write_triangulation_mesh(&universe, &format!("data/mesh_{}.csv", name))?;
+    // write_triangulation_mesh(&universe, &format!("data/mesh_{}.csv", name))?;
 
     Ok(())
 }

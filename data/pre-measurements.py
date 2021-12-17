@@ -39,7 +39,7 @@ Ns, stds = zip(*[
 %store stds
 
 #%% Single file import
-lengths = np.loadtxt("../data/meas_t50_l200_n1000_r0.3_1639675850.csv", delimiter=',', dtype=int, usecols=range(0, 50))
+lengths = np.loadtxt("meas_t20_l50_n1000_r0.3_1639761659.csv", delimiter=',', dtype=int, usecols=range(0, 20))
 
 # %% Determine equilibration time
 # Determine t_eq by assuming the observable on average behaves like:
@@ -102,33 +102,7 @@ plt.ylabel("$t_{eq}$ (in sweeps)")
 %store -r stds
 %store -r teqs
 
-#%% Correlation time
 
-def autocorrelation(t: int, x: np.array):
-    dx = (x - np.mean(x))
-    if t == 0:
-        return 1.0
-    autocov = np.sum(dx[:-t]*dx[t:])
-    return autocov/np.sum((dx*dx))
-
-def calc_autocor(index: int, t_eq=50, t_cor_max=100, resolution=100):
-    sweep = int(Ns[index])
-    obs = stds[index][t_eq*sweep:]
-    ts = np.arange(resolution)*int(sweep*t_cor_max/resolution)
-    autocor = np.vectorize(lambda t: autocorrelation(t, obs))(ts)
-    return ts, autocor
-
-def plot_autocor(index: int, t_eq=50, t_cor_max=100, resolution=100):
-    ts, autocor = calc_autocor(index, t_eq, t_cor_max, resolution)
-    sweep = int(Ns[index])
-    dobs = (stds[index] - np.mean(stds[index]))[t_eq*sweep + ts]
-    plt.plot(ts/sweep, 0.5 + dobs/np.max(np.abs(dobs)), alpha=0.3)
-    plt.plot(ts/sweep, autocor)
-#%% Visualise autocorrelation
-
-
-plot_autocor(2, t_cor_max=100, resolution=80)
-# Then the correlation time can be determined by for example a fit on: exp(-t/t_cor).
 
 #%% Determine length correlations
 x = lengths[-1]
