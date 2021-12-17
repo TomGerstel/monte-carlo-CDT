@@ -7,9 +7,11 @@ __latexindent_temp.tex
 *.fdb_latexmk
 *.fls
 *.log
+*.nav
 *.out
 *.pdf
 *.run.xml
+*.snm
 *.synctex.gz
 *.synctex(busy)
 *.toc

@@ -1,13 +1,23 @@
 The goal is to sample labelled triangulations $T_l$ from a distribution
-\begin{equation}
-    P_\lambda (T_l) = \frac{1}{Z_\lambda} \frac{1}{N_2(T_l)!} e^{- \lambda N_2(T_l)},
+\begin{equation}\label{eq:full_dist}
+    p (T_l)
+    =
+    \frac{1}{Z} \frac{1}{N_2(T_l)!} e^{- \lambda N_2(T_l)}
+    ,
 \end{equation}
 where $\lambda$ is a parameter related to the cosmological constant and $N_2(T_l)$ is the number of triangles in the given triangulation. Furthermore, the partition function $Z$ is given by
 \begin{equation}
-    Z_\lambda = \sum_{T_l} \frac{1}{N_2(T_l)!} e^{- \lambda N_2(T_l)}.
+    Z
+    =
+    \sum_{T_l} \frac{1}{N_2(T_l)!} e^{- \lambda N_2(T_l)}
+    ,
 \end{equation}
-It is possible to split up the partition sum into contributions with a constant number of triangles, as follows
+where the summation is over all valid labelled triangulations. It is possible to split up the partition sum into contributions with a constant number of triangles, as follows
 \begin{equation}
-    Z_\lambda = \sum_{n = 0}^\infty \frac{e^{- \lambda n}}{n!} \sum_{T_l^n} 1,
+    Z
+    =
+    \sum_{n = 0}^\infty \Omega(n) \frac{e^{- \lambda n}}{n!}
+    ,
 \end{equation}
-where $T_l^n$ is a labelled triangulation made up of $n$ triangles.
+where $\Omega(n)$ denotes the number of labelled triangulations with $n$ triangles.
+
