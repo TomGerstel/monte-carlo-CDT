@@ -1,5 +1,7 @@
 use std::collections::HashSet;
 use std::fmt;
+use std::ops::Index;
+use std::f32::consts::TAU;
 
 #[derive(Clone, Debug)]
 pub struct Universe {
@@ -23,6 +25,10 @@ enum Orientation {
 
 #[derive(Clone)]
 pub struct LengthProfile(Vec<usize>);
+
+struct Vertex(usize, usize);
+#[derive(Clone, Copy)]
+pub struct VertexPosition(f32, f32, f32);
 
 impl Universe {
     pub fn new(timespan: usize, length: usize) -> Self {
@@ -206,6 +212,7 @@ impl Universe {
     }
 
     pub fn length_profile(&self, origin: usize) -> LengthProfile {
+        // Count the number of links in each timeslice under the triangles
         // look at the lengths of the timeslices starting from an origin
         // do this by walking through each slice, and thereafter advancing
         // to the next slice until back to starting point
@@ -252,6 +259,107 @@ impl Universe {
             marker = self.triangles[slice_origin].time;
         }
     }
+
+    fn triangle_vertices(&self) -> Vec<(Vertex, Vertex, Vertex)> {
+        // Walk through the slices similarly to find the length profile but now returning triangulation
+        let triangles = &self.triangles;
+        
+        // Find an up triangle to serve as the origin
+        let mut pre_marker = 0; // Start looking at 0
+        while triangles[pre_marker].orientation != Orientation::Up {
+            pre_marker = triangles[pre_marker].right;
+        }
+        let origin = pre_marker;
+
+        // Determine the length profile
+        let lengths = self.length_profile(origin);
+
+        let mut triangle_vertices: Vec<(Vertex, Vertex, Vertex)> = Vec::with_capacity(self.triangles.len()/2);
+        let mut marker = origin; // Marks the current triangle
+        // Loop over all timeslices but the last
+        for t in 0..lengths.len() - 1 {
+            let mut lower_index: usize = 0;
+            let mut upper_index: usize = 0;
+            let mut next_origin: Option<usize> = None;
+            for _ in 0..(lengths[t] + lengths[t + 1]) { // Loop over all triangles
+                match triangles[marker].orientation {
+                    Orientation::Up => {
+                        let right_index = (lower_index + 1) % lengths[t]; // Determine next index
+                        // Add triangle with orientation based on right-handedness
+                        triangle_vertices.push((Vertex(t, lower_index), Vertex(t+1, upper_index), Vertex(t, right_index)));
+                        lower_index = right_index // Update index
+                    },
+                    Orientation::Down => {
+                        if next_origin.is_none() {
+                            next_origin = Some(triangles[marker].time)
+                        }
+                        let right_index = (upper_index + 1) % lengths[t+1]; // Determine next index
+                        // Add triangle with orientation based on right-handedness
+                        triangle_vertices.push((Vertex(t+1, upper_index), Vertex(t+1, right_index), Vertex(t, lower_index)));
+                        upper_index = right_index // Update index
+                    }
+                }
+                marker = triangles[marker].right;
+            }
+            marker = next_origin.expect("Somehow there was no down-triangle in timeslice");
+        }
+        // Find the upper_index of the last slice
+        let t_final = lengths.len() - 1;
+        let mut probe_marker = triangles[origin].time;
+        let mut lower_index: usize = 0;
+        let mut upper_index: usize = 0;
+        while probe_marker != marker {
+            if triangles[probe_marker].orientation == Orientation::Down {
+                upper_index = (upper_index + 1) % lengths[t_final]
+            }
+            probe_marker = triangles[probe_marker].right
+        }
+        for _ in 0..(lengths[t_final] + lengths[0]) { // Loop over all triangles
+            match triangles[marker].orientation {
+                Orientation::Up => {
+                    let right_index = (lower_index + 1) % lengths[t_final]; // Determine next index
+                    // Add triangle with orientation based on right-handedness
+                    triangle_vertices.push((Vertex(t_final, lower_index), Vertex(0, upper_index), Vertex(t_final, right_index)));
+                    lower_index = right_index // Update index
+                },
+                Orientation::Down => {
+                    let right_index = (upper_index + 1) % lengths[0]; // Determine next index
+                    // Add triangle with orientation based on right-handedness
+                    triangle_vertices.push((Vertex(0, upper_index), Vertex(0, right_index), Vertex(t_final, lower_index)));
+                    upper_index = right_index // Update index
+                }
+            }
+            marker = triangles[marker].right;
+        }
+
+        return triangle_vertices
+    }
+
+    fn vertex_coordinates(lengths: LengthProfile) -> Vec<Vec<VertexPosition>> {
+        let mut vertex_positions: Vec<Vec<VertexPosition>> = Vec::with_capacity(lengths.len());
+        for (t, &length) in lengths.0.iter().enumerate() {
+            let shift = 0.0f32; // TODO: make shift such that the total length of the timelike connections is minimized
+            let n = length as f32;
+            vertex_positions.push(
+                (0..length).map(|i| VertexPosition(
+                    n/TAU * (TAU/n * (i as f32) + shift).cos(),
+                    n/TAU * (TAU/n * (i as f32) + shift).sin(),
+                    t as f32
+                )).collect()
+            )
+        }
+        vertex_positions
+    }
+
+    pub fn triangle_coordinates(&self) -> Vec<(VertexPosition, VertexPosition, VertexPosition)> {
+        let vertices = self.triangle_vertices();
+        let vertex_coordinates = Universe::vertex_coordinates(self.length_profile(0));
+        vertices.iter().map(|triangle|
+             (vertex_coordinates[triangle.0.0][triangle.0.1],
+                vertex_coordinates[triangle.1.0][triangle.1.1],
+                vertex_coordinates[triangle.2.0][triangle.2.1])
+            ).collect()
+    }
 }
 
 impl LengthProfile {
@@ -266,6 +374,17 @@ impl LengthProfile {
             / (n as f32))
             .sqrt()
     }
+
+    fn len(&self) -> usize {
+        self.0.len()
+    }
+}
+
+impl Index<usize> for LengthProfile {
+    type Output = usize;
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.0[index]
+    }
 }
 
 impl fmt::Display for LengthProfile {
@@ -274,5 +393,11 @@ impl fmt::Display for LengthProfile {
             write!(f, "{}, ", v)?;
         }
         Ok(())
+    }
+}
+
+impl fmt::Display for VertexPosition {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{},{},{}", self.0, self.1, self.2)
     }
 }

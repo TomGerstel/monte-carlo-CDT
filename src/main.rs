@@ -136,7 +136,7 @@ fn measurement() -> std::io::Result<()> {
     }
 
     // open buffer to write into
-    let mut output = BufWriter::new(File::create(data_path).unwrap());
+    let mut output = BufWriter::new(File::create(&data_path).unwrap());
 
     // measurement phase
     for _ in 0..n_save {
@@ -158,5 +158,18 @@ fn measurement() -> std::io::Result<()> {
     // flush buffer
     output.flush().unwrap();
 
+    write_triangulation_mesh(&universe, &format!("data/mesh_{}.csv", name))?;
+
     Ok(())
+}
+
+fn write_triangulation_mesh(universe: &universe::Universe, data_path: &str) -> std::io::Result<()> {
+    let mesh = universe.triangle_coordinates();
+
+    
+    let mut output = BufWriter::new(File::create(data_path).unwrap());
+    for triangle in mesh {
+        writeln!(output, "{},{},{}", triangle.0, triangle.1, triangle.2)?;
+    }
+    output.flush()
 }
