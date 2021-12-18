@@ -3,5 +3,5 @@
 for i in {2..20}
 do
     L=$((10*$i))
-    cargo run --release -- -m -t 20 -l $L -n $((300*40*$L)) -r 0.2
+    cargo run --release -- -m -t 20 -l $L -n 1000 -r 0.3 -b 150
 done
