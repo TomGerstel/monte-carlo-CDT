@@ -45,6 +45,9 @@ struct Opt {
     /// Number of sweeps inbetween measurements (pause)
     #[structopt(short = "p", long, default_value = "1")]
     pause: usize,
+
+    #[structopt(short = "o", long)]
+    output_folder: String,
 }
 
 // example commands (on Windows):
@@ -64,6 +67,7 @@ fn measurement() -> std::io::Result<()> {
     let is_measurement = opt.is_measurement;
     let move_ratio_eq = opt.move_ratio_eq;
     let eq_sweeps = opt.eq_sweeps;
+    let output_folder = opt.output_folder;
 
     let sweep = 2 * timespan * length;
 
@@ -107,8 +111,8 @@ fn measurement() -> std::io::Result<()> {
         "{}_t{}_l{}_n{}_r{}_{}",
         data_type, timespan, length, n_save, move_ratio, now
     );
-    let data_path = format!("data/{}.csv", name);
-    let config_path = format!("data/{}.json", name);
+    let data_path = format!("{}/{}.csv", output_folder, name);
+    let config_path = format!("{}/{}.json", output_folder, name);
 
     // put everything in json format
     let measurement = json!({

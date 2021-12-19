@@ -5,10 +5,11 @@ import matplotlib.pyplot as plt
 
 #%% Import single datafiles
 # datafile = "meas_t40_l100_n50000_r0.3_1639849176.csv"
-datafile = "meas_t40_l100_n100000_r0.3_1639905425.csv"
+# datafile = "meas_t40_l100_n100000_r0.3_1639905425.csv"
+datafile = "meas_t60_l200_n50000_r0.4_1639924808.csv"
 
-t_max = 40
-lengths = np.loadtxt(datafile, delimiter=',', dtype=int, usecols=range(0, t_max))
+t_max = 60
+lengths = np.loadtxt(datafile, delimiter=',', dtype=int, usecols=range(0, t_max), max_rows=43000)
 
 #%% Correlation time functions
 def autocorrelation(t: int, x: np.array):
@@ -91,7 +92,7 @@ plt.show()
 import os
 import json
 
-datapath = "./tcor-measurements/r-dependence/"
+datapath = "./tcor-measurements/T-dependence/"
 datafiles = [os.path.join(datapath, f) for f in os.listdir(datapath) if os.path.isfile(os.path.join(datapath, f)) and f.endswith(".json")]
 
 parameters = []
@@ -120,7 +121,7 @@ rs = np.array(next(sdata))
 obs = np.array(next(sdata))
 
 # %% Determine correlation times
-M = len(obs)
+M = len(obs)    
 tcors = np.zeros(M)
 tcors_err = np.zeros(M)
 
@@ -175,3 +176,48 @@ plt.ylabel("$t_{cor}$ (MC cor. time in sweeps)")
 plt.title("Correlation time at $T = 20$ and $r = 0.3$")
 plt.savefig("tcor_t20_r0.3.pdf")
 plt.show()
+
+#%% Import T dependence data
+Ts = []
+obs = []
+
+def observable(lenghts):
+    return np.std(lenghts, axis=1) #/np.sqrt(len(lengths) - 1)
+
+for parameter_set in parameters:
+    if parameter_set["length"] == 200:
+        T = parameter_set["timespan"]
+        Ts.append(T)
+        datafile = datapath + parameter_set["name"] + ".csv"
+        lengths = np.loadtxt(datafile, delimiter=',', dtype=int, usecols=range(0, T))
+        obs.append(observable(lengths))
+
+tdata = sorted(zip(Ts, obs))
+sdata = zip(*tdata)
+Ts = np.array(next(sdata))
+obs = np.array(next(sdata))
+
+# %% Determine correlation times
+M = len(obs)
+tcors = np.zeros(M)
+tcors_err = np.zeros(M)
+
+# Parameters
+for i in range(0, M):
+    tcors[i], tcors_err[i] = find_tcor(obs[i], batch_count=10)
+
+# %% Visualise correlation time profiles
+# tcormean = np.mean(tcors)
+# print(tcormean)
+fit = opt.curve_fit(lambda x, a, b: a*x + b, Ts, tcors, sigma=tcors_err)
+plt.errorbar(Ts, tcors, yerr=tcors_err)
+plt.plot(Ts, fit[0][0]*Ts + fit[0][1], alpha=0.3)
+# plt.hlines(tcormean, min(Ls), max(Ls), alpha=0.2)
+# plt.xticks(np.arange(max(Ls)//20)*20 + 20)
+plt.xlabel("T (timespan: $N = T \cdot L$)")
+plt.ylabel("$t_{cor}$ (MC cor. time in sweeps)")
+plt.title("Correlation time at $L = 200$ and $r = 0.3$")
+print("slope: {} ± {}".format(fit[0][0], np.sqrt(fit[1][0, 0])))
+# plt.savefig("tcor_t20_r0.3.pdf")
+plt.show()
+# %%
