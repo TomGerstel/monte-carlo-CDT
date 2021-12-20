@@ -4,12 +4,10 @@ import scipy.optimize as opt
 import matplotlib.pyplot as plt
 
 #%% Import single datafiles
-# datafile = "meas_t40_l100_n50000_r0.3_1639849176.csv"
-# datafile = "meas_t40_l100_n100000_r0.3_1639905425.csv"
-datafile = "meas_t60_l200_n50000_r0.4_1639924808.csv"
+datafile = "tcor-measurements/L-dependence/meas_t20_l100_n50000_r0.3_1639907771.csv"
 
-t_max = 60
-lengths = np.loadtxt(datafile, delimiter=',', dtype=int, usecols=range(0, t_max), max_rows=43000)
+t_max = 20
+lengths = np.loadtxt(datafile, delimiter=',', dtype=int, usecols=range(0, t_max))
 
 #%% Correlation time functions
 def autocorrelation(t: int, x: np.array):

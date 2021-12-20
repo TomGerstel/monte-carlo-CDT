@@ -26,44 +26,25 @@
     \tableofcontents
 \end{frame}
 
-\section{Introduction}
-\begin{frame}
-    \frametitle{The path integral}
-    \begin{equation}
-        Z = \int \mathcal{D}[g_{\mu \nu}] e^{i S[g_{\mu \nu}]}
-    \end{equation}
-    \begin{equation}
-        S[g_{\mu \nu}]
-        =
-        \frac{1}{16 \pi G}
-        \int_\mathcal{M} \dd[d]{x} \sqrt{-g}
-        (R(x) - 2 \Lambda)
-    \end{equation}
-    After simplifications: %TODO
-    \begin{equation}
-        Z = \sum_{T_\ell} \frac{1}{N_2(T_\ell)!} e^{-\lambda N_2(T_\ell)}
-    \end{equation}
-\end{frame}
+\section{Theory}
+\input{theory.tex}
 
-\begin{frame}
-    \frametitle{Volume fixing}
-    Split $Z$ into fixed volume contributions
-    \begin{equation}
-        Z
-        =
-        \sum_{T_\ell} \frac{1}{N_2(T_\ell)!} e^{-\lambda N_2(T_\ell)}
-        =
-        \sum_{n = 0}^\infty \Omega(n) \frac{e^{-\lambda n}}{n!}
-    \end{equation}
-    Problem:
-    \begin{itemize}
-        \item $\lambda > \ln 2$: typical triangulation has a very small volume $\to$ cannot extract useful data
-        \item $\lambda < \ln 2$: triangulation keeps growing $\to$ equilibrium cannot be reached
-    \end{itemize}
-    Our solution: fix the number of triangles $N_2$
-\end{frame}
+\section{Model}
+% Triangle fixig, MCMC, moves
+\input{model.tex}
 
-% 
+\section{Implementation} 
+% Vertex,      Triangle,   Observables
+% Switch around ^here^ somewhere?
+\input{implementation.tex}
+
+\section{Data Analysis}
+% Saving data, determining equilibirum and correlation
+\input{analysis.tex}
+
+\section{Results and Outlook}
+% Tying it all together and explain what we still expect to do
+\input{results.tex}
 
 
 \end{document}
