@@ -1,0 +1,32 @@
+
+\begin{frame}
+    \frametitle{Volume fixing}
+    Split $Z$ into fixed volume contributions:
+    \begin{equation}
+        Z
+        =
+        \sum_{T_\ell} \frac{1}{N_2(T_\ell)!} e^{-\lambda N_2(T_\ell)}
+        =
+        \sum_{n = 0}^\infty \Omega(n) \frac{e^{-\lambda n}}{n!}
+    \end{equation}
+    It turns out that $\Omega(n) \sim n! 2^n$ \\
+    Problem:
+    \begin{itemize}
+        \item $\lambda > \ln 2$: typical triangulation has a very small volume $\to$ cannot extract useful data
+        \item $\lambda < \ln 2$: triangulation keeps growing $\to$ equilibrium cannot be reached
+    \end{itemize}
+    Our solution: fix the number of triangles $N_2$ \\
+    Futher advantage: distribution becomes uniform
+\end{frame}
+
+\begin{frame}
+    \frametitle{Volume fixing (2)}
+    How can we implement this volume fixing? \\
+    Possible solution: add a constraint term $\delta S = \epsilon \abs{N_2(T) - n}$ \\
+    Issues:
+    \begin{itemize}
+        \item Introduces an extra parameter $\epsilon$
+        \item Results in more rejections
+    \end{itemize}
+    Our solution: use update rules that preserve $N_2$
+\end{frame}

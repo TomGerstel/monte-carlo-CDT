@@ -39,7 +39,7 @@ Ns, stds = zip(*[
 %store stds
 
 #%% Single file import
-lengths = np.loadtxt("meas_t20_l50_n1000_r0.3_1639761659.csv", delimiter=',', dtype=int, usecols=range(0, 20))
+lengths = np.loadtxt("meas_t100_l80_n400_r0.4_1639931356.csv", delimiter=',', dtype=int, usecols=range(0, 100))
 
 # %% Determine equilibration time
 # Determine t_eq by assuming the observable on average behaves like:
@@ -105,18 +105,19 @@ plt.ylabel("$t_{eq}$ (in sweeps)")
 
 
 #%% Determine length correlations
-x = lengths[-1]
-
+obs = lengths
 def lengthcorrelation(t: int, x: np.array):
     """Correlation with periodic boundaries"""
     dx = (x - np.mean(x))
     autocov = np.sum((dx * np.roll(dx, t)))
-    return autocov/np.sum((dx*dx))
+    return autocov/np.sum(dx*dx)
 
-ds = np.arange(len(x))
-autocor = np.vectorize(lambda d: lengthcorrelation(d, x))(ds)
-plt.plot(ds, autocor)
-dx = x - np.mean(x)
-plt.plot(dx/np.max(np.abs(dx)))
-plt.xlim(0, len(x)/2)
+def correlation_profile(x: np.array):
+    ds = np.arange(len(x) // 2)
+    return np.vectorize(lambda d: lengthcorrelation(d, x))(ds)
+
+cor_profile = np.zeros((obs.shape[0], obs.shape[1]//2))
+for i in range(0, len(obs)):
+    cor_profile[i] = correlation_profile(obs[i])
 # %%
+plt.plot(np.mean(cor_profile, axis=0))
