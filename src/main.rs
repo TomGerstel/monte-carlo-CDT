@@ -32,6 +32,10 @@ struct Opt {
     #[structopt(short = "m", long)]
     is_measurement: bool,
 
+    /// Option to choose between doing a measurement or outputing mesh
+    #[structopt(short = "v", long)]
+    visualisation: bool,
+
     /// Probability of performing a shard move for a single Markov chain step
     /// in the equilibration phase
     #[structopt(short = "e", long, default_value = "0.5")]
@@ -68,6 +72,7 @@ fn measurement() -> std::io::Result<()> {
     let move_ratio_eq = opt.move_ratio_eq;
     let eq_sweeps = opt.eq_sweeps;
     let output_folder = opt.output_folder;
+    let visualisation = opt.visualisation;
 
     let sweep = 2 * timespan * length;
 
@@ -114,57 +119,65 @@ fn measurement() -> std::io::Result<()> {
     let data_path = format!("{}/{}.csv", output_folder, name);
     let config_path = format!("{}/{}.json", output_folder, name);
 
-    // put everything in json format
-    let measurement = json!({
-        "name": name,
-        "is_measurement": is_measurement,
-        "timespan": timespan,
-        "length": length,
-        "move_ratio": move_ratio,
-        "n_save": n_save,
-        "pause": pause,
-        "move_ratio_eq": move_ratio_eq,
-        "eq_sweeps": eq_sweeps,
-    });
+    if visualisation {
+        // big bang
+        let mut universe = universe::Universe::new(timespan, length);
 
-    std::fs::write(config_path, measurement.to_string())?;
-
-    // big bang
-    let mut universe = universe::Universe::new(timespan, length);
-
-    // do equilibration phase if required
-    if is_measurement {
-        for _ in 0..(eq_sweeps * sweep) {
+        for _ in 0..(n_save * sweep) {
             universe.mcmc_step(move_ratio_eq);
         }
-    }
 
-    // open buffer to write into
-    let mut output = BufWriter::new(File::create(&data_path).unwrap());
+        write_triangulation_mesh(&universe, &format!("{}/mesh_{}.csv", output_folder, name))
+    } else {
+        // put everything in json format (TODO: No need to do this, serde can do this from Opt)
+        let measurement = json!({
+            "name": name,
+            "is_measurement": is_measurement,
+            "timespan": timespan,
+            "length": length,
+            "move_ratio": move_ratio,
+            "n_save": n_save,
+            "pause": pause,
+            "move_ratio_eq": move_ratio_eq,
+            "eq_sweeps": eq_sweeps,
+        });
 
-    // measurement phase
-    for _ in 0..n_save {
-        for _ in 0..pause {
-            universe.mcmc_step(move_ratio);
+        std::fs::write(config_path, measurement.to_string())?;
+    
+
+        // big bang
+        let mut universe = universe::Universe::new(timespan, length);
+
+        // do equilibration phase if required
+        if is_measurement {
+            for _ in 0..(eq_sweeps * sweep) {
+                universe.mcmc_step(move_ratio_eq);
+            }
         }
-        // do the measurement
-        let origin = fastrand::usize(0..sweep);
-        let length_profile = universe.length_profile(origin);
 
-        // write to file
-        let _ = match is_measurement {
-            true => writeln!(output, "{}", length_profile),
+        // open buffer to write into
+        let mut output = BufWriter::new(File::create(&data_path).unwrap());
 
-            false => writeln!(output, "{}, ", length_profile.stdev()),
-        };
+        // measurement phase
+        for _ in 0..n_save {
+            for _ in 0..pause {
+                universe.mcmc_step(move_ratio);
+            }
+            // do the measurement
+            let origin = fastrand::usize(0..sweep);
+            let length_profile = universe.length_profile(origin);
+
+            // write to file
+            let _ = match is_measurement {
+                true => writeln!(output, "{}", length_profile),
+
+                false => writeln!(output, "{}, ", length_profile.stdev()),
+            };
+        }
+
+        // flush buffer
+        output.flush()
     }
-
-    // flush buffer
-    output.flush().unwrap();
-
-    // write_triangulation_mesh(&universe, &format!("data/mesh_{}.csv", name))?;
-
-    Ok(())
 }
 
 fn write_triangulation_mesh(universe: &universe::Universe, data_path: &str) -> std::io::Result<()> {
