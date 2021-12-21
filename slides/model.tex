@@ -18,19 +18,18 @@
         \item $\lambda > \ln 2$: typical triangulation has a very small volume $\to$ cannot extract useful data
         \item $\lambda < \ln 2$: triangulation keeps growing $\to$ equilibrium cannot be reached
     \end{itemize}
-    Solution: try to fix the number of triangles $N_2$
+    Solution: fix the number of triangles $N_2$
 \end{frame}
 
 \begin{frame}
     \frametitle{Volume fixing (2)}
-    How can we implement this volume fixing? \\
     Possible solution: add a constraint term $\delta S = \epsilon \abs{N_2(T) - n}$ \\
     Issues:
     \begin{itemize}
         \item Introduces an extra parameter $\epsilon$
         \item Results in more rejections
     \end{itemize}
-    Our solution: use update rules that preserve $N_2$ \\
+    Alternative: use update rules that preserve $N_2$ \\
     Futher advantage: distribution becomes uniform
 \end{frame}
 
@@ -40,11 +39,13 @@
         \centering
         \includegraphics[width=0.6\linewidth]{shard_move}
     \end{figure}
-    Take a "shard" and insert it somewhere else \\
-    Requires order 4 vertex \\
-    Keep a list to uniformly sample from \\
-    Detailed balance: Yes, number of order 4 vertices is constant \\
-    Ergodic: No
+    \begin{itemize}
+        \item Take a "shard" and insert it somewhere else
+        \item Requires order 4 vertex (keep a list)
+        \item Detailed balance: Yes
+        \item Ergodic: No
+    \end{itemize}
+
 \end{frame}
 
 \begin{frame}
@@ -53,9 +54,11 @@
         \centering
         \includegraphics[width=0.6\linewidth]{flip_move}
     \end{figure}
-    Uniformly choose a triangle and flip it \\
-    Requires oppositely oriented neighbour \\
-    Detailed balance: Yes, with rejections \\
-    Ergodic: Yes, combined with shard move \\
+    \begin{itemize}
+        \item Uniformly choose a triangle and flip it
+        \item Requires oppositely oriented neighbour
+        \item Detailed balance: Yes, with rejections
+        \item Ergodic: Yes
+    \end{itemize}
     Two different moves: introduce move ratio $r = p(\text{shard move})$
 \end{frame}
