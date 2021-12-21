@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 # Note that there is a $1/n$ factor in front of the sum in $\bar{\gamma}(t)$, while one may instead expect an $1/(n-t)$ since there are $n-t$ terms. The reason is that this choice is often found to be more stable numerically. 
 
 #%% Import data
-datapath = "../data/teq_measurements"
+datapath = "teq-measurements"
 datafiles = [os.path.join(datapath, f) for f in os.listdir(datapath) if os.path.isfile(os.path.join(datapath, f)) and f.endswith(".json")]
 
 parameters = []
@@ -39,7 +39,7 @@ Ns, stds = zip(*[
 %store stds
 
 #%% Single file import
-lengths = np.loadtxt("meas_t100_l80_n400_r0.4_1639931356.csv", delimiter=',', dtype=int, usecols=range(0, 100))
+lengths = np.loadtxt("meas_t100_l40_n5000_r0.4_1640079682.csv", delimiter=',', dtype=int, usecols=range(0, 100))
 
 # %% Determine equilibration time
 # Determine t_eq by assuming the observable on average behaves like:

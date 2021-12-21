@@ -1,1 +1,18 @@
 % Saving data, determining equilibirum and correlation
+
+% In practice chose to write the entire length profile to disk to be able to later decide on specific observable, the disk space is still minimal
+% In the end we wish to look at the behaviour of the autocorrelation of the length profile for large N, but we have not yet done so
+% For simiplicity we have as of yet only look at the behaviour of the std
+% We wish to obtain the behaviour of std for large N, for this we wish to use batching to be able to make good estimates of the error
+% For this we need estimates of the equilibrium time, to make sure the system is thermalized; and estimates of the correlation time to reduce the amount of data that needs to be saved and to know how big to take the batches
+
+% It is difficult to construct another initial state so we , so to estimate the equilibrium time we use ...
+% And we notice the equilibirum time is rather small and constant for different N (in terms of sweeps), because our initial state is very close to equilibirum.
+
+% We have a single model parameter which can still be tuned, so we can tune it to make the correlation time minimal.
+% We determine the correlation time be simulation long traces of the std and looking for 'exponential decay' behaviour in the autocorrelation of the std with respect to the simulation step time.
+% Determining this for different ratios we see there is a large minimum around 0.4, and notice the correlation time is not very sensitive around this minimum; so it should be save to choose 0.4
+% We perform similar measurements for different L values, which shows the correlation time is roughly constant; and we look for different T values which suggests tcor grows roughly with O(T).
+% Thus in total we find that tcor grows with O(N) in sweeps thus O(N^2) in MC steps, which is very unfortunate as this inhibits us from performing large simulations. But what we can do is keep T constant and make N large
+
+% First results show that std gros as a non-trivial power in N
