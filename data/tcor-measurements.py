@@ -4,9 +4,9 @@ import scipy.optimize as opt
 import matplotlib.pyplot as plt
 
 #%% Import single datafiles
-datafile = "tcor-measurements/L-dependence/meas_t20_l100_n50000_r0.3_1639907771.csv"
+datafile = "meas_t100_l40_n5000_r0.4_1640079682.csv"
 
-t_max = 20
+t_max = 100
 lengths = np.loadtxt(datafile, delimiter=',', dtype=int, usecols=range(0, t_max))
 
 #%% Correlation time functions
@@ -59,8 +59,8 @@ def find_tcor(obs, batch_count=5, t_max=1000, resolution=200):
 
 
 #%% Visualise correlations
-obs = np.std(lengths, axis=1)
-t_max = 2000  # in sweeps
+obs = np.std(lengths, axis=1)[500:]
+t_max = 4000  # in sweeps
 ts, autocor = correlation_profile(obs, t_max, resolution=300)
 fit = opt.curve_fit(correlation_length_fit, ts, autocor)
 tcor = fit[0][0]
@@ -90,7 +90,7 @@ plt.show()
 import os
 import json
 
-datapath = "./tcor-measurements/T-dependence/"
+datapath = "./tcor-measurements/L-dependence/"
 datafiles = [os.path.join(datapath, f) for f in os.listdir(datapath) if os.path.isfile(os.path.join(datapath, f)) and f.endswith(".json")]
 
 parameters = []
@@ -180,7 +180,7 @@ Ts = []
 obs = []
 
 def observable(lenghts):
-    return np.std(lenghts, axis=1) #/np.sqrt(len(lengths) - 1)
+    return np.std(lenghts, axis=1)
 
 for parameter_set in parameters:
     if parameter_set["length"] == 200:
@@ -204,6 +204,7 @@ tcors_err = np.zeros(M)
 for i in range(0, M):
     tcors[i], tcors_err[i] = find_tcor(obs[i], batch_count=10)
 
+
 # %% Visualise correlation time profiles
 # tcormean = np.mean(tcors)
 # print(tcormean)
@@ -214,8 +215,30 @@ plt.plot(Ts, fit[0][0]*Ts + fit[0][1], alpha=0.3)
 # plt.xticks(np.arange(max(Ls)//20)*20 + 20)
 plt.xlabel("T (timespan: $N = T \cdot L$)")
 plt.ylabel("$t_{cor}$ (MC cor. time in sweeps)")
-plt.title("Correlation time at $L = 200$ and $r = 0.3$")
+plt.title("Correlation time at $L = 200$ and $r = 0.4$")
 print("slope: {} ± {}".format(fit[0][0], np.sqrt(fit[1][0, 0])))
-# plt.savefig("tcor_t20_r0.3.pdf")
+plt.savefig("tcor_t_l200_r0.4.pdf")
+plt.show()
+
+# %% Analyse std
+def power_fit(N, nu, N_c):
+    return np.power(N - N_c, nu)
+
+
+batches = 100
+data = np.array([np.mean(batch, axis=1) for batch in np.split(obs, batches, axis=1)]) # Batched std
+obs_mean = np.mean(data, axis=0)
+obs_err = np.std(data, axis=0)/np.sqrt(batches - 1)
+plt.errorbar(Ls, obs_mean, yerr=obs_err)
+# plt.show()
+# %%
+Ls_ext = np.arange(200)
+fit = opt.curve_fit(power_fit, Ls, obs_mean, sigma=obs_err, absolute_sigma=True)
+plt.plot(Ls_ext, power_fit(Ls_ext, nu=fit[0][0], N_c=fit[0][1]), alpha=0.3)
+plt.errorbar(Ls, obs_mean, yerr=obs_err)
+plt.title("nu = {:.4}".format(fit[0][0]))
+plt.xlabel("$L$")
+plt.ylabel("std")
+plt.savefig("critical_exp")
 plt.show()
 # %%
