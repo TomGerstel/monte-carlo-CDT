@@ -17,8 +17,7 @@
         \item $\lambda > \ln 2$: typical triangulation has a very small volume $\to$ cannot extract useful data
         \item $\lambda < \ln 2$: triangulation keeps growing $\to$ equilibrium cannot be reached
     \end{itemize}
-    Our solution: fix the number of triangles $N_2$ \\
-    Futher advantage: distribution becomes uniform
+    Solution: try to fix the number of triangles $N_2$
 \end{frame}
 
 \begin{frame}
@@ -30,5 +29,32 @@
         \item Introduces an extra parameter $\epsilon$
         \item Results in more rejections
     \end{itemize}
-    Our solution: use update rules that preserve $N_2$
+    Our solution: use update rules that preserve $N_2$ \\
+    Futher advantage: distribution becomes uniform
+\end{frame}
+
+\begin{frame}
+    \frametitle{Update Rules}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.6\linewidth]{shard_move}
+    \end{figure}
+    Take a "shard" and insert it somewhere else \\
+    Requires order 4 vertex \\
+    Keep a list to uniformly sample from \\
+    Detailed balance: Yes, number of order 4 vertices is constant \\
+    Ergodic: No
+\end{frame}
+
+\begin{frame}
+    \frametitle{Update Rules (2)}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.6\linewidth]{flip_move}
+    \end{figure}
+    Uniformly choose a triangle and flip it \\
+    Requires oppositely oriented neighbour \\
+    Detailed balance: Yes, with rejections \\
+    Ergodic: Yes, combined with shard move \\
+    Two different moves: introduce move ratio $r = p(\text{shard move})$
 \end{frame}
