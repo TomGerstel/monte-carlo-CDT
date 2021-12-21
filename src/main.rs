@@ -36,6 +36,10 @@ struct Opt {
     #[structopt(short = "v", long)]
     visualisation: bool,
 
+    /// Option to choose outputing std only
+    #[structopt(short = "s", long)]
+    output_std: bool,
+
     /// Probability of performing a shard move for a single Markov chain step
     /// in the equilibration phase
     #[structopt(short = "e", long, default_value = "0.5")]
@@ -47,8 +51,8 @@ struct Opt {
     eq_sweeps: usize,
 
     /// Number of sweeps inbetween measurements (pause)
-    #[structopt(short = "p", long, default_value = "1")]
-    pause: usize,
+    #[structopt(short = "p", long, default_value = "1.0")]
+    pause: f32,
 
     #[structopt(short = "o", long)]
     output_folder: String,
@@ -73,6 +77,7 @@ fn measurement() -> std::io::Result<()> {
     let eq_sweeps = opt.eq_sweeps;
     let output_folder = opt.output_folder;
     let visualisation = opt.visualisation;
+    let output_std = opt.output_std;
 
     let sweep = 2 * timespan * length;
 
@@ -90,7 +95,7 @@ fn measurement() -> std::io::Result<()> {
 
     // determine the number of timesteps between measurements
     let pause = match is_measurement {
-        true => opt.pause * sweep,
+        true => (opt.pause * sweep as f32) as usize,
         false => 1,
     };
     assert!(
@@ -168,11 +173,11 @@ fn measurement() -> std::io::Result<()> {
             let length_profile = universe.length_profile(origin);
 
             // write to file
-            let _ = match is_measurement {
-                true => writeln!(output, "{}", length_profile),
-
-                false => writeln!(output, "{}, ", length_profile.stdev()),
-            };
+            if output_std {
+                writeln!(output, "{}, ", length_profile.stdev())?;
+            } else {
+                writeln!(output, "{}", length_profile)?;
+            }
         }
 
         // flush buffer

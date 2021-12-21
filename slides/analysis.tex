@@ -10,7 +10,7 @@
     \frametitle{Analysing observables}
 
     \begin{itemize}
-        \item Wanted: \emph{autocorrelation} for $N \rightarrow \infty$
+        \item Wanted: \emph{autocorrelation} for $N \rightarrow \infty$ \\[3mm]
         \item As of now: behaviour of \emph{standard deviation}
         \item Batching for error estimates
         \item Required: $t_{eq}$ and $t_{cor}$
@@ -23,13 +23,24 @@
     \frametitle{Thermalisation}
 
     \begin{itemize}
-        \item Difficult to construct other initial state
         \item Estimate $t_{eq}$ by convergence \\[3mm]
         \item Equilibrium time is small and size independent % That is in terms of sweeps
         % This can be understood since the generic geometry is not much wilder than the flat geometry.
     \end{itemize}
-    % Insert image of convergence of t_eq
-    % Insert image of t_eq for different N
+    \begin{figure}[b]
+        \centering
+        \begin{minipage}{0.49\linewidth}
+            \centering
+            % Insert image of convergence of t_eq
+            \includegraphics[width=\linewidth]{teq-convergence.pdf}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.49\linewidth}
+            \centering
+            % Insert image of t_eq for different N
+            \includegraphics[width=\linewidth]{teq-plot.pdf}
+        \end{minipage}
+    \end{figure}
 \end{frame}
 
 % We have a single model parameter which can still be tuned, so we can tune it to make the correlation time minimal.
@@ -43,10 +54,18 @@
         \item Correlation time is estimated by exponential decay
         \item Choose \emph{move ratio} $0.4$
     \end{itemize}
-    % TODO: insert image of exponential decay
     \begin{figure}[b]
         \centering
-        \includegraphics[width=0.6\linewidth]{tcor_r_t20_l80.pdf}
+        \begin{minipage}{0.49\linewidth}
+            \centering
+            % TODO: insert image of exponential decay
+            \includegraphics[width=0.95\linewidth]{tcor-decay.pdf}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.49\linewidth}
+            \centering
+            \includegraphics[width=0.95\linewidth]{tcor_r_t20_l80.pdf}
+        \end{minipage}
     \end{figure}   
 \end{frame}
 
@@ -77,10 +96,11 @@
 
 \begin{frame}
     \frametitle{Results}
-    \begin{equation*}
-        \sigma_\rho \propto N^{0.6}   
-    \end{equation*}
+    Variance behaviour: $\sigma(\rho_L) \propto N^{0.50 \pm 0.01}$
+    \begin{figure}[b]
+        \centering
+        \includegraphics[width=0.8\linewidth]{std-profile.pdf}
+    \end{figure}
     % Todo include figure of sigma
-
 \end{frame}
 % First results show that std gros as a non-trivial power in N

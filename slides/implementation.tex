@@ -18,10 +18,25 @@
         [\tdown, \tup, \tup, \tdown, \tup],
         \cdots]$ \\
         \quad $\hookrightarrow$ Performing moves has $\order{N}$ complexity
+        \note{Since we are intrested in the lengths of different time-slices this naive solution seems logic as computing lengths is very simple O(1)}
         \item Alternative: store the adjacency or connectivity % similar to lecture DT
     \end{itemize}
-    % If possible add image of adjacency
-    And we require an initial state: \emph{flat geometry}
+    \vfill
+    \begin{minipage}[t]{0.49\linewidth}
+        \center{\emph{Vertex}}
+        \begin{itemize}
+            \item Direct relation to distance % As we're interseting in distances which we measure as graph distance between vertices
+            \item \emph{Variable} amount of neighbours
+        \end{itemize}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.49\linewidth}
+        \center{\emph{Triangle}}
+        \begin{itemize}
+            \item Two types ($\tup$ and \tdown)
+            \item Always \emph{three} neighbours
+        \end{itemize}
+    \end{minipage}
 \end{frame}
 
 % Distances are of intrest so natural to look at connectivity of vertices
@@ -29,20 +44,20 @@
 % Finally: store an ordered list where every element represents a triangle, which stores the triangle indices it is connected to, and it's type (up-down)
 % In this way both moves can be done in O(1), the 4-4 move without rejection and the 2-2 flip with rejection rate of approximately 50%
 \begin{frame}
-    \frametitle{Vertices or Triangles}
+    \frametitle{Triangle implementation}
 
-    One can store the adjacency of the vertices or triangles
-    \begin{itemize}
-        \item Vertices more natural % As we're interseting in distances which we measure as graph distance between vertices
-        \item Vertices have \emph{variable amount} of neighbours
-        \item Triangles always have \emph{three} neighbours
-        \item Triangles have two types ($\tup$ and \tdown)
-    \end{itemize}
     Finally chose triangle-based implementation
     \begin{itemize}
         \item Store ordered list of triangles: $[(\tup, 7, 21, 1), (\tdown, 0, 12, 4), \cdots]$
         \item Moves performed by updating adjacency
     \end{itemize}
+
+    % If possible add image of adjacency
+    \begin{figure}[b]
+        \centering
+        \def\svgwidth{0.5\linewidth}
+        \input{img/triangle_adjacency.pdf_tex}
+    \end{figure}
 \end{frame}
 
 
@@ -57,9 +72,11 @@
     
     \begin{itemize}
         \item Difficult to find meaningful observables
-        \item Cannot depend on labeling $\rightarrow$ 'sum' over geometry
-        \item Consider spatial size of timeslices (link length)
+        \item Consider spatial size of timeslices
+        \note{Consider and explain length profile with picture}
         \item Length profile: mean, \emph{standard deviation}, \emph{autocorrelation}
+        \note{Mean is trivial as we fix the total size of system}
+        \note{Calculating the length profile and visualisation is somewhat challenging but can be done and is O(N)}
     \end{itemize}
     \begin{figure}
        \centering
@@ -69,18 +86,18 @@
 
 % To get the length profile out of the adjacency data we 'walk' through the triangulation along slices first (recording the amount of up-triangles) until going around fully; then advance up via a down triangle and repeat; until the original slice is again reached.
 
-\begin{frame}
-    \frametitle{Length profile}
+% \begin{frame}
+%     \frametitle{Length profile}
 
-    Obtaining the length profile is not entirely trivial:
-    \begin{itemize}
-        \item 'Walk' through the triangulation
-        \item Record number of $\tup$ (equivalent to vertex distance)
-        \item Move to next timeslice (using \tdown)
-        \item Complexity of $\order{N}$ \\[3mm]% Note that this would be simpler in naive list
-        \item Visualisation by similar mesh creation
-        % For visualisation of the triangulation we do something similar but in stead of counting the number of up-triangles, we label the vertices and record to which triangle they belong; in the end yielding a list of triangles each with three labels to vertices
-        % Then we choose an embedding, one that obeys the slice behaviour, meaning the coordinates of the vertices are chosen; from this the triangulation can be visualized. This embedding may also be 2D 
-    \end{itemize}
-    % TODO: possibly add image of such a walk
-\end{frame}
+%     Obtaining the length profile is not entirely trivial:
+%     \begin{itemize}
+%         \item 'Walk' through the triangulation
+%         \item Record number of $\tup$ (equivalent to vertex distance)
+%         \item Move to next timeslice (using \tdown)
+%         \item Complexity of $\order{N}$ \\[3mm]% Note that this would be simpler in naive list
+%         \item Visualisation by similar mesh creation
+%         % For visualisation of the triangulation we do something similar but in stead of counting the number of up-triangles, we label the vertices and record to which triangle they belong; in the end yielding a list of triangles each with three labels to vertices
+%         % Then we choose an embedding, one that obeys the slice behaviour, meaning the coordinates of the vertices are chosen; from this the triangulation can be visualized. This embedding may also be 2D 
+%     \end{itemize}
+%     % TODO: possibly add image of such a walk
+% \end{frame}

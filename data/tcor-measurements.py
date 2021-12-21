@@ -4,9 +4,9 @@ import scipy.optimize as opt
 import matplotlib.pyplot as plt
 
 #%% Import single datafiles
-datafile = "meas_t100_l40_n5000_r0.4_1640079682.csv"
+datafile = "meas_t40_l100_n100000_r0.3_1639905425.csv"
 
-t_max = 100
+t_max = 40
 lengths = np.loadtxt(datafile, delimiter=',', dtype=int, usecols=range(0, t_max))
 
 #%% Correlation time functions
@@ -70,9 +70,12 @@ print("t_cor: {} ± {}".format(tcor, tcor_err))
 plt.plot(ts, autocor, label="Autocorrelation")
 plt.plot(ts, correlation_length_fit(ts, tcor), label='Fit ($\pm \, 3\sigma$): $e^{-t/t_{cor}}$', alpha=0.6)
 plt.fill_between(ts, correlation_length_fit(ts, tcor-3*tcor_err), correlation_length_fit(ts, tcor+3*tcor_err), alpha=0.3)
-plt.plot(obs_trace(obs), alpha=0.1, label="Observable trace")
-plt.xlim((0, t_max))
+plt.plot(0.4 + obs_trace(obs), alpha=0.1, label="Observable trace")
+plt.xlim((0, t_max//2))
+plt.xlabel("Markov-chain steps")
+plt.ylim(-0.19, 1.09)
 plt.legend()
+plt.savefig("tcor-decay.pdf")
 plt.show()
 
 #%% Test batching tcor
