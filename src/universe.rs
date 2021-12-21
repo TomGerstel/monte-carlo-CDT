@@ -1,7 +1,7 @@
 use std::collections::HashSet;
+use std::f32::consts::TAU;
 use std::fmt;
 use std::ops::Index;
-use std::f32::consts::TAU;
 
 #[derive(Clone, Debug)]
 pub struct Universe {
@@ -268,28 +268,38 @@ impl Universe {
         let lengths = self.length_profile(origin);
         let t_max = lengths.len();
 
-        let mut triangle_vertices: Vec<(Vertex, Vertex, Vertex)> = Vec::with_capacity(self.triangles.len()/2);
+        let mut triangle_vertices: Vec<(Vertex, Vertex, Vertex)> =
+            Vec::with_capacity(self.triangles.len() / 2);
         let mut marker = origin; // Marks the current triangle
-        // Loop over all timeslices
+                                 // Loop over all timeslices
         for t in 0..t_max {
             let mut lower_index: usize = 0;
             let mut upper_index: usize = 0;
             let mut next_origin: Option<usize> = None;
-            for _ in 0..(lengths[t] + lengths[(t + 1) % t_max]) { // Loop over all triangles
+            for _ in 0..(lengths[t] + lengths[(t + 1) % t_max]) {
+                // Loop over all triangles
                 match triangles[marker].orientation {
                     Orientation::Up => {
                         let right_index = (lower_index + 1) % lengths[t]; // Determine next index
-                        // Add triangle with orientation based on right-handedness
-                        triangle_vertices.push((Vertex(t, lower_index), Vertex(t+1, upper_index), Vertex(t, right_index)));
+                                                                          // Add triangle with orientation based on right-handedness
+                        triangle_vertices.push((
+                            Vertex(t, lower_index),
+                            Vertex(t + 1, upper_index),
+                            Vertex(t, right_index),
+                        ));
                         lower_index = right_index // Update index
-                    },
+                    }
                     Orientation::Down => {
                         if next_origin.is_none() {
                             next_origin = Some(triangles[marker].time)
                         }
-                        let right_index = (upper_index + 1) % lengths[(t+1) % t_max]; // Determine next index
-                        // Add triangle with orientation based on right-handedness
-                        triangle_vertices.push((Vertex(t+1, upper_index), Vertex(t+1, right_index), Vertex(t, lower_index)));
+                        let right_index = (upper_index + 1) % lengths[(t + 1) % t_max]; // Determine next index
+                                                                                        // Add triangle with orientation based on right-handedness
+                        triangle_vertices.push((
+                            Vertex(t + 1, upper_index),
+                            Vertex(t + 1, right_index),
+                            Vertex(t, lower_index),
+                        ));
                         upper_index = right_index // Update index
                     }
                 }
@@ -297,8 +307,7 @@ impl Universe {
             }
             marker = next_origin.expect("Somehow there was no down-triangle in timeslice");
         }
-
-        return triangle_vertices
+        triangle_vertices
     }
 
     fn vertex_coordinates(&self, origin: usize) -> Vec<Vec<VertexPosition>> {
@@ -310,11 +319,15 @@ impl Universe {
             let shift = 0.0f32; // TODO: make shift such that the total length of the timelike connections is minimized
             let n = length as f32;
             vertex_positions.push(
-                (0..length).map(|i| VertexPosition(
-                    n/TAU * (TAU/n * (i as f32) + shift).cos(),
-                    n/TAU * (TAU/n * (i as f32) + shift).sin(),
-                    t as f32
-                )).collect()
+                (0..length)
+                    .map(|i| {
+                        VertexPosition(
+                            n / TAU * (TAU / n * (i as f32) + shift).cos(),
+                            n / TAU * (TAU / n * (i as f32) + shift).sin(),
+                            t as f32,
+                        )
+                    })
+                    .collect(),
             )
         }
         vertex_positions
@@ -324,11 +337,16 @@ impl Universe {
         let origin = 0;
         let vertices = self.triangle_vertices(origin);
         let vertex_coordinates = self.vertex_coordinates(origin);
-        vertices.iter().map(|triangle|
-             (vertex_coordinates[triangle.0.0][triangle.0.1],
-                vertex_coordinates[triangle.1.0][triangle.1.1],
-                vertex_coordinates[triangle.2.0][triangle.2.1])
-            ).collect()
+        vertices
+            .iter()
+            .map(|triangle| {
+                (
+                    vertex_coordinates[triangle.0 .0][triangle.0 .1],
+                    vertex_coordinates[triangle.1 .0][triangle.1 .1],
+                    vertex_coordinates[triangle.2 .0][triangle.2 .1],
+                )
+            })
+            .collect()
     }
 }
 
