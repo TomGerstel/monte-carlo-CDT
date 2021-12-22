@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 # Note that there is a $1/n$ factor in front of the sum in $\bar{\gamma}(t)$, while one may instead expect an $1/(n-t)$ since there are $n-t$ terms. The reason is that this choice is often found to be more stable numerically. 
 
 #%% Import data
-datapath = "teq-measurements"
+datapath = "personal/teq-measurements"
 datafiles = [os.path.join(datapath, f) for f in os.listdir(datapath) if os.path.isfile(os.path.join(datapath, f)) and f.endswith(".json")]
 
 parameters = []
@@ -74,7 +74,7 @@ def plot_teq(obs, sweep=100, max_range=10):
 
 def plot_teq_stds(index, filename=None):
     # verification plot based on Ns and stds for index
-    plot_teq(stds[index], sweep=Ns[index])
+    plot_teq(stds[index], sweep=10)
     if filename is not None:
         plt.savefig(filename)
     plt.show()
