@@ -1,19 +1,54 @@
-The goal is to sample labelled triangulations $T_l$ from a distribution
-\begin{equation}\label{eq:full_dist}
-    p (T_l)
+A field of theoretical physics which still has many open questions is quantum gravity. One may notice that "quantum gravity" consists of two words: "quantum" and "gravity". The "gravity" aspect is quite well understood, and its content can be compactly summarised in the Einstein-Hilbert action
+\begin{equation}
+    S[g_{\mu \nu}]
     =
-    \frac{1}{Z} \frac{1}{N_2(T_l)!} e^{- \lambda N_2(T_l)}
+    \frac{1}{16 \pi G}
+    \int_{\mathcal{M}} \dd[d]{x} \sqrt{-g(x)}
+    \qty(R(x) - 2 \Lambda)
     ,
 \end{equation}
-where $\lambda$ is a parameter related to the cosmological constant and $N_2(T_l)$ is the number of triangles in the given triangulation. Furthermore, the partition function $Z$ is given by
+where the integration is over the entire $d$-dimensional spacetime manifold $\mathcal{M}$. Here $R(x)$ is the Ricci curvature scalar, $g(x)$ is the determinant of the metric tensor $g_{\mu \nu}$, $G$ is Newton's gravitational constant and $\Lambda$ is the cosmological constant. Classical equations of motion can then be obtained via a variational principle by solving $\variation{S} = 0$.
+
+A common approach to add the "quantum" aspect to any classical theory is by introducing a path integral. Since in our case the clasical action is a functional of the metric $g_{\mu \nu}$, the path integral is given by
 \begin{equation}
     Z
     =
-    \sum_{T_l} \frac{1}{N_2(T_l)!} e^{- \lambda N_2(T_l)}
+    \int \frac{\mathcal{D}[g_{\mu \nu}]}{\text{Diff}(\mathcal{M})}
+    e^{i S[g_{\mu \nu}]}
+    .
+\end{equation}
+But what does this actually mean? How could one explicitly carry out this integration?
+
+We somewhat avoid these questions by adopting a certain regularisation approach, namely Causal Dynamical Triangulations (CDT). Instead of trying to integrate over all continuously curved manifolds, we sum over piecewise flat manifolds that are constructed by gluing a certain class of flat building blocks together. In particular, the building blocks will be $d$-dimensional simplices with a flat Minkowskian interior. These simplices have squared edge lengths fixed at $\pm a^2$ (allowing space- and timelike edges), such that $a$ becomes a regularisation parameter. We foliate the manifold into $(d - 1)$-dimensional timeslices connected by a single layer of $d$-dimensional simplices. Different manifolds can be obtained by changing the way simplices are connected. Now the regularised path integral can be written as
+\begin{equation}
+    Z
+    =
+    \sum_{T \in \mathcal{T}} \frac{1}{C(T)} e^{i S[T]}
     ,
 \end{equation}
-where the summation is over all valid labelled triangulations. It is possible to split up the partition sum into contributions with a constant number of triangles, as follows
+where the summation is over all triangulations. Here $S[T]$ is the action and $C(T)$ is a symmetry factor for a given triangulation $T$.
+
+To simplify matters, we only consider 2-dimensional spacetimes with periodic boundaries. The resulting topology is that of a 2-torus. With this in mind, we make a few useful observations:
+\begin{itemize}
+    \item All triangles have equal volume, so the total volume is proportional to the number of triangles.
+    \item The manifold is piecewise flat, meaning a Wick rotation is well-defined.
+    \item In 2 dimensions the integrated scalar curvature is constant and therefore irrelevant for the dynamics.
+\end{itemize}
+Using these observations we find that the Euclidean action for a 2-dimensional triangulation $T$ is \cite{2012}
 \begin{equation}
+    S[T] = \lambda N(T),
+\end{equation}
+where $\lambda$ is a constant related to the cosmological constant $\Lambda$. For now we can just interpret it as a model parameter.
+
+To simplify the symmetry factor $C(T)$ we label\footnote{This is of course also convenient when encoding the triangulation in a computer.} all triangles in the triangulations. Each triangulation can be labelled in $N(T)!$ ways, so the euclidean path integral (or partition sum) becomes
+\begin{equation}
+    Z
+    =
+    \sum_{T_\ell \in \mathcal{T}_\ell} \frac{1}{N(T_\ell)!} e^{- \lambda N(T_\ell)}
+    ,
+\end{equation}
+where the summation is now over all labelled triangulations. It is possible to split up the partition sum into contributions with a certain number of triangles, as follows
+\begin{equation}\label{eq:part_sum}
     Z
     =
     \sum_{n = 0}^\infty \Omega(n) \frac{e^{- \lambda n}}{n!}
