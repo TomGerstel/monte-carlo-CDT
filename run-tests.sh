@@ -18,8 +18,8 @@
 #     cargo run --release -- -m -t $T -l 200 -n 50000 -r 0.4 -b 200 -p 1
 # done
 
-for i in {1..9}
+for i in {10..18}
 do
-    L=$((20*$i))
-    target/release/monte-carlo-cdt -t 30 -l $L -m -s -n 5000 -r 0.4 -p 0.1 -o "./data/teq-measurements/"
+    T=$((10*$i))
+    target/release/monte-carlo-cdt -t $T -l 30 -m -n 5000 -r 0.4 -p 1 -o "./data/personal/Tdep"
 done

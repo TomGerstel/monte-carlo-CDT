@@ -1,12 +1,15 @@
 \documentclass{article}
 
+\usepackage[english]{babel} % Multilanguage support for headings and such
+\usepackage[backend=biber]{biblatex} % Bibliography support using biber
+\usepackage[margin=32mm]{geometry} % Allows for customisation of margins and sizes
+\usepackage[hidelinks]{hyperref} % Creates clickable links (+ hide the red box)
+\usepackage{csquotes} % Improves the looks of quotes `' and ``'' (used by biblatex references)
+
+% Adds and improves mathematical notation
+\usepackage{physics}
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage[english]{babel}
-\usepackage{csquotes}
-\usepackage{biblatex}
-\usepackage{hyperref}
-\usepackage{physics}
 
 \addbibresource{main.bib}
 
@@ -17,28 +20,32 @@
 
 \maketitle
 
-\begin{abstract}
+\begin{abstract} % (including research question and main results)
     TODO
 \end{abstract}
 
 \newpage
 
 \section{Introduction}
-
+% Introduction to the research area and research question
 \input{1introduction.tex}
 
 \section{Methods}
-
+% explaining the algorithms and why they work
 \input{2methods.tex}
 
 \section{Results and Discussion}
-
+% Including plots and final quantitative outcomes with errors
 \input{3results_discussions.tex}
 
 \section{Conclusion}
-
+% Conclusions
 \input{4conclusions.tex}
 
 \printbibliography
+
+\appendix
+\section{Individual Contributions}
+% explain briefly how you divided the work among each other on the various aspects: coding, data collection, data analysis, report writing
 
 \end{document}
