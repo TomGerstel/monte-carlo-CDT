@@ -1,10 +1,6 @@
-One could imagine trying to sample triangulations according to \eqref{eq:part_sum}.
-However, this is not very practical. It turns out that $\Omega(n) \sim n! 2^n$. This means that for $\lambda > \ln 2$ large volumes are suppresed so that a typical triangulation will contain only a handful of triangles.
-However, when $\lambda < \ln 2$ the partition sum \eqref{eq:part_sum} diverges and the problem is ill-defined.
+One could imagine trying to sample triangulations according to \eqref{eq:part_sum}. However, this is not very practical. It turns out that $\Omega(n) \sim n! 2^n$. This means that for $\lambda > \ln 2$ large volumes are suppresed so that a typical triangulation will contain only a handful of triangles. However, when $\lambda < \ln 2$ the partition sum \eqref{eq:part_sum} diverges and the problem is ill-defined.
 
-A solution is to consider only triangulations of a certain fixed volume at a time.
-An advantage of this approach is that the desired distribution becomes uniform, since the weight of each triangulation depends only on its volume.
-In practice, this can be obtained by using update rules that keep the number of triangles fixed.
+A solution is to consider only triangulations of a certain fixed volume at a time. An advantage of this approach is that the desired distribution becomes uniform, since the weight of each triangulation depends only on its volume. In practice, this can be obtained by using update rules that keep the number of triangles fixed.
 
 \subsection{Update rules}
 % Should we also include alternative update rules we attempted? And why the don't work? It does show the amount of work and consideration we put into constcuting an effective MCMC simulation, but Im not sure.

@@ -2,5 +2,5 @@
 cd ~/Documents/monte-carlo-CDT
 git fetch
 git reset --hard HEAD
-git merge origin/master
+git merge origin/correlation_test
 cargo build --release

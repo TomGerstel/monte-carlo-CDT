@@ -8,7 +8,7 @@ from matplotlib import cm
 import os
 import json
 
-datapath = "./personal/Tdep/"
+datapath = "./data"
 datafiles = [os.path.join(datapath, f) for f in os.listdir(datapath) if os.path.isfile(os.path.join(datapath, f)) and f.endswith(".json")]
 
 parameters = []
