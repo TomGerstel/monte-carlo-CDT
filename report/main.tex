@@ -5,6 +5,7 @@
 \usepackage[margin=32mm]{geometry} % Allows for customisation of margins and sizes
 \usepackage[hidelinks]{hyperref} % Creates clickable links (+ hide the red box)
 \usepackage{csquotes} % Improves the looks of quotes `' and ``'' (used by biblatex references)
+\usepackage{tikz} % Allows fancy diagrams
 
 % Adds and improves mathematical notation
 \usepackage{physics}
@@ -12,6 +13,23 @@
 \usepackage{amssymb}
 
 \addbibresource{main.bib}
+
+% some TikZ style shortcut definitions
+\tikzstyle{order4}=[
+    circle,
+    inner sep = 2pt,
+    draw = #1,
+    fill = #1,
+]
+\tikzstyle{triangle}=[
+    draw = #1,
+    fill = #1!50,
+    ultra thick,
+]
+\tikzstyle{crack} = [
+    draw = #1,
+    ultra thick
+]
 
 \title{MCMC simulations of 2D CDT}
 \author{T.B.H. Gerstel \and J.G.R. van der Duin}

@@ -9,6 +9,86 @@ In practice, this can be obtained by using update rules that keep the number of 
 \subsection{Update rules}
 % Should we also include alternative update rules we attempted? And why the don't work? It does show the amount of work and consideration we put into constcuting an effective MCMC simulation, but Im not sure.
 
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+
+        %initial state for source
+        %timeslices
+        \draw (0, 0) -- (4, 0);
+        \draw (0, 1) -- (4, 1);
+        \draw (0, 2) -- (4, 2);
+
+        %wireframe
+        \draw (0, 0) -- (1, 1) -- (0, 2);
+        \draw (2, 0) -- (1, 1) -- (2, 2);
+        \draw (2, 0) -- (3, 1) -- (2, 2);
+        \draw (4, 0) -- (3, 1) -- (4, 2);
+
+        %shard
+        \draw[triangle = {red}] (2, 0) -- (3, 1) -- (2, 1) -- cycle;
+        \draw[triangle = {red}] (2, 1) -- (3, 1) -- (2, 2) -- cycle;
+
+        %order 4 vertex
+        \node[order4 = {red}] at (2, 1){};
+
+        %initial state for destination
+        %timeslices
+        \draw (0, 3) -- (4, 3);
+        \draw (0, 4) -- (4, 4);
+        \draw (0, 5) -- (4, 5);
+
+        %wireframe
+        \draw (0, 3) -- (1, 4) -- (0, 5);
+        \draw (2, 3) -- (1, 4) -- (2, 5);
+        \draw (2, 3) -- (3, 4) -- (2, 5);
+        \draw (4, 3) -- (3, 4) -- (4, 5);
+
+        %crack
+        \draw[crack = {blue}] (2, 3) -- (3, 4) -- (2, 5);
+
+        %final state for source
+        %timeslices
+        \draw (6, 0) -- (10, 0);
+        \draw (6, 1) -- (10, 1);
+        \draw (6, 2) -- (10, 2);
+
+        %wireframe
+        \draw (6, 0) -- (7, 1) -- (6, 2);
+        \draw (8, 0) -- (7, 1) -- (8, 2);
+        \draw (8, 0) -- (9, 1) -- (8, 2);
+        \draw (10, 0) -- (9, 1) -- (10, 2);
+
+        %crack
+        \draw[crack = {red}] (8, 0) -- (9, 1) -- (8, 2);
+
+        %final state for destination
+        %timeslices
+        \draw (6, 3) -- (10, 3);
+        \draw (6, 4) -- (10, 4);
+        \draw (6, 5) -- (10, 5);
+
+        %wireframe
+        \draw (6, 3) -- (7, 4) -- (6, 5);
+        \draw (8, 3) -- (7, 4) -- (8, 5);
+        \draw (8, 3) -- (9, 4) -- (8, 5);
+        \draw (10, 3) -- (9, 4) -- (10, 5);
+
+        %shard
+        \draw[triangle = {blue}] (8, 3) -- (9, 4) -- (8, 4) -- cycle;
+        \draw[triangle = {blue}] (8, 4) -- (9, 4) -- (8, 5) -- cycle;
+
+        %order 4 vertex
+        \node[order4 = {blue}] at (8, 4){};
+
+        %arrow
+        \draw[->, ultra thick] (4.5, 2.5) -- (5.5, 2.5);
+
+    \end{tikzpicture}
+    \caption{Shard move update rule. Shard source in red (bottom), destination in blue (top). Initial (left) and final (right) states. Order 4 vertices affected by this move are marked with a dot.}
+    \label{fig:shard_move}
+\end{figure}
+
 \subsection{Observables} \label{sec:observables}
 % Explain choice of observables, possibly alternatives that were considered but not measured
 % Maybe also explain how lengthprofile is obtained from implementation, as this is not entirely trivial and Timothy asked about this after the presentation
