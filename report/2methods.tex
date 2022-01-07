@@ -9,84 +9,130 @@ In practice, this can be obtained by using update rules that keep the number of 
 \subsection{Update rules}
 % Should we also include alternative update rules we attempted? And why the don't work? It does show the amount of work and consideration we put into constcuting an effective MCMC simulation, but Im not sure.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \begin{tikzpicture}
 
-        %initial state for source
-        %timeslices
+        % initial state for source
+        % timeslices
         \draw (0, 0) -- (4, 0);
         \draw (0, 1) -- (4, 1);
         \draw (0, 2) -- (4, 2);
 
-        %wireframe
+        % timelike connections
         \draw (0, 0) -- (1, 1) -- (0, 2);
         \draw (2, 0) -- (1, 1) -- (2, 2);
         \draw (2, 0) -- (3, 1) -- (2, 2);
         \draw (4, 0) -- (3, 1) -- (4, 2);
 
-        %shard
+        % shard
         \draw[triangle = {red}] (2, 0) -- (3, 1) -- (2, 1) -- cycle;
         \draw[triangle = {red}] (2, 1) -- (3, 1) -- (2, 2) -- cycle;
 
-        %order 4 vertex
-        \node[order4 = {red}] at (2, 1){};
+        % order 4 vertex
+        \node[order4] at (2, 1){};
 
-        %initial state for destination
-        %timeslices
+        % initial state for destination
+        % timeslices
         \draw (0, 3) -- (4, 3);
         \draw (0, 4) -- (4, 4);
         \draw (0, 5) -- (4, 5);
 
-        %wireframe
+        % timelike connections
         \draw (0, 3) -- (1, 4) -- (0, 5);
         \draw (2, 3) -- (1, 4) -- (2, 5);
         \draw (2, 3) -- (3, 4) -- (2, 5);
         \draw (4, 3) -- (3, 4) -- (4, 5);
 
-        %crack
-        \draw[crack = {blue}] (2, 3) -- (3, 4) -- (2, 5);
+        % crack
+        \draw[edge = {blue}] (2, 3) -- (3, 4) -- (2, 5);
 
-        %final state for source
-        %timeslices
+        % final state for source
+        % timeslices
         \draw (6, 0) -- (10, 0);
         \draw (6, 1) -- (10, 1);
         \draw (6, 2) -- (10, 2);
 
-        %wireframe
+        % timelike connections
         \draw (6, 0) -- (7, 1) -- (6, 2);
         \draw (8, 0) -- (7, 1) -- (8, 2);
         \draw (8, 0) -- (9, 1) -- (8, 2);
         \draw (10, 0) -- (9, 1) -- (10, 2);
 
-        %crack
-        \draw[crack = {red}] (8, 0) -- (9, 1) -- (8, 2);
+        % crack
+        \draw[edge = {red}] (8, 0) -- (9, 1) -- (8, 2);
 
-        %final state for destination
-        %timeslices
+        % final state for destination
+        % timeslices
         \draw (6, 3) -- (10, 3);
         \draw (6, 4) -- (10, 4);
         \draw (6, 5) -- (10, 5);
 
-        %wireframe
+        % timelike connections
         \draw (6, 3) -- (7, 4) -- (6, 5);
         \draw (8, 3) -- (7, 4) -- (8, 5);
         \draw (8, 3) -- (9, 4) -- (8, 5);
         \draw (10, 3) -- (9, 4) -- (10, 5);
 
-        %shard
+        % shard
         \draw[triangle = {blue}] (8, 3) -- (9, 4) -- (8, 4) -- cycle;
         \draw[triangle = {blue}] (8, 4) -- (9, 4) -- (8, 5) -- cycle;
 
-        %order 4 vertex
-        \node[order4 = {blue}] at (8, 4){};
+        % order 4 vertex
+        \node[order4] at (8, 4){};
 
-        %arrow
+        % arrow
         \draw[->, ultra thick] (4.5, 2.5) -- (5.5, 2.5);
 
     \end{tikzpicture}
-    \caption{Shard move update rule. Shard source in red (bottom), destination in blue (top). Initial (left) and final (right) states. Order 4 vertices affected by this move are marked with a dot.}
+    \caption{Shard move update rule. Shard source in red (bottom), destination in blue (top). Initial (left) and final (right) states. Order 4 vertices affected by this move are marked with a green dot.}
     \label{fig:shard_move}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        % initial state
+        % timeslices
+        \draw (0, 0) -- (3, 0);
+        \draw (0, 1) -- (3, 1);
+
+        % timelijke connections
+        \draw (1, 0) -- (0, 1);
+        \draw (1, 0) -- (1, 1);
+        \draw (2, 0) -- (2, 1);
+        \draw (2, 0) -- (3, 1);
+
+        % diagonal
+        \draw[edge = {blue}] (1, 0) -- (2, 1);
+
+        % maybe order 4 vertices
+        \node[maybe_order4] at (1, 1){};
+        \node[maybe_order4] at (2, 0){};
+
+        % final state
+        % timeslices
+        \draw (5, 0) -- (8, 0);
+        \draw (5, 1) -- (8, 1);
+
+        % timelijke connections
+        \draw (6, 0) -- (5, 1);
+        \draw (6, 0) -- (6, 1);
+        \draw (7, 0) -- (7, 1);
+        \draw (7, 0) -- (8, 1);
+
+        % diagonal
+        \draw[edge = {blue}] (6, 1) -- (7, 0);
+
+        % maybe order 4 vertices
+        \node[maybe_order4] at (6, 0){};
+        \node[maybe_order4] at (7, 1){};
+
+        % arrow
+        \draw[<->, ultra thick] (3.5, 0.5) -- (4.5, 0.5);
+    \end{tikzpicture}
+    \caption{Flip move update rule. The flipped edge is shown in blue. Order 4 vertices (if they exist) are marked with a green circle.}
+    \label{fig:flip_move}
 \end{figure}
 
 \subsection{Observables} \label{sec:observables}
