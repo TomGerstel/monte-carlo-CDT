@@ -17,7 +17,6 @@ for parameterfile in parameterfiles:
         parameters.append(jsondata)
 
 #%% Read in relevant data from parameters
-# M = len(parameters)
 data = []
 
 for p in parameters:
@@ -26,74 +25,65 @@ for p in parameters:
     data.append((L, std))
 
 tups = zip(*sorted(data, key=lambda x: x[0]))
-Ns = np.array(next(tups))
+Ls = np.array(next(tups))
 stds = np.array(next(tups))
 
-# %store Ns
-# %store stds
-
-# %% Determine equilibration time
-# Determine t_eq by assuming the observable on average behaves like:
-# $$ <O> (1 - \exp{- t/t_eq}) $$
-
-def observable_lengthstd(lengths):
-    return np.std(lengths, axis=1)
+# %% Determine equilibration time by assuming the observable on average behaves like: $$ <O> (1 - \exp{- t/t_eq}) $$
 
 def fit_function(t, O_eq, t_eq):
     return O_eq * (1.0 - np.exp(-t/t_eq))
 
-def estimate_teq(obs):
-    fit = opt.curve_fit(fit_function, np.arange(len(obs)), obs)
-    return fit[0][1], np.sqrt(fit[1][1, 1])
+def plot_teq(obs, pause=1, max_range=10):
+    # Verification plot in sweeps (pause is the amount of sweeps between each measurement)
+    ts = pause*np.arange(len(obs)) # simulation time in sweeps
+    fit = opt.curve_fit(fit_function, ts, obs)
+    O_eq, t_eq = fit[0]
 
-def estimate_teq_Omean(obs):
-    fit = opt.curve_fit(fit_function, np.arange(len(obs)), obs)
-    return (  ( fit[0][1], np.sqrt(fit[1][1, 1]) ),
-        ( fit[0][0], np.sqrt(fit[1][0, 0]) )  )
+    plt.step(ts, obs, label="Observable: $\sigma_\ell$")
+    plt.plot(ts, fit_function(ts, O_eq, t_eq), c='r', alpha=0.6, label='Fit: $O_{eq}(1 - e^{-t / t_{eq}})$')
+    plt.vlines(3*t_eq, 0.0, 1.4*O_eq, linestyles='dashed', colors='r', alpha=0.7) # Line at 3*t_eq
 
-def plot_teq(obs, sweep=100, max_range=10):
-    # Verification plot in sweeps (a sweep is N: the amount of triangles)
-    (t_eq, _), (O_eq, _) = estimate_teq_Omean(obs)
-    ts = np.arange(len(obs))
-    plt.step(ts/sweep, obs, label="std of lengths")
-    plt.plot(ts/sweep, fit_function(ts, O_eq, t_eq), c='r', alpha=0.6)
-    plt.vlines(3*t_eq/sweep, 0.0, 1.2*O_eq, linestyles='dashed', colors='r', alpha=0.7)
     plt.xlabel("Monte Carlo time (in sweeps)")
-    plt.xlim([-0.2*t_eq/sweep, max_range*t_eq/sweep])
-    plt.plot()
-
-def plot_teq_stds(index, filename=None):
-    # verification plot based on Ns and stds for index
-    plot_teq(stds[index], sweep=10)
+    plt.xlim([-0.5*t_eq, max_range*t_eq])
+    plt.ylim([-0.1*O_eq, 1.5*O_eq])
+    plt.legend()
+    
+# Use this function to create a visualisation of the thermalisation
+def plot_teq_stds(index, pause=0.1, filename=None):
+    # verification plot based on Ls and stds for index
+    plot_teq(stds[index], pause=pause)
     if filename is not None:
-        plt.savefig(filename)
+        plt.savefig(filename, bbox_inches='tight')
     plt.show()
 
-#%% Estimate t_eq
-# Determine t_eq (in practice one would use at least 5*t_eq to be safe)
-teqs = np.zeros(len(Ns)//10)
-teqs_err = np.zeros(len(Ns)//10)
+#%% Estimate t_eq (in practice one would use at least 5*t_eq to be safe)
+def estimate_teq(obs, pause=0.1):
+    # Estimate teq in sweep units from data by fitting
+    ts = pause*np.arange(len(obs)) # simulation time in sweeps
+    fit = opt.curve_fit(fit_function, ts, obs)
+    return fit[0][1], np.sqrt(fit[1][1, 1])
 
-for i in range(len(Ns)//10):
-    teq_batch = np.zeros(10)
-    for j in range(0, 10):
-        obs = stds[10*i+j]
-        teq_batch[j], teq_err = estimate_teq(obs)
-        if teq_err/teq_batch[j] > 0.1:
-            print("The error in t_eq for index: {} is larger than 10%".format(10*i+j))
-    teqs[i], teqs_err[i] = np.mean(teq_batch), np.std(teq_batch)/np.sqrt(10 - 1)
+def estimate_teq_set(obs_set, pause=0.1, max_error=0.1):
+    # Estimate teq with error by averaging multiple measurement sets
+    teqs = np.array([estimate_teq(obs, pause=pause) for obs in obs_set])
+    # Select only reasonable t_eq data
+    teqs = teqs[teqs[:, 1] / teqs[:, 0] < max_error][:, 0]
+    return np.mean(teqs), np.std(teqs) / np.sqrt(len(teqs) - 1)
+    
+Ls_unique = np.unique(Ls)
+M = len(Ls_unique)
+teqs = np.zeros(M)
+teqs_err = np.zeros(M)
 
-%store teqs
-%store teqs_err
-#%% Look at the N-dependance of t_eq
-%store -r Ns
-%store -r stds
-%store -r teqs
-%store -r teqs_err
+for i, L in enumerate(Ls_unique):
+    teqs[i], teqs_err[i] = estimate_teq_set(stds[Ls == L])
 
-plt.errorbar(np.mean(np.split(Ns, len(Ns)//10), axis=1).astype(int) / 1000, teqs/10, yerr=teqs_err/10, fmt=".-")
-plt.ylim(-10, 100)
+#%% Visualise L-dependence of 
+plt.errorbar(2 * 30 * Ls_unique / 1000, teqs, yerr=teqs_err, fmt=".-")
 plt.xlabel("$1000 \, N$ (number of triangles)")
 plt.ylabel("$t_{eq}$ (in sweeps)")
-plt.savefig("teq-plot.pdf")
+plt.title("Thermalisation at different $L$ and $T = 30$")
+plt.savefig("teq-Ldep.pdf", bbox_inches='tight')
 plt.show()
+
+# %%
