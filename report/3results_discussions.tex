@@ -16,7 +16,7 @@ To determine when the system has equilibrated in terms of $\sigma_\ell$ we fit a
 $\sigma(t) = \hat\sigma \qty(1 - e^{t/t_\text{eq}})$, where $t$ here is the Monte Carlo simulation time.
 This works well because the initial state is flat thus having $\sigma_\ell = 0$, which over time goes towards some mean value and fluctuates around it.
 This fitting procedure is visualised in Fig. \ref{fig:thermalisation}.
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{minipage}[t]{0.47\linewidth}
         \centering
@@ -64,7 +64,7 @@ To estimate the error on the estimate of the correlation time we can repeat the 
 We would like the autocorrelation to be as small as possible.
 So now we have a method of determining the autocorrelation, we can use it to tune the move-ratio $r$ such that the autocorrelation is minimized.
 To do this we estimate the autocorrelation for different move ratio's, the results of which are displayed in Fig. \ref{fig:tcor_rdep}.
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.7\linewidth]{img/tcor_r_t20_l80.pdf}
     \caption{Correlation time as function of the move-ratio.}
@@ -75,7 +75,7 @@ From the plot it also seems that the correlation time is not very sensitive to t
 So it seems save to simply pick $r = 0.4$ as there is no need to tune the ratio to a very specific value.
 
 Then finally we wish to estimate the dependence of the correlation time on the system size, such that we can save on storage and computation time.
-To do this we estimate the correlation time for multiple system sizes like 
+To do this we estimate the correlation time for multiple system sizes like was done for the equilibration time.
 
 
 \subsection{Standard deviation}
@@ -101,7 +101,7 @@ kosmologische constante genomen wordt (wat is de juiste relatie tussen
 volume en $\Lambda$ in dit geval?).
 
 Kun je deze covariantie zien in de data (tenminste voor $\abs{t} \ll T$)? En is
-de constante in de e-macht daar ook gerelateerd aan $\Exp{L(t)}$?
+de constante in de $e$-macht daar ook gerelateerd aan $\Exp{L(t)}$?
 
 
 

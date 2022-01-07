@@ -23,19 +23,20 @@ Ls = []
 obs = []
 
 def correlation_profile(x: np.array, tmax=None):
-    dx = x # - np.mean(x)
+    L = np.mean(x)
+    dx = x - L
     if tmax is None:
         tmax = x.shape[1]//2
     cor = np.zeros((x.shape[0], tmax))
     for t in range(tmax):
-        norm = np.sum(dx * dx, axis=1)
+        norm = 100*L**1.015
         cor[:, t] = np.sum(dx * np.roll(dx, t, axis=1), axis=1)/norm
     return cor
 
 def observable(lenghts, bakein=500):
-    # return np.mean(correlation_profile(lengths[500:]), axis=0)
+    return np.mean(correlation_profile(lengths[500:]), axis=0)
     # return lengths
-    return np.std(lengths, axis=1, ddof=1)
+    # return np.std(lengths, axis=1, ddof=1)
 
 for parameter_set in parameters:
     if parameter_set["timespan"] == 20:
@@ -65,7 +66,7 @@ obs = np.array(next(sdata))
 color = cm.viridis(np.linspace(0, 1, len(obs)))
 plt.figure(figsize=(10, 6))
 for i, obsi in enumerate(obs):
-    plt.plot(obsi, label=Ts[i], c=color[i])
+    plt.plot(obsi, label=Ls[i], c=color[i])
 plt.legend()
 plt.title("$L = 200$")
 # plt.xlim((-1, 50))

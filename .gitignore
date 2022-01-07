@@ -18,5 +18,6 @@ __latexindent_temp.tex
 ltex*
 data/personal
 !slides/img/*.pdf
+!report/img/*.pdf
 report/out
 slides/out
