@@ -75,8 +75,28 @@ From the plot it also seems that the correlation time is not very sensitive to t
 So it seems save to simply pick $r = 0.4$ as there is no need to tune the ratio to a very specific value.
 
 Then finally we wish to estimate the dependence of the correlation time on the system size, such that we can save on storage and computation time.
-To do this we estimate the correlation time for multiple system sizes like was done for the equilibration time.
-
+To do this we estimate the correlation time for multiple system sizes like was done for the equilibration time. We measured the correlation for different values of $T$ and $L$ keeping the other constant respectively.
+The results of these measurements are presented in Fig. \ref{fig:tcor_L} and \ref{fig:tcor_T}.
+\begin{figure}
+    \centering
+    \begin{minipage}{0.48\linewidth}
+        \centering
+        \includegraphics[width=1.0\linewidth]{img/tcor_l_t20_r0.3.pdf}
+        \caption{Correlation time at $T = 20$ for different $L$, with corresponding fit.}
+        \label{fig:tcor_L}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\linewidth}
+        \centering
+        \includegraphics[width=1.0\linewidth]{img/tcor_t_l200_r0.4.pdf}
+        \caption{Correlation time at $L = 200$ for different $T$, with corresponding fit.}
+        \label{fig:tcor_T}
+    \end{minipage}
+\end{figure}
+From Fig. \ref{fig:tcor_L} it seems that \emph{in terms of sweeps} the correlation time is roughly constant under $L$ and can at $T = 20$ taken to be $t_\text{cor} = 41 \, \text{sweeps}$.
+However, under changing $T$ the autocorrelation time seems to be growing roughly linearly, giving the curse approximation $t_\text{cor} \approx 4\, (T - 10)$ that can be use as an estimate for the correlation time for a wanted system size.
+This estimate is very crude, but keep in mind that the final results do not actually depend on this measurement of the correlation time. It helps to know the correlation time to be able to only save relevant data, but it will not affect the final results.
+So this approximation is sufficient for the purposes of this simulation.
 
 \subsection{Standard deviation}
 % Presentation of the results of the standard deviation of the length profile
