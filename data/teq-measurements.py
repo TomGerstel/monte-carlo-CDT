@@ -1,46 +1,36 @@
 #%% Imports
-import os
-import json
 import numpy as np
 import scipy.optimize as opt
 import matplotlib.pyplot as plt
 
-#%%[markdown]
-# Autocorrelation as defined in the Monte Carlo Technique lectures
-#
-# **Autocorrelation** is defined as:
-# $$\rho(t)=\operatorname{Corr}(f(X_i),f(X_{i+t})) := \frac{\mathbb{E}\Big[(f(X_i)-\mathbb{E}[f(X)])(f(X_{i+t})-\mathbb{E}[f(X)])\Big]}{\operatorname{Var}[f(X)]}.$$
-# We can estimate the latter via the **sample autocovariance**,
-# $$ \bar{\gamma}(t) = \frac{1}{n} \sum_{i=1}^{n-t}(f(X_i) - \overline{f(X)}_n)(f(X_{i+t}) - \overline{f(X)}_n),$$
-# from which one obtains the **sample autocorrelation** as $$\bar{\rho}(t) = \frac{\bar{\gamma}(t)}{\bar{\gamma}(0)}$$
-# by normalizing $\bar{\gamma}(t)$ by the sample variance $\bar{\gamma}(0)$.
-# Note that there is a $1/n$ factor in front of the sum in $\bar{\gamma}(t)$, while one may instead expect an $1/(n-t)$ since there are $n-t$ terms. The reason is that this choice is often found to be more stable numerically. 
+#%% Load all parameter files from folder (these files are measurements of the std every 0.1sweep to get a good understanding of teq)
+import os
+import json
 
-#%% Import data
 datapath = "personal/teq-measurements"
-datafiles = [os.path.join(datapath, f) for f in os.listdir(datapath) if os.path.isfile(os.path.join(datapath, f)) and f.endswith(".json")]
+parameterfiles = [os.path.join(datapath, f) for f in os.listdir(datapath) if os.path.isfile(os.path.join(datapath, f)) and f.endswith(".json")]
 
 parameters = []
-for datafile in datafiles:
-    with open(datafile) as f:
+for parameterfile in parameterfiles:
+    with open(parameterfile) as f:
         jsondata = json.load(f)
         parameters.append(jsondata)
 
-#%% Create N and Data lists (for std), can take a while for large datafiles
-M = len(parameters)
-Ns = []
-stds = []
+#%% Read in relevant data from parameters
+# M = len(parameters)
+data = []
 
-for i, p in enumerate(parameters):
-    Ns.append(2*p['length']*p['timespan'])
-    stds.append(np.loadtxt(datapath + "/" + p['name'] + ".csv", delimiter=',', usecols=0))
+for p in parameters:
+    L = p['length']
+    std = np.loadtxt(datapath + "/" + p['name'] + ".csv", delimiter=',', usecols=0)
+    data.append((L, std))
 
-tups = zip(*sorted(zip(Ns, stds), key=lambda x: x[0]))
+tups = zip(*sorted(data, key=lambda x: x[0]))
 Ns = np.array(next(tups))
 stds = np.array(next(tups))
 
-%store Ns
-%store stds
+# %store Ns
+# %store stds
 
 # %% Determine equilibration time
 # Determine t_eq by assuming the observable on average behaves like:
@@ -107,8 +97,3 @@ plt.xlabel("$1000 \, N$ (number of triangles)")
 plt.ylabel("$t_{eq}$ (in sweeps)")
 plt.savefig("teq-plot.pdf")
 plt.show()
-
-
-#%% Single file import
-stds = np.loadtxt("teq-measurements/meas_t30_l20_n1000_r0.4_1640107872.csv", delimiter=',', dtype=float, usecols=0)
-# %%

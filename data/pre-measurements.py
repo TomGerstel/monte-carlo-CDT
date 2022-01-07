@@ -8,7 +8,7 @@ from matplotlib import cm
 import os
 import json
 
-datapath = "./personal/Tdep/"
+datapath = "./personal/tcor-measurements/L-dependence/"
 datafiles = [os.path.join(datapath, f) for f in os.listdir(datapath) if os.path.isfile(os.path.join(datapath, f)) and f.endswith(".json")]
 
 parameters = []
@@ -18,11 +18,12 @@ for datafile in datafiles:
         parameters.append(jsondata)
 
 
-Ts = []
+# Ts = []
+Ls = []
 obs = []
 
 def correlation_profile(x: np.array, tmax=None):
-    dx = x - np.mean(x)
+    dx = x # - np.mean(x)
     if tmax is None:
         tmax = x.shape[1]//2
     cor = np.zeros((x.shape[0], tmax))
@@ -32,20 +33,33 @@ def correlation_profile(x: np.array, tmax=None):
     return cor
 
 def observable(lenghts, bakein=500):
-    return np.mean(correlation_profile(lengths[500:]), axis=0)
+    # return np.mean(correlation_profile(lengths[500:]), axis=0)
+    # return lengths
+    return np.std(lengths, axis=1, ddof=1)
 
 for parameter_set in parameters:
-    if parameter_set["length"] == 30:
-        T = parameter_set["timespan"]
-        Ts.append(T)
+    if parameter_set["timespan"] == 20:
+        Ls.append(parameter_set["length"])
         datafile = datapath + parameter_set["name"] + ".csv"
-        lengths = np.loadtxt(datafile, delimiter=',', dtype=int, usecols=range(0, T))
+        lengths = np.loadtxt(datafile, delimiter=',', dtype=int, usecols=range(0, 20))
         obs.append(observable(lengths))
 
-tdata = sorted(zip(Ts, obs))
+# for parameter_set in parameters:
+#     if parameter_set["length"] == 200:
+#         T = parameter_set["timespan"]
+#         Ts.append(T)
+#         datafile = datapath + parameter_set["name"] + ".csv"
+#         lengths = np.loadtxt(datafile, delimiter=',', dtype=int, usecols=range(0, T))
+#         obs.append(observable(lengths))
+
+tdata = sorted(zip(Ls, obs))
 sdata = zip(*tdata)
-Ts = np.array(next(sdata))
-obs = next(sdata)
+Ls = np.array(next(sdata))
+
+# tdata = sorted(zip(Ts, obs))
+# sdata = zip(*tdata)
+# Ts = np.array(next(sdata))
+obs = np.array(next(sdata))
 
 #%%
 color = cm.viridis(np.linspace(0, 1, len(obs)))
@@ -53,7 +67,8 @@ plt.figure(figsize=(10, 6))
 for i, obsi in enumerate(obs):
     plt.plot(obsi, label=Ts[i], c=color[i])
 plt.legend()
-plt.xlim((-1, 20))
+plt.title("$L = 200$")
+# plt.xlim((-1, 50))
 plt.show()
 
 #%% Batching
@@ -119,3 +134,33 @@ def correlation_profile(x: np.array, tmax=None):
         cor[:, t] = np.sum(dx * np.roll(dx, t, axis=1), axis=1)/norm
     return cor
     
+
+#%% Save plot
+from scipy.stats import poisson
+
+plt.figure(figsize=(10, 6))
+data = obs[1].flatten()
+x = np.bincount(data)/len(data)
+l = np.arange(len(x))
+plt.bar(l, x, width=1.0)
+plt.vlines(200, 0.0, 0.016, colors="r")
+
+sig2 = np.var(data)
+p = 1 - sig2/200
+n = 200/p
+# plt.plot(l, np.exp(-(l-200)**2/2/sig2)/np.sqrt(2*np.pi*sig2), color='r')
+plt.plot(l, poisson.pmf(l, 200)*0.55, color='r')
+# %%
+
+def autocorrelation(t: int, x: np.array):
+    dx = (x - np.mean(x))
+    if t == 0:
+        return 1.0
+    elif t >= len(x):
+        return 0.0
+    autocov = np.sum(dx[:-t]*dx[t:])
+    return autocov/np.sum((dx*dx))
+
+def correlation_profile(x: np.array, t_max: int, resolution=100):
+    ts = (np.arange(resolution) * (t_max/resolution)).astype(int)
+    return ts, np.vectorize(lambda t: autocorrelation(t, x))(ts)

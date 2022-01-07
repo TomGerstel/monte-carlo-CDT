@@ -15,5 +15,8 @@ __latexindent_temp.tex
 *.synctex.gz
 *.synctex(busy)
 *.toc
+ltex*
 data/personal
 !slides/img/*.pdf
+report/out
+slides/out
