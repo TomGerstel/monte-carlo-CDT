@@ -19,7 +19,7 @@ A common approach to add the "quantum" aspect to any classical theory is by intr
 \end{equation}
 But what does this actually mean? How could one explicitly carry out this integration?
 
-We somewhat avoid these questions by adopting a certain regularisation approach, namely Causal Dynamical Triangulations (CDT). Instead of trying to integrate over all continuously curved manifolds, we sum over piecewise flat manifolds that are constructed by gluing a certain class of flat building blocks together. In particular, the building blocks will be $d$-dimensional simplices with a flat Minkowskian interior. These simplices have squared edge lengths fixed at $\pm a^2$ (allowing space- and timelike edges), such that $a$ becomes a regularisation parameter. We foliate the manifold into $(d - 1)$-dimensional timeslices connected by a single layer of $d$-dimensional simplices. Different manifolds can be obtained by changing the way simplices are connected. Now the regularised path integral can be written as
+We somewhat avoid these questions by adopting a certain regularisation approach, namely Causal Dynamical Triangulations (CDT). Instead of trying to integrate over all continuously curved manifolds, we sum over piecewise flat manifolds that are constructed by gluing a certain class of flat building blocks together. In particular, these building blocks will be $d$-dimensional regular simplices with a flat Minkowskian interior. These simplices have squared edge lengths fixed at $\pm a^2$ (allowing space- and timelike edges), where $a$ is also a regularisation parameter. We foliate the manifold into $(d - 1)$-dimensional timeslices connected by a single layer of $d$-dimensional simplices. Different manifolds can be obtained by changing the way simplices are connected. Now the regularised path integral can be written as
 \begin{equation}
     Z
     =
@@ -28,7 +28,7 @@ We somewhat avoid these questions by adopting a certain regularisation approach,
 \end{equation}
 where the summation is over all triangulations. Here $S[T]$ is the action and $C(T)$ is a symmetry factor for a given triangulation $T$.
 
-To simplify matters, we only consider 2-dimensional spacetimes with periodic boundaries. The resulting topology is that of a 2-torus. With this in mind, we make a few useful observations:
+To simplify matters, we only consider 2-dimensional spacetimes with periodic boundaries. The resulting topology is that of a 2-torus. Note that in this case each timeslice is just a ring of spacelike edges. The number of spacelike edges in timeslice $t$ is denoted by $\ell(t)$. With this in mind, we make a few useful observations:
 \begin{itemize}
     \item All triangles have equal volume, so the total volume is proportional to the number of triangles.
     \item The manifold is piecewise flat, meaning a Wick rotation is well-defined.
@@ -40,14 +40,14 @@ Using these observations we find that the Euclidean action for a 2-dimensional t
 \end{equation}
 where $\lambda$ is a constant related to the cosmological constant $\Lambda$. For now we can just interpret it as a model parameter.
 
-To simplify the symmetry factor $C(T)$ we label\footnote{This is of course also convenient when encoding the triangulation in a computer.} all triangles in the triangulations. Each triangulation can be labelled in $N(T)!$ ways, so the euclidean path integral (or partition sum) becomes
+To simplify the symmetry factor $C(T)$ we label all triangles\footnote{This is of course also convenient when encoding the triangulation in a computer.}. Each triangulation can be labelled in $N(T)!$ ways, so the Euclidean path integral (or partition sum) becomes
 \begin{equation}
     Z
     =
     \sum_{T_\ell \in \mathcal{T}_\ell} \frac{1}{N(T_\ell)!} e^{- \lambda N(T_\ell)}
     ,
 \end{equation}
-where the summation is now over all labelled triangulations. It is possible to split up the partition sum into contributions with a certain number of triangles, as follows
+where the summation is now over all labelled triangulations. It is possible to split the partition sum into contributions with a certain number of triangles, as follows
 \begin{equation}\label{eq:part_sum}
     Z
     =
