@@ -34,8 +34,8 @@ def correlation_profile(x: np.array, tmax=None):
     return cor
 
 def observable(lenghts, bakein=500):
-    return np.mean(correlation_profile(lengths[500:]), axis=0)
-    # return lengths
+    # return np.mean(correlation_profile(lengths[500:]), axis=0)
+    return lengths/np.mean(lengths)
     # return np.std(lengths, axis=1, ddof=1)
 
 for parameter_set in parameters:
@@ -165,3 +165,15 @@ def autocorrelation(t: int, x: np.array):
 def correlation_profile(x: np.array, t_max: int, resolution=100):
     ts = (np.arange(resolution) * (t_max/resolution)).astype(int)
     return ts, np.vectorize(lambda t: autocorrelation(t, x))(ts)
+
+#%%
+def dist(l, Lambda):
+    return 4.0 * l * Lambda * np.exp(-2.0*(np.sqrt(Lambda)*l))
+
+lengths = np.loadtxt("personal/meas_t500_l20_n100_r0.4_1641638785.csv", dtype=int, usecols=range(0, 500), delimiter=',').flatten()
+obs = lengths[500*4:]
+plt.hist(obs, bins=20, density=True)
+l = np.linspace(0, 100, 500)
+plt.plot(l, dist(l, (20)**(-2)))
+
+# %%
