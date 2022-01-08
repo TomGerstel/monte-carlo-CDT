@@ -165,7 +165,22 @@ Now consider the flip move. This move is possible where neighbouring triangles h
 \begin{equation}
     p_{\text{flip}}(T \to T') = \frac{1}{n}.
 \end{equation}
-Because $n$ is fixed it is clear that this move obeys detailed balance.
+Because $n$ is fixed it is clear that this move obeys detailed balance. Note that since both these moves independently satisfy detailed balance, they can always be performed in any sequence. See section \ref{sec:implementation} for more details.
+
+\subsection{Implementation}\label{sec:implementation}
+% This was probably the most substantional amount of work of this project, so I think this should be reflected in the size of this part
+% Also here I'm not sure whether to include the failed attempts?
+
+\paragraph{Data Structures}
+% triangles have local information -> faster markov chain
+% order 4 list
+
+\paragraph{Length Measurements}
+% Explain how length profile is measured
+
+\paragraph{Input Parameters}
+% explain all relevant input parameters of the cli
+
 
 
 \subsection{Observables} \label{sec:observables}
@@ -203,10 +218,3 @@ Note that the length correlation is still a function of $t$ but this $t$ is the 
 
 Both observables $\sigma_\ell$ and $\rho_\ell(t)$ do diverge for $N \rightarrow \infty$ as they will scale with $N$.
 How they will scale is at this point not known, but we hope they will scale in a well-behaved way such that with proper rescaling these observables may have a well-defined limit.
-
-\subsection{Implementation}
-% This was probably the most substantional amount of work of this project, so I think this should be reflected in the size of this part
-% Also here I'm not sure whether to include the failed attempts?
-
-\paragraph{Length profile}
-% Explain how length profile was obtained from implementation

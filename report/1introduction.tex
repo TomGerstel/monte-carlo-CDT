@@ -1,3 +1,5 @@
+\subsection{Quantum Gravity}
+
 A field of theoretical physics which still has many open questions is quantum gravity. One may notice that "quantum gravity" consists of two words: "quantum" and "gravity". The "gravity" aspect is quite well understood, and its content can be compactly summarised in the Einstein-Hilbert action
 \begin{equation}
     S[g_{\mu \nu}]
@@ -19,7 +21,9 @@ A common approach to add the "quantum" aspect to any classical theory is by intr
 \end{equation}
 But what does this actually mean? How could one explicitly carry out this integration?
 
-We somewhat avoid these questions by adopting a certain regularisation approach, namely Causal Dynamical Triangulations (CDT). Instead of trying to integrate over all continuously curved manifolds, we sum over piecewise flat manifolds that are constructed by gluing a certain class of flat building blocks together. In particular, these building blocks will be $d$-dimensional regular simplices with a flat Minkowskian interior. These simplices have squared edge lengths fixed at $\pm a^2$ (allowing space- and timelike edges), where $a$ is also a regularisation parameter. We foliate the manifold into $(d - 1)$-dimensional timeslices connected by a single layer of $d$-dimensional simplices. Different manifolds can be obtained by changing the way simplices are connected. Now the regularised path integral can be written as
+\subsection{Causal Dynamical Triangulations}
+
+We somewhat avoid these questions by adopting a certain regularisation approach, namely Causal Dynamical Triangulations (CDT). Instead of trying to integrate over all continuously curved manifolds, we sum over piecewise flat manifolds that are constructed by gluing a certain class of flat building blocks together. In particular, these building blocks will be $d$-dimensional regular simplices with a flat Minkowskian interior. These simplices have squared edge lengths fixed at $\pm a^2$ (allowing space- and timelike edges), where $a$ is also a regularisation parameter. We foliate the manifold into $T$ $(d - 1)$-dimensional timeslices, labelled by $t = 0, \ldots T - 1$, connected by a single layer of $d$-dimensional simplices. Different manifolds can be obtained by changing the way simplices are connected. Now the regularised path integral can be written as
 \begin{equation}
     Z
     =
@@ -28,7 +32,7 @@ We somewhat avoid these questions by adopting a certain regularisation approach,
 \end{equation}
 where the summation is over all triangulations. Here $S[T]$ is the action and $C(T)$ is a symmetry factor for a given triangulation $T$.
 
-To simplify matters, we only consider 2-dimensional spacetimes with periodic boundaries. The resulting topology is that of a 2-torus. Note that in this case each timeslice is just a ring of spacelike edges. The number of spacelike edges in timeslice $t$ is denoted by $\ell(t)$. With this in mind, we make a few useful observations:
+\paragraph{Simplifications} To simplify matters, we only consider 2-dimensional spacetimes with periodic boundaries. The resulting topology is that of a 2-torus. Note that in this case each timeslice is just a ring of spacelike edges. The number of spacelike edges in timeslice $t$ is denoted by $\ell(t)$. With this in mind, we make a few useful observations:
 \begin{itemize}
     \item All triangles have equal volume, so the total volume is proportional to the number of triangles.
     \item The manifold is piecewise flat, meaning a Wick rotation is well-defined.
@@ -55,4 +59,8 @@ where the summation is now over all labelled triangulations. It is possible to s
     ,
 \end{equation}
 where $\Omega(n)$ denotes the number of labelled triangulations with $n$ triangles.
+
+\subsection{Continuum Limit}
+
+% Describe continuum limit of CDT, mainly include things that will be used as observables later on.
 
