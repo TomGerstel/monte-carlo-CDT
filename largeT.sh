@@ -2,12 +2,12 @@
 #SBATCH --partition=hefstud
 #SBATCH --output=./cluster_output/std_%A_%a.txt
 #SBATCH --mem=100M
-#SBATCH --time=3:00:00
+#SBATCH --time=15:00:00
 #SBATCH --array=0-3%4
 cd ~/Documents/monte-carlo-CDT
-Ls=($(LANG=en_US seq 15 5 30))
-Ts=($(LANG=en_US seq 300 100 600))
-tcors=($(LANG=en_US seq 60 20 120))
+Ls=($(LANG=en_US seq 35 5 50))
+Ts=($(LANG=en_US seq 700 100 1000))
+tcors=($(LANG=en_US seq 140 20 200))
 L=${Ls[$SLURM_ARRAY_TASK_ID]}
 T=${Ts[$SLURM_ARRAY_TASK_ID]}
 tcor=${tcors[$SLURM_ARRAY_TASK_ID]}
