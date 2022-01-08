@@ -19,6 +19,8 @@ In practice, this can be obtained by using Markov Chain updates that keep the nu
 
 \subsection{Update rules}
 % Should we also include alternative update rules we attempted? And why the don't work? It does show the amount of work and consideration we put into constcuting an effective MCMC simulation, but Im not sure.
+\paragraph{Ergodicity}
+An important property of a triangulation is how its volume is distributed over different timeslices. It therefore makes sense to choose an update rule that can change the length $\ell(t)$ at some timeslice $t$. However, because we wish to fix the volume this change in length should be compensated elsewhere. Thus we choose a move that takes an edge and accompanying triangles (we refer to such objects as "shards") from some source location, and moves it to some destination. This "shard move" is shown schemetically in Fig. \ref{fig:shard_move}. However, this move alone is not enough to satisfy ergodicity. Thus we introduce another move that can flip the diagonal between two triangles. This "flip move" is shown schemetically in Fig. \ref{fig:flip_move}. According to \cite{2012}, this combination of update rules is ergodic.
 
 \begin{figure}
     \centering
@@ -145,6 +147,21 @@ In practice, this can be obtained by using Markov Chain updates that keep the nu
     \caption{Flip move update rule. The flipped edge is shown in blue. Order 4 vertices (if they exist) are marked with a green circle.}
     \label{fig:flip_move}
 \end{figure}
+
+\paragraph{Detailed Balance}
+But this is not the whole story. Using these update rules we can now sample all triangulations of a given volume, but can we do so \emph{uniformly}, as required by \eqref{eq:part_sum}? A common way to ensure this is to enforce detailed balance. Since in this case the desired distribution is uniform, this amounts to enforcing
+\begin{equation}
+    p(T \to T') = p(T' \to T),
+\end{equation}
+for any two triangulations $T$ and $T'$. Here $p(T \to T')$ is the probability to go from $T$ to $T'$ in a single Markov Chain step.
+
+First consider the shard move. In order to be able to remove a shard, we need a vertex of order 4 (i.e.: a vertex with 4 edges)\footnote{If you are worried that such a vertex might not always exist, you are correct. However if this is the case we simply perform the flip move instead.}. To be consistent, we always remove the shard to the right of the selected vertex. Then we uniformly choose a spacelike edge (which is not the edge in the shard) and insert the shard to the left of it. We do this in such a way that an order 4 vertex is created between the selected and inserted edges (see Fig. \ref{fig:shard_move}). The probability of performing this move is then
+\begin{equation}
+    p_{\text{shard}}(T \to T') = \frac{1}{V_4 (n/2 - 1)},
+\end{equation}
+with $V_4$ the number of order 4 vertices, and $n$ the number of triangles. Note that this move preserves $V_4$: One order 4 vertex is always destroyed where the shard is taken, and one is always created where it is inserted. Any surrounding vertices are not affected. Since $n$ is also constant, the inverse move will have identical probability and detailed balance is satisfied.
+
+Now consider the flip move. % TODO
 
 \subsection{Observables} \label{sec:observables}
 % Explain choice of observables, possibly alternatives that were considered but not measured
