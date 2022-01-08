@@ -201,6 +201,10 @@ In order to actually execute the shard move, six pairs of neighbours need to be 
 \paragraph{Length Measurements}
 % Explain how length profile is measured
 
+So far we have focussed on how the update rules are implemented. However, another very important aspect of the simulation is doing measurements. Perhaps the most obvious thing one can measure on a triangulation is the volume of each timeslice. In our case, each timeslice is a one-dimensional ring, so its volume (or length) can be described by the number of edges (or equivalently the number of vertices) it consists of. Doing this for every timeslice $t$ results in a \emph{length profile} $\ell(t)$. All other observables considered in this work are derived from $\ell(t)$, see \ref{sec:observables} for more details.
+
+But how can this measurement be implemented in our \verb|Universe|? First we choose (it does not really matter how) a \verb|Triangle| to use as reference. We keep walking to the \verb|right| until we reach the original \verb|Triangle| again. The amount of \verb|Up|ward pointing \verb|Triangle|s we passed is then the length $\ell(0)$ of the first timeslice. We can then move to the next timeslice by going to the \verb|time|like neighbour of a \verb|Down|ward pointing \verb|Triangle|. This is repeated until we encounter the first \verb|Triangle| again.
+
 \paragraph{Input Parameters}
 % explain all relevant input parameters of the cli
 
