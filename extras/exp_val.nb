@@ -1,0 +1,115 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      3642,        107]
+NotebookOptionsPosition[      3126,         89]
+NotebookOutlinePosition[      3563,        106]
+CellTagsIndexPosition[      3520,        103]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{"Clear", "[", "\"\<`*\>\"", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"$Assumptions", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"T", ">", "0"}], ",", " ", 
+     RowBox[{"L1", ">", "0"}], ",", 
+     RowBox[{"L2", ">", "0"}], ",", 
+     RowBox[{"\[CapitalLambda]", ">", "0"}]}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Gapprox", "[", 
+    RowBox[{"L1_", ",", "L2_", ",", "T_"}], "]"}], ":=", 
+   RowBox[{"4", "L1", " ", "\[CapitalLambda]", " ", 
+    SuperscriptBox["\[ExponentialE]", 
+     RowBox[{
+      RowBox[{"-", 
+       SqrtBox["\[CapitalLambda]"]}], 
+      RowBox[{"(", 
+       RowBox[{"L1", "+", "L2", "+", "T"}], ")"}]}]]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Ga", "=", 
+   RowBox[{"Gapprox", "[", 
+    RowBox[{"L1", ",", "L", ",", "t"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Gb", "=", 
+   RowBox[{"Gapprox", "[", 
+    RowBox[{"L", ",", "L2", ",", 
+     RowBox[{"T", "-", "t"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Gn", "=", 
+   RowBox[{"Gapprox", "[", 
+    RowBox[{"L1", ",", "L2", ",", "T"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  FractionBox[
+   RowBox[{
+    SubsuperscriptBox["\[Integral]", "0", "\[Infinity]"], "  ", 
+    RowBox[{"L", " ", "Ga", " ", "Gb", 
+     RowBox[{"\[DifferentialD]", "L"}]}]}], "Gn"], "//", 
+  "Simplify"}]}], "Input",
+ CellChangeTimes->{{3.850572413723344*^9, 3.850572415711892*^9}, {
+   3.850572885286177*^9, 3.8505729859690685`*^9}, {3.8505735613525066`*^9, 
+   3.8505735624527216`*^9}, {3.850573620549025*^9, 3.8505736208863688`*^9}, {
+   3.850573783465268*^9, 3.8505737835964203`*^9}, 3.850574455358613*^9, {
+   3.8505744892215977`*^9, 3.8505744895067263`*^9}, 3.850574615570527*^9, {
+   3.8505746459858665`*^9, 3.850574648856932*^9}, {3.8505753806631927`*^9, 
+   3.8505757270175633`*^9}, {3.8505757885466504`*^9, 3.850575817154747*^9}, {
+   3.850577311471895*^9, 3.850577313873562*^9}, {3.850577350042517*^9, 
+   3.850577350379798*^9}},
+ CellLabel->
+  "In[331]:=",ExpressionUUID->"6efd24d9-c5b9-400f-9029-c3458d1c2482"],
+
+Cell[BoxData[
+ FractionBox["1", 
+  SqrtBox["\[CapitalLambda]"]]], "Output",
+ CellChangeTimes->{
+  3.850575450068472*^9, {3.850575565130211*^9, 3.8505756801109943`*^9}, {
+   3.85057571930973*^9, 3.850575728349539*^9}, {3.850575769973698*^9, 
+   3.850575818655549*^9}, {3.8505773290489273`*^9, 3.8505773519343357`*^9}},
+ CellLabel->
+  "Out[337]=",ExpressionUUID->"32877d76-6572-433d-ba78-282dd0df3b7a"]
+}, Open  ]]
+},
+WindowSize->{1152., 585.6},
+WindowMargins->{{
+  Automatic, -5.399999999999864}, {-5.399999999999977, Automatic}},
+FrontEndVersion->"12.1 for Microsoft Windows (64-bit) (June 19, 2020)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"8e407a70-03bb-491d-aaf4-20f48e422acb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 2127, 54, 172, "Input",ExpressionUUID->"6efd24d9-c5b9-400f-9029-c3458d1c2482"],
+Cell[2710, 78, 400, 8, 76, "Output",ExpressionUUID->"32877d76-6572-433d-ba78-282dd0df3b7a"]
+}, Open  ]]
+}
+]
+*)
+
