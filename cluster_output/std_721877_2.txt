@@ -1,0 +1,9 @@
+/var/spool/slurm/slurmd/job721880/slurm_script: line 10: 15+5*: syntax error: operand expected (error token is "*")
+/var/spool/slurm/slurmd/job721880/slurm_script: line 11: 20*: syntax error: operand expected (error token is "*")
+/var/spool/slurm/slurmd/job721880/slurm_script: line 12: 4*: syntax error: operand expected (error token is "*")
+error: The argument '--timespan <timespan>' requires a value but none was supplied
+
+USAGE:
+    monte-carlo-cdt --eq-sweeps <eq-sweeps> --is-measurement --length <length> --move-ratio <move-ratio> --move-ratio-eq <move-ratio-eq> --n-save <n-save> --output-folder <output-folder> --pause <pause> --timespan <timespan>
+
+For more information try --help
