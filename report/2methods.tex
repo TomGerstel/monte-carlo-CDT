@@ -2,16 +2,16 @@
 
 \subsection{Markov Chain Monte Carlo}
 
-The goal is now to extract information from the distribution defined by \eqref{eq:part_sum}. Expectation values of observables can be sampled using a Monte Carlo approach. Suppose we sample $N$ triangulations $T^{(i)}$ from \eqref{eq:part_sum}. The expectation value of an observable $f(T)$ can then in theory be obtained from
+The goal is now to extract information from the distribution defined by \eqref{eq:part_sum}. Expectation values of observables can be sampled using a Monte Carlo approach. Suppose we sample $n$ triangulations $T^{(i)}$ from \eqref{eq:part_sum}. The expectation value of an observable $f(T)$ can then in theory be obtained from
 \begin{equation}
     \ev{f(T)}
     =
-    \lim_{N \to \infty} \frac{1}{N} \sum_{i = 1}^N f(T^{(i)})
+    \lim_{n \to \infty} \frac{1}{n} \sum_{i = 1}^n f(T^{(i)})
     .
 \end{equation}
 Directly sampling triangulations can be very difficult. Instead, we use a Markov Chain to explore the space of all possible triangulations. Hence, the label Markov Chain Monte Carlo (MCMC) for our approach.
 
-However, sampling from \eqref{eq:part_sum} is not very practical. It turns out that $\Omega(n) \sim n! 2^n$. This means that for $\lambda > \ln 2$ large volumes are suppressed so that a typical triangulation will contain only a handful of triangles.
+However, sampling from \eqref{eq:part_sum} is not very practical. It turns out that $\Omega(N) \sim N! 2^N$. This means that for $\lambda > \ln 2$ large volumes are suppressed so that a typical triangulation will contain only a handful of triangles.
 However, when $\lambda < \ln 2$ the partition sum \eqref{eq:part_sum} diverges and the problem is ill-defined.
 A solution is to consider only triangulations of a certain fixed volume at a time.
 An advantage of this approach is that the desired distribution becomes uniform, since the weight of each triangulation depends only on its volume.
@@ -157,15 +157,15 @@ for any two triangulations $T$ and $T'$. Here $p(T \to T')$ is the probability t
 
 First consider the shard move. In order to be able to remove a shard, we need a vertex of order 4 (i.e.: a vertex with 4 edges)\footnote{If you are worried that such a vertex might not always exist, you are correct. However, if this is the case we can simply perform the flip move instead.}. Start by uniformly choosing such a vertex. To be consistent, we always remove the shard to the right of the selected vertex. Then we uniformly choose a spacelike edge (which is not the edge in the shard) and insert the shard to the left of it. This is done in such a way that an order 4 vertex is created between the selected and inserted edges (see Fig. \ref{fig:shard_move}). The probability of performing a particular instance of this move is then\footnote{Note that here $T$ and $T'$ must be two triangulations that are related by an application of a single shard move. If they are not, the probabilities vanish in both directions and detailed balance is satisfied automatically.}
 \begin{equation}
-    p_{\text{shard}}(T \to T') = \frac{1}{V_4 (n/2 - 1)},
+    p_{\text{shard}}(T \to T') = \frac{1}{V_4 (N/2 - 1)},
 \end{equation}
-with $V_4$ the number of order 4 vertices, and $n$ the number of triangles. Note that this move preserves $V_4$: One order 4 vertex is always destroyed where the shard is taken, and one is always created where it is inserted. Any surrounding vertices are not affected. Since $n$ is also constant, the inverse move will have identical probability and detailed balance is satisfied.
+with $V_4$ the number of order 4 vertices, and $n$ the number of triangles. Note that this move preserves $V_4$: One order 4 vertex is always destroyed where the shard is taken, and one is always created where it is inserted. Any surrounding vertices are not affected. Since $N$ is also constant, the inverse move will have identical probability and detailed balance is satisfied.
 
 Now consider the flip move. This move is possible where neighbouring triangles have opposite orientation. First uniformly choose a triangle. To be definite, consider its neighbour to the right. If these two triangles have opposite orientation, perform the flip. If this is not the case, reject the move but still count it as a step in the Markov Chain. The probability of a particular move of this type is
 \begin{equation}
     p_{\text{flip}}(T \to T') = \frac{1}{n}.
 \end{equation}
-Because $n$ is fixed it is clear that this move obeys detailed balance. Note that since both these moves independently satisfy detailed balance, they can always be performed in any sequence. See section \ref{sec:implementation} for more details.
+Because $N$ is fixed it is clear that this move obeys detailed balance. Note that since both these moves independently satisfy detailed balance, they can always be performed in any sequence. See section \ref{sec:implementation} for more details.
 
 \subsection{Implementation}\label{sec:implementation}
 % This was probably the most substantional amount of work of this project, so I think this should be reflected in the size of this part
@@ -205,10 +205,13 @@ So far we have focussed on how the update rules are implemented. However, anothe
 
 But how can this measurement be implemented in our \verb|Universe|? First we choose (it does not really matter how) a \verb|Triangle| to use as reference. We keep walking to the \verb|right| until we reach the original \verb|Triangle| again. The amount of \verb|Up|ward pointing \verb|Triangle|s we passed is then the length $\ell(0)$ of the first timeslice. We can then move to the next timeslice by going to the \verb|time|like neighbour of a \verb|Down|ward pointing \verb|Triangle|. This is repeated until we encounter the first \verb|Triangle| again.
 
-\paragraph{Input Parameters}
+\paragraph{Commandline Interface}
 % explain all relevant input parameters of the cli
+In order to actually run a simulation, we of course need to provide some concrete parameter values. The most obvious ones are related to the system size. The number of triangles is fixed, so that would seem like a logical input parameter. However, instead we choose to provide the number of timeslices $T$ and the initial length per timeslice $L$ as input. The total number of triangles is then $N = 2 T L$. This makes it easier to change $T$ and $L$ independently of each other.
 
+Another input paramter has to do with the fact that we are using two different types of Markov Chain moves. We need some way of choosing between these two moves. Therefore, we introduce a move rate $r$. In particular $r$ is the probability that any given move will be a shard move. Note that introducing this rate $r$ does not affect detailed balance: we simply multiply both sides of the detailed balance equation by $r$ (for the shard move) or $1 - r$ (for the flip move). This move ratio can be set separately for the equilibration phase and the measurement phase.
 
+Finally, there are some parameters that are related to the Monte Carlo measurements. The obvious one is of course which observable is measured: the whole length profile $\ell(t)$ or only its standard deviation $\sigma_\ell$. Other parameters include the number of measurements to take, the number of sweeps\footnote{A sweep is defined as $2 T L$ Markov Chain steps.} inbetween measurements, the length of the equilibration phase and a path to which the data is written.
 
 \subsection{Observables} \label{sec:observables}
 % Explain choice of observables, possibly alternatives that were considered but not measured
