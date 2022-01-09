@@ -1,5 +1,5 @@
 % Brief overview of the observables that are measured
-The observables we measured in the $1 + 1$D CDT model are the \emph{standard deviation} of the length profile $\sigma_\ell$ and the \emph{length correlation} $\rho_\ell(t)$ as introduced in section \ref{sec:observables}.
+The observables we measured in the $1 + 1$D CDT model are the \emph{standard deviation} of the length profile $\sigma_\ell$ and the \emph{length covariance} $\rho_\ell(t)$ as introduced in section \ref{sec:observables}.
 In this section we will present and discuss the results found for these observables.
 
 \subsection{Pre-analysis}
@@ -50,7 +50,7 @@ However, after a single simulation timestep the newly obtained system is still v
 Having many correlated measurements is not useful as they do not make the final estimate better, and take up a lot of unnecessary space and computation time.
 Moreover, to be able to make and estimate of the error in the final results, it is crucial to know the correlation between measurements.
 
-To estimate the correlation time we will again use the standard deviation as a value is much easier to work with than a function.
+To estimate the correlation time we will again use the standard deviation as a value is much easier to work with than a function like the covariance.
 The correlation time is then estimated the usual way by determining the autocorrelation of the standard deviation observable over for time:
 \begin{equation*}
     \rho(t) = \frac{1}{Z} \, \sum_{i = 1}^{M - t} \qty(\sigma_{\ell, i} - \bar{\sigma}_\ell) \qty(\sigma_{\ell, i + t} - \bar{\sigma}_\ell),
@@ -98,31 +98,97 @@ However, under changing $T$ the autocorrelation time seems to be growing roughly
 This estimate is very crude, but keep in mind that the final results do not actually depend on this measurement of the correlation time. It helps to know the correlation time to be able to only save relevant data, but it will not affect the final results.
 So this approximation is sufficient for the purposes of this simulation.
 
-\subsection{Standard deviation}
-% Presentation of the results of the standard deviation of the length profile
+Note that this linear scaling in $T$ of the correlation time (in terms of sweeps), means that the amount of Markov-chain Monte Carlo steps grows like $N^{3/2}$ for a constant ratio $T/L$. This scaling means that our computation time will increase like $N^{3/2}$ the system size is increased, and puts a limit on the system sizes that can be measured.
+
+\paragraph{Discussion} Later in the project we realised that the system sizes of interest were those where $L \ll T$, which is not the case for the systems the equilibration time and correlation time are measured for.
+Re-computation of these quantities takes a lot of computational effort, and there was unfortunately not enough time available to do this.
+Experience showed that taking $200 \text{sweeps}$ as burn-in time is also sufficient in this regime, and that the correlation time still scales with $N^{3/2}$ for a constant $T/L$ ratio.
+The crude approximation for the correlation time does however not seem to be accurate for larger $T/L$ ratio's, as the correlation times seem lower than this estimate would suggest.
+
+%TODO  add to this discussion
+
+\subsection{Measurements}
 Now that we have the equilibration and correlation time, we can start to measure observables.
+We wish to compare the measured standard deviation and covariance to the theoretical expectation of 2D CDT, which are given in the $T \rightarrow \infty$ limit.
+To simulate measurements in this limit we wish to choose $T$ such that $L \ll T$; in this case we use $T = 20 \, L$ as larger values of $T$ have a large impact on computation time.
+We can then compute the \emph{length profile} over a range of $L$ values.
+Within time constraints, we were able to measure a range of $L = 15, 20, \dots, 50$; we performed $100$ measurements on each at $\sqrt{0.4 \, N}$ intervals, which is chosen as the correlation time appears to be roughly $t_\text{cor} \approx 3 \sqrt{N}$ at this $T/L$ ratio.
 
-\subsection{Length correlation}
+\paragraph{Standard deviation}
+% Presentation of the results of the standard deviation of the length profile
+The data from the simulation can be analysed to obtain estimates for the standard deviation, and by Eq. \eqref{eq:std_ell} estimates for $\Lambda$.
+From Eq. \eqref{eq:exp_ell} we expect the cosmological constant and equivalently the standard deviation to depend on the system size like:
+\begin{equation}\label{eq:std_theory}
+    \Exp{\Lambda} = \frac{1}{L^2}, \qquad \Exp{\sigma_\ell} = \frac{L}{\sqrt{2}} \approx 0.71 \, L.
+\end{equation}
+
+To estimate the standard deviation and the error in the estimation from the length profile the standard deviation is determined at every measurement, according to Eq. \eqref{eq:std_meas}, after which \emph{batching} is used.
+To make the estimate using batching the measurements are divided into batches -- these must be larger than the correlation time, which for this measurement was the case when dividing in 10 batches -- and the average is taken of every batch.
+The averages obtained from the batches can now be treated as identically independently distributed variables -- we then also check there is no significant correlation between the obtained averages.
+Then the standard deviation can be estimated by taking the mean of the averages of the batches, and the error in the mean is estimated by taking the standard deviation of the averages of the batches and dividing by $\sqrt{\text{batch count} - 1}$; in other words $\sigma_\ell$ is estimated the standard way by using the batch averages as the independent measurements.
+
+The results of this analysis for the different values of $L$ is presented in Fig. \ref{fig:std_estimate} together with a power-law fit ($a \, e^{\nu}$).
+\begin{figure}[ht]
+    \begin{minipage}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/std_estimate.pdf}
+        \caption{Measurement results of $\sigma_\ell$ for different system sizes $L$, with power-law fit and theoretical expectation.}
+        \label{fig:std_estimate}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/Lambda_estimate.pdf}
+        \caption{Estimates for $\Lambda$ based on the $\sigma_\ell$ measurements, with power-law fit and theoretical expectation.}
+        \label{fig:Lambda_estimate}
+    \end{minipage}
+\end{figure}
+For the fit is found that $a = 0.67 \pm 0.05$ and $\nu = 1.00 \pm 0.02$, thus we see that as expected by Eq. \eqref{eq:std_theory} $\sigma_\ell$ indeed grows linearly in $L$ with good accuracy and $1/\sqrt{2}$ falls within the $68\%$ confidence interval of $a$. \\
+However, from the plot in Fig. \ref{eq:std_ell} it seems that the measurements systematically underestimate the standard deviation.
+Since the theoretical result falls within the error, this may simply be coincidence and requires more measurements to decrease the error.
+However, this is likely a systematic error made due to having finite $T$, as $\ell(t)$ can only change a finite amount between adjacent timeslices, so having a finite $T$ means that $\ell(t)$ can possibly not fluctuate as far from $L$ as it could for $T \rightarrow \infty$.
+To investigate this, and in general the effect of different $T/L$ ratio's, these measurements should be repeated for different values of $T$.
+It would be very interesting to get a better view on how the results convergence under increasing $L$, but unfortunately we could not measure this within the time constraint of this project.
+
+From the estimates of $\sigma_\ell$ we can also estimate the cosmological constant $\Lambda$ of the simulated systems, which is used later. This is done simply by the transformation of stochastic variables $\Lambda = 1/2\sigma_\ell^2$, and transforming the mean value and error as usual.
+The resulting $\Lambda$ estimates for different $L$ are displayed in Fig. \ref{fig:Lambda_estimate}. From this no real additional information can be extracted as it is simply a transformation, but we can confirm that the cosmological constant closely relates to $L$ with the expected relation \eqref{eq:std_theory}.
+
+
+
+\paragraph{Length covariance}
 % Presentation of the results of the analysis of the length correlation of the length profile
-\paragraph{Timothy's formula's}
-Uit hoofdstuk 4.1 van arXiv:1203.3591 kun je afleiden dat in de continue
-limiet met een tijdsinterval T en kosmologische constante $\Lambda$ de
-covariantie van de ruimtelijke lengtes $L(t)$ in de limiet $T$ naar oneindig gegeven wordt door
-\begin{equation}
-    \text{Cov}\big(\ell(0), \ell(t)\big) = \Exp{\ell(0) - L} \Exp{\ell(t) - L}
-    = \frac{1}{2\Lambda} e^{- 2\abs{t}\sqrt{\Lambda}}
-\end{equation}
-terwijl de verwachtingswaarde gelijk is aan
-\begin{equation}
-    \Exp{\ell(t)} = \frac{1}{\sqrt{\Lambda}} = L
-\end{equation}
-In deze limiet van grote $T$ is het de verwachting dat het niet veel
-uitmaakt of het totale volume vastgezet wordt of dat er een
-kosmologische constante genomen wordt (wat is de juiste relatie tussen
-volume en $\Lambda$ in dit geval?).
+Next we can also analyse the \emph{length covariance} from the measured length profiles, and compare then to the theoretical covariance \eqref{eq:cov_ell}.
+We compute the covariance for every measurement according to Eq. \eqref{eq:cov_meas} and use the same batching method to estimate the covariance and error for every $t$ (again using 10 batches).
+The resulting estimates are displayed in Fig. \ref{fig:cov_plot} with $68\%$ confidence intervals.
+\begin{figure}[ht]
+    \begin{minipage}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/cov_L.pdf}
+        \caption{Estimates of the length covariance, labelled by $L$ and show in units of $1000$.}
+        \label{fig:cov_plot}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/cov_L_log.pdf}
+        \caption{Log plot of the length covariance, labelled by $L$ and including theoretical covariance.}
+        \label{fig:cov_log_plot}
+    \end{minipage}
+\end{figure}
 
-Kun je deze covariantie zien in de data (tenminste voor $\abs{t} \ll T$)? En is
-de constante in de $e$-macht daar ook gerelateerd aan $\Exp{L(t)}$?
+Now to compare these measurement results to theory it is important to realise that Eq. \eqref{eq:cov_ell} are only valid for $t \ll T$, which makes it difficult to fit a general exponential through the measured covariance as this exponential relation is only expected to hold for small $t$.
+An alternative is to visualise the theoretical covariance alongside the measured covariance such that we can at least visually inspect whether the data matches the expected results.
+To plot the theoretical covariance \eqref{eq:cov_ell}, a value for $\Lambda$ is required.
+The obvious choice is to let $\Lambda = 1/L^2$ as is theoretically expected.
+However, we know from the measurements of $\sigma_\ell$ that it is underestimated, and since $\sigma_\ell^2$ is precisely the normalisation of the covariance using $\Lambda = 1/L^2$ would mean we have this underestimation for all $t$.
+And because we already analysed $\sigma_\ell$, the absolute magnitude of the covariance is not that interesting; it is much more interesting to look whether the exponent of the covariance matches theoretical expectations.
+For this reason, we use the values of $\Lambda$ estimated for the different $L$ as seen in Fig. \ref{fig:Lambda_estimate}, such that we can check whether the rate of decay relates to the respective estimate of $\Lambda$ in the correct way.
+The theoretical covariance with these $\Lambda$ are also plotted in Fig. \ref{fig:cov_plot} in red, but are not very clearly visible.
+So to see the relevant behaviour at small $t$ better, Fig. \ref{fig:cov_log_plot} show the same data for small $t$ with a logarithmic $y$-axis.
+
+From Fig. \ref{fig:cov_log_plot} it appears that for small $t$ the measured covariance is indeed linear as expected for the logarithmic plot. And comparing it to the theoretical covariance plotted in red, it seems that the measured covariance also shows the correct exponent, represented by the slope in the logarithmic plot.
+For larger $t$ there is deviation from this lea... %TODO continue here%
+% \input{timothys_mail.tex}
 
 
 

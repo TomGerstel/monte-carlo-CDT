@@ -9,7 +9,7 @@ The goal is now to extract information from the distribution defined by \eqref{e
     \lim_{N \to \infty} \frac{1}{N} \sum_{i = 1}^N f(T^{(i)})
     .
 \end{equation}
-Directly sampling triangulations can be very difficult. Instead, we use a Markov Chain to explore the space of all possible triangulations. Hence the label Markov Chain Monte Carlo (MCMC) for our approach.
+Directly sampling triangulations can be very difficult. Instead, we use a Markov Chain to explore the space of all possible triangulations. Hence, the label Markov Chain Monte Carlo (MCMC) for our approach.
 
 However, sampling from \eqref{eq:part_sum} is not very practical. It turns out that $\Omega(n) \sim n! 2^n$. This means that for $\lambda > \ln 2$ large volumes are suppressed so that a typical triangulation will contain only a handful of triangles.
 However, when $\lambda < \ln 2$ the partition sum \eqref{eq:part_sum} diverges and the problem is ill-defined.
@@ -20,7 +20,7 @@ In practice, this can be obtained by using Markov Chain updates that keep the nu
 \subsection{Update rules}
 % Should we also include alternative update rules we attempted? And why the don't work? It does show the amount of work and consideration we put into constcuting an effective MCMC simulation, but Im not sure.
 \paragraph{Ergodicity}
-An important property of a triangulation is how its volume is distributed over different timeslices. It therefore makes sense to choose an update rule that can change the length $\ell(t)$ at some timeslice $t$. However, because we wish to fix the volume this change in length should be compensated elsewhere. Thus we choose a move that takes an edge and accompanying triangles (we refer to such objects as "shards") from some source location, and moves it to some destination. This "shard move" is shown schemetically in Fig. \ref{fig:shard_move}. However, this move alone is not enough to satisfy ergodicity. Thus we introduce another move that can flip the diagonal between two triangles. This "flip move" is shown schemetically in Fig. \ref{fig:flip_move}. According to \cite{2012}, this combination of update rules is ergodic.
+An important property of a triangulation is how its volume is distributed over different timeslices. It therefore makes sense to choose an update rule that can change the length $\ell(t)$ at some timeslice $t$. However, because we wish to fix the volume this change in length should be compensated elsewhere. Thus, we choose a move that takes an edge and accompanying triangles (we refer to such objects as "shards") from some source location, and moves it to some destination. This "shard move" is shown schematically in Fig. \ref{fig:shard_move}. However, this move alone is not enough to satisfy ergodicity. Thus, we introduce another move that can flip the diagonal between two triangles. This "flip move" is shown schematically in Fig. \ref{fig:flip_move}. According to \cite{2012}, this combination of update rules is ergodic.
 
 \begin{figure}
     \centering
@@ -155,7 +155,7 @@ But this is not the whole story. Using these update rules we can now sample all 
 \end{equation}
 for any two triangulations $T$ and $T'$. Here $p(T \to T')$ is the probability to go from $T$ to $T'$ in a single Markov Chain step.
 
-First consider the shard move. In order to be able to remove a shard, we need a vertex of order 4 (i.e.: a vertex with 4 edges)\footnote{If you are worried that such a vertex might not always exist, you are correct. However if this is the case we can simply perform the flip move instead.}. Start by uniformly choosing such a vertex. To be consistent, we always remove the shard to the right of the selected vertex. Then we uniformly choose a spacelike edge (which is not the edge in the shard) and insert the shard to the left of it. This is done in such a way that an order 4 vertex is created between the selected and inserted edges (see Fig. \ref{fig:shard_move}). The probability of performing a particular instance of this move is then\footnote{Note that here $T$ and $T'$ must be two triangulations that are related by a application of a single shard move. If they are not, the probabilaties vanish in both directions and detailed balance is satisfied automatically.}
+First consider the shard move. In order to be able to remove a shard, we need a vertex of order 4 (i.e.: a vertex with 4 edges)\footnote{If you are worried that such a vertex might not always exist, you are correct. However, if this is the case we can simply perform the flip move instead.}. Start by uniformly choosing such a vertex. To be consistent, we always remove the shard to the right of the selected vertex. Then we uniformly choose a spacelike edge (which is not the edge in the shard) and insert the shard to the left of it. This is done in such a way that an order 4 vertex is created between the selected and inserted edges (see Fig. \ref{fig:shard_move}). The probability of performing a particular instance of this move is then\footnote{Note that here $T$ and $T'$ must be two triangulations that are related by an application of a single shard move. If they are not, the probabilities vanish in both directions and detailed balance is satisfied automatically.}
 \begin{equation}
     p_{\text{shard}}(T \to T') = \frac{1}{V_4 (n/2 - 1)},
 \end{equation}
@@ -229,19 +229,19 @@ The length profile itself still depends on a certain choice of origin in $t$, wh
 
 The simplest observable to consider is the average of $\ell(t)$, but this is trivially $L$ since the total amount timeslices and triangles and thus vertices is kept fixed.
 So the simplest non-trivial observable we can think of is the standard deviation $\sigma_\ell$ of the length profile $\ell(t)$:
-\begin{equation}
+\begin{equation}\label{eq:std_meas}
     \sigma_\ell^2 = \frac{1}{T} \sum_{t = 1}^{T} \Big(\ell(t) - L\Big)^2,
 \end{equation}
 using the usual definition of the population variance.
 
 %TODO possibly we want to use a different notion of length correlation
 But $\sigma_\ell$ does not contain any information of the relation of lengths between different times $t$.
-So an arguably more interesting observable is what we call the \emph{length correlation}:
-\begin{equation}
-    \rho_\ell(t) = \frac{1}{T \sigma_\ell^2} \sum_{t_0 = 1}^{T} \qty(\ell(t_0) - L)\qty(\ell(t_0 + t) - L),
+So an arguably more interesting observable is what we call the \emph{length covariance}:
+\begin{equation}\label{eq:cov_meas}
+    \rho_\ell(t) = \frac{1}{T} \sum_{t_0 = 1}^{T} \qty(\ell(t_0) - L)\qty(\ell(t_0 + t) - L),
 \end{equation}
-where this correlation is normalised such that $\rho_\ell(0) = 1$.
-Note that the length correlation is still a function of $t$ but this $t$ is the time difference between two time-slices, so there is no origin dependence.
+note that $\rho_\ell(0) = \sigma_\ell^2$.
+Important to note is that the length correlation is still a function of $t$ but this $t$ is the time difference between two time-slices, so there is no origin dependence.
 
 Both observables $\sigma_\ell$ and $\rho_\ell(t)$ do diverge for $N \rightarrow \infty$ as they will scale with $N$.
 How they will scale is at this point not known, but we hope they will scale in a well-behaved way such that with proper rescaling these observables may have a well-defined limit.

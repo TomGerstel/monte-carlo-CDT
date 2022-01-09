@@ -61,6 +61,18 @@ where the summation is now over all labelled triangulations. It is possible to s
 where $\Omega(n)$ denotes the number of labelled triangulations with $n$ triangles.
 
 \subsection{Continuum Limit}
+% Ik wil naar deze vergelijkingen kunnen verwijzen, ze mogen gerust verandert en verplaatst als ze maar ergens staan
+\begin{equation}\label{eq:cov_ell}
+    \text{Cov}\big[\ell(0), \ell(t)\big] = \Exp{\qty(\ell(0) - L)\qty(\ell(t) - L)}
+    = \frac{1}{2\Lambda} e^{- 2\abs{t}\sqrt{\Lambda}}
+\end{equation}
+\begin{equation}\label{eq:std_ell}
+    \sigma_\ell^2 = \text{Var}\big[\ell(t)\big] = \text{Cov}(t = 0)
+    = \frac{1}{2\Lambda}
+\end{equation}
+\begin{equation}\label{eq:exp_ell}
+    \Exp{\ell(t)} = \frac{1}{\sqrt{\Lambda}} = L
+\end{equation}
 
 % Describe continuum limit of CDT, mainly include things that will be used as observables later on.
 
