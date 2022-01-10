@@ -1,0 +1,9 @@
+Ricci
+timestep
+timeslice
+spacelike
+timeslices
+Eq
+oneother
+timelike
+simplices

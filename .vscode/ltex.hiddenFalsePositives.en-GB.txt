@@ -1,0 +1,6 @@
+{"rule":"MORFOLOGIK_RULE_EN_GB","sentence":"^\\QObservables that are often looked at are different notions of dimension, notably the spectral dimension \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q and Hausdorff dimension \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q, the latter of which has also been discussed in the case of Dynamical Triangulation in the course Monte Carlo Techniques.\\E$"}
+{"rule":"CD_NN","sentence":"^\\QIn that case the order 4 vertex would automatically move with the shard to its new location.\\E$"}
+{"rule":"CD_NN","sentence":"^\\QNote that this move preserves \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q: One order 4 vertex is always destroyed where the shard is taken, and one is always created where it is inserted.\\E$"}
+{"rule":"CD_NN","sentence":"^\\QThis is done in such a way that an order 4 vertex is created between the selected and inserted edges (see Fig.\\E$"}
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QIt would be very interesting to get a better view on how the results convergence under increasing \\E(?:Dummy|Ina|Jimmy-)[0-9]+$"}
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QIt would be very interesting to get a better view on how the results convergence under increasing \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q, but unfortunately we could not measure this within the time constraint of this project.\\E$"}
