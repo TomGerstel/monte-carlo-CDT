@@ -251,15 +251,15 @@ there is no such field in CDT, but the lattice itself should provide the informa
 
 The chosen observables should naturally not depend on any details of the implementation, like the use of labelling in our implementation.
 And for an observable to be of physical interest it should also have a well-defined limit for the amount of triangles $N \rightarrow \infty$.
-Observables that are often looked at are different notions of dimension, notably the \emph{spectral dimension} \cite{2012} and \emph{Hausdorff dimension} \cite{1998, 2012}, the latter of which has also been discussed in the case of Dynamical Triangulation in the course Monte Carlo Techniques. And a newer observable of interest is a certain notion of \emph{Quantum Curvature} -- a sort of extended notion of Ricci curvature which can be applied to the used triangulations and obeys a proper limit \cite{brunekreef2021}.
+Observables that are often looked at are different notions of dimension, notably the \emph{spectral dimension} \cite{2012} and \emph{Hausdorff dimension} \cite{1998, 2012}, the latter of which has also been discussed in the case of Dynamical Triangulations in the course Monte Carlo Techniques. And a newer observable of interest is a certain notion of \emph{Quantum Curvature} -- a sort of extended notion of Ricci curvature which can be applied to the used triangulations and obeys a proper limit \cite{brunekreef2021}.
 
 However since the focus of this project was more the implementation of a Markov Chain Monte Carlo simulation, and the measurements and analysis of these observables is somewhat involved, we only consider observables that are derived from the volume of the space-like slices.
 This means that in the case of 2D CDT we look at the \emph{length profile} $\ell(t)$ as explained earlier.
 
 \paragraph{Length profile}
-The length profile itself still depends on a certain choice of origin in $t$, while we consider a toroidal topology so any there is no preferred origin. Thus, any observable should have some sort of averaging over $t$.
+The length profile itself still depends on a certain choice of origin in $t$, while we consider a toroidal topology, so there is no preferred origin. Thus, any observable should have some sort of averaging over $t$.
 
-The simplest observable to consider is the average of $\ell(t)$, but this is trivially $L$ since the total amount timeslices and triangles and thus vertices is kept fixed.
+The simplest observable to consider is the average of $\ell(t)$, but this is trivially $L$ since the total amount of timeslices and triangles and thus vertices is kept fixed.
 So the simplest non-trivial observable we can think of is the standard deviation $\sigma_\ell$ of the length profile $\ell(t)$:
 \begin{equation}\label{eq:std_meas}
     \sigma_\ell^2 = \frac{1}{T} \sum_{t = 1}^{T} \Big(\ell(t) - L\Big)^2,
@@ -267,7 +267,7 @@ So the simplest non-trivial observable we can think of is the standard deviation
 using the usual definition of the population variance.
 
 %TODO possibly we want to use a different notion of length correlation
-But $\sigma_\ell$ does not contain any information of the relation of lengths between different times $t$.
+But $\sigma_\ell$ does not contain any information about the relation of lengths between different times $t$.
 So an arguably more interesting observable is what we call the \emph{length covariance}:
 \begin{equation}\label{eq:cov_meas}
     \rho_\ell(t) = \frac{1}{T} \sum_{t_0 = 1}^{T} \qty(\ell(t_0) - L)\qty(\ell(t_0 + t) - L),
