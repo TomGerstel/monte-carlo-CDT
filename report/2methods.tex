@@ -214,10 +214,10 @@ We start at a \verb|Triangle|, label all three vertices and store the triplet of
 Using \verb|right| we go to the next \verb|Triangle|, label the new vertex and store the triplet of vertices, making sure that the vertices which are already labelled do not get relabelled.
 This is repeated until we walk back to the original triangle of this timeslice, making sure that the last \verb|Triangle| in the timeslice introduces no new label as all three vertices have already been labelled.
 Then we move to the next timeslice by using a \verb|time|like neighbour of a \verb|Down|ward pointing triangle, and repeat the process.
-Note that for the layers after the first the bottom vertices have already been labelled, so one need to make sure these do not get relabelled.
+Note that for the layers after the first the bottom vertices have already been labelled, so one needs to make sure these do not get relabelled.
 This is repeated until the last timeslice before one is back in the original timeslice.
 Then we chose to use a cylindrical visualisation, which makes a cut in the real toroidal topology of the triangulation. So instead of linking the vertices of the first and last timeslice, we simply give the lower vertices of the first timeslice and upper vertices of the last timeslice different labels.
-One can create all triangles making up the full toroidal topology without creating a cut, but then one need to be really careful to make sure the labels of the upper vertices of the last timeslice correspond to the correct vertices.
+One can create all triangles making up the full toroidal topology without creating a cut, but then one needs to be really careful to make sure the labels of the upper vertices of the last timeslice correspond to the correct vertices.
 
 After the list of vertex labels and the triplets of these labels have been created, the coordinates of the vertices need to be determined, also called choosing the \emph{embedding}.
 We choose a timeslice preserving cylindrical embedding, where the vertices of a timeslice are equally spread around a circle with a circumference reflecting the length of that timeslice and subsequent timeslices are placed parallel to one other a corresponding distance away.
@@ -247,9 +247,9 @@ Finally, there are some parameters that are related to the Monte Carlo measureme
 % Maybe also explain how lengthprofile is obtained from implementation, as this is not entirely trivial and Timothy asked about this after the presentation
 Finding good observables to measure is quite challenging in (C)DT. This may partly be due to a lack of experimental data to compare simulations to.
 But also, where many Monte Carlo simulations in physics are concerned with describing the behaviour of fields on a lattice, naturally giving some combination of the field values as observables,
-there is no such field in CDT but the lattice itself should provide the information of interest.
+there is no such field in CDT, but the lattice itself should provide the information of interest.
 
-The chosen observables can of course not depend on any details of the implementation, like the use of labelling in our implementation.
+The chosen observables should naturally not depend on any details of the implementation, like the use of labelling in our implementation.
 And for an observable to be of physical interest it should also have a well-defined limit for the amount of triangles $N \rightarrow \infty$.
 Observables that are often looked at are different notions of dimension, notably the \emph{spectral dimension} \cite{2012} and \emph{Hausdorff dimension} \cite{1998, 2012}, the latter of which has also been discussed in the case of Dynamical Triangulation in the course Monte Carlo Techniques. And a newer observable of interest is a certain notion of \emph{Quantum Curvature} -- a sort of extended notion of Ricci curvature which can be applied to the used triangulations and obeys a proper limit \cite{brunekreef2021}.
 
