@@ -1,6 +1,6 @@
 \subsection{Quantum Gravity}
 
-A field of theoretical physics which still has many open questions is quantum gravity. One may notice that "quantum gravity" consists of two words: "quantum" and "gravity". The "gravity" aspect is quite well understood, and its content can be compactly summarised in the Einstein-Hilbert action
+A field of theoretical physics which still has many open questions is quantum gravity. One may notice that "quantum gravity" consists of two words: "quantum" and "gravity". The "gravity" aspect is quite well understood. In $d$ dimensions its content can be compactly summarised in the Einstein-Hilbert action
 \begin{equation}
     S[g_{\mu \nu}]
     =
@@ -9,7 +9,7 @@ A field of theoretical physics which still has many open questions is quantum gr
     \qty(R(x) - 2 \Lambda)
     ,
 \end{equation}
-where the integration is over the entire $d$-dimensional spacetime manifold $\mathcal{M}$. Here $R(x)$ is the Ricci curvature scalar, $g(x)$ is the determinant of the metric tensor $g_{\mu \nu}$, $G$ is Newton's gravitational constant and $\Lambda$ is the cosmological constant. Classical equations of motion can then be obtained via a variational principle by solving $\variation{S} = 0$.
+where the integration is over the entire spacetime manifold $\mathcal{M}$. Here $R(x)$ is the scalar curvature, $g(x)$ is the determinant of the metric tensor $g_{\mu \nu}$, $G$ is Newton's gravitational constant and $\Lambda$ is the cosmological constant. Classical equations of motion can then be obtained via a variational principle by solving $\variation{S} = 0$.
 
 A common approach to add the "quantum" aspect to any classical theory is by introducing a path integral. Since in our case the classical action is a functional of the metric $g_{\mu \nu}$, the path integral is given by
 \begin{equation}
@@ -23,46 +23,46 @@ But what does this actually mean? How could one explicitly carry out this integr
 
 \subsection{Causal Dynamical Triangulations}
 
-We somewhat avoid these questions by adopting a certain regularisation approach, namely Causal Dynamical Triangulations (CDT). Instead of trying to integrate over all continuously curved manifolds, we sum over piecewise flat manifolds that are constructed by gluing a certain class of flat building blocks together. In particular, these building blocks will be $d$-dimensional regular simplices with a flat Minkowskian interior. These simplices have squared edge lengths fixed at $\pm a^2$ (allowing space- and timelike edges), where $a$ is also a regularisation parameter. We foliate the manifold into $T$ $(d - 1)$-dimensional timeslices, labelled by $t = 0, \ldots T - 1$, connected by a single layer of $d$-dimensional simplices. Different manifolds can be obtained by changing the way simplices are connected. Now the regularised path integral can be written as
+We somewhat avoid these questions by adopting a certain regularisation approach, namely Causal Dynamical Triangulations (CDT). Instead of trying to integrate over all continuously curved manifolds, we sum over piecewise flat manifolds that are constructed by gluing a certain class of flat building blocks together. In particular, these building blocks will be $d$-dimensional regular simplices with a flat Minkowskian interior. These simplices have squared edge lengths fixed at $\pm a^2$ (allowing space- and timelike edges). Here $a$ is the regularisation parameter. The hope is that certain quantities will converge in the limit $a \to 0$. We foliate the manifold into $T$ $(d - 1)$-dimensional timeslices, labelled by $t = 0, \ldots T - 1$. Consecutive timeslices are connected by a single layer of $d$-dimensional simplices. Different manifolds can be obtained by changing the way simplices are connected. Hence, the functional integration over all metrics turns into a summation over connectivity prescriptions for triangulations. Now the regularised path integral can be written as
 \begin{equation}
     Z
     =
     \sum_{T \in \mathcal{T}} \frac{1}{C(T)} e^{i S[T]}
     ,
 \end{equation}
-where the summation is over all triangulations. Here $S[T]$ is the action and $C(T)$ is a symmetry factor for a given triangulation $T$\footnote{Unfortunately the symbol $T$ is the most natural choice for denoting both a particular triangulation, as well as the number of timeslices contained in such a triangulation. Hopefully it will be clear from context which of the two is used.}.
+where the summation is over all triangulations. Here $S[T]$ is the action and $C(T)$ is a symmetry factor for a given triangulation $T$\footnote{Unfortunately the symbol $T$ is the most natural choice for denoting both a particular triangulation, and the number of timeslices contained in such a triangulation. Hopefully it will be clear from context which of the two is used.}.
 
-\paragraph{Simplifications} To simplify matters, we only consider 2-dimensional spacetimes with periodic boundaries. The resulting topology is that of a 2-torus. Note that in this case each timeslice is just a ring of spacelike edges. The number of spacelike edges in timeslice $t$ is denoted by $\ell(t)$. With this in mind, we make a few useful observations:
+\paragraph{Simplifications} For simplicity and definiteness, we only consider 2-dimensional spacetimes with periodic boundaries. The resulting topology is that of a 2-torus. With this topology each timeslice is just a ring of spacelike edges. The number of spacelike edges in timeslice $t$ is denoted by $\ell(t)$. With this in mind, we make a few useful observations:
 \begin{itemize}
     \item All triangles have equal volume, so the total volume is proportional to the number of triangles.
-    \item The manifold is piecewise flat, meaning a Wick rotation is well-defined.
+    \item The manifold is piecewise flat, meaning a Wick rotation within each triangle is well-defined.
     \item In 2 dimensions the integrated scalar curvature is constant and therefore irrelevant for the dynamics.
 \end{itemize}
 Using these observations we find that the Euclidean action for a 2-dimensional triangulation $T$ is \cite{2012}
 \begin{equation}
     S[T] = \lambda N(T),
 \end{equation}
-where $\lambda$ is a dimensionless constant related to the cosmological constant $\Lambda$. For now we can just interpret it as a model parameter.
+where $N(T)$ is the number of triangles, and $\lambda$ is a dimensionless parameter related to the cosmological constant $\Lambda$.
 
-To simplify the symmetry factor $C(T)$ we label all triangles\footnote{This is of course also convenient when encoding the triangulation in a computer.}. Each triangulation can be labelled in $N(T)!$ ways, so the Euclidean path integral (or partition sum) becomes
+To simplify the symmetry factor $C(T)$ we label all triangles\footnote{This is of course also convenient when representing the triangulation in a computer.}. Each triangulation can be labelled in $N(T)!$ ways, so the Euclidean path integral (or partition sum) becomes
 \begin{equation}
     Z
     =
     \sum_{T_\ell \in \mathcal{T}_\ell} \frac{1}{N(T_\ell)!} e^{- \lambda N(T_\ell)}
     ,
 \end{equation}
-where the summation is now over all labelled triangulations. It is possible to split the partition sum into contributions with a certain number of triangles, as follows
+where the summation is now over all labelled triangulations. It is possible to split the partition sum into contributions with certain numbers of triangles, as follows
 \begin{equation}\label{eq:part_sum}
     Z
     =
     \sum_{N = 0}^\infty \Omega(N) \frac{e^{- \lambda N}}{N!}
     ,
 \end{equation}
-where $\Omega(N)$ denotes the number of labelled triangulations with $N$ triangles.
+where $\Omega(N)$ counts the number of labelled triangulations with $N$ triangles.
 
 \subsection{Continuum Limit}
 
-Since we are studying a regularised path integral, it is interesting to consider what happens if we let the regularisation parameter $a$ go to zero. In this continuum limit lengths and timespans scale as $L = a \ell$ and $T = a t$, respectively\footnote{Indeed, unfortunately there is yet another quantity for which $T$ is the most natural (and conventional) choice.}. The parameter $\lambda$ undergoes an additive renormalisation
+Since we are studying a regularised path integral, it is interesting to consider the limit $a \to 0$. In this continuum limit lengths and timespans scale as $L = a \ell$ and $T = a t$, respectively\footnote{Indeed, unfortunately there is yet another quantity for which $T$ is the most natural (and conventional) choice.}. The parameter $\lambda$ undergoes an additive renormalisation
 \begin{equation}
     \Lambda = \frac{\lambda - \ln 2}{a^2}
     .
@@ -83,7 +83,7 @@ In order to extract information from this continuum limit, it would be useful to
 \end{equation}
 where $I_1(x)$ is a modified Bessel function of the first kind.
 
-To be able to extract information from this propagator, we look at the limit $\sqrt{\Lambda} T \gg 1$. In this regime, we can approximate the propagator as
+To be able to extract information from this propagator, we consider the limit $\sqrt{\Lambda} T \gg 1$. In this regime, we can approximate the propagator as
 \begin{equation}
     G_\Lambda(L_1, L_2, T)
     \approx
@@ -94,19 +94,14 @@ In the limits $\sqrt{\Lambda} T_1, \sqrt{\Lambda} T_2 \gg 1$, the probability di
 \begin{equation}
     p(L)
     =
-    \frac{
-        G_\Lambda(L_1, L, T_1)
-        G_\Lambda(L, L_2, T_2)
-    }{
-        \int_0^\infty \dd{L}
-        G_\Lambda(L_1, L, T_1)
-        G_\Lambda(L, L_2, T_2)
-    }
+    \frac{1}{Z}
+    G_\Lambda(L_1, L, T_1)
+    G_\Lambda(L, L_2, T_2)
     =
     4 \Lambda L e^{-2 \sqrt{\Lambda} L}
-    .
+    ,
 \end{equation}
-We can then of course compute the mean of this probability distribution. It is given by
+where $Z$ is included to ensure proper normalisation. The mean of this distribution is
 \begin{equation}\label{eq:exp_ell}
     \ev{L} = \frac{1}{\sqrt{\Lambda}}.
 \end{equation}
@@ -116,23 +111,16 @@ And its variance is given by
     .
 \end{equation}
 
-The quantities we have discussed so far only describe the global behaviour of the typical length $L$ of a spacelike slice in our universe. While these provide useful checks on our model, we would also like to consider more interesting quantities that show how different lengths are related in time. In particular, we would like to compute the autocovariance of $L$ as a function of $T$. To this end we compute (in the limits $\sqrt{\Lambda} T_1, \sqrt{\Lambda} T_2 \gg 1$ but with $\sqrt{\Lambda} T = \mathcal{O}(1)$) the joint probability distribution
+The quantities we have discussed so far only describe the global behaviour of $L$. While these provide useful checks on our model, we would also like to consider quantities that show how different lengths are related in time. In particular, we would like to compute the autocovariance of $L$ as a function of $T$. To this end we compute (in the limits $\sqrt{\Lambda} T_1, \sqrt{\Lambda} T_2 \gg 1$ but with $\sqrt{\Lambda} T = \mathcal{O}(1)$) the joint probability distribution
 \begin{equation}
     p(L(0), L(T); T)
     =
-    \frac{
-        G_\Lambda(L_1, L(0), T_1)
-        G_\Lambda(L(0), L(T), T)
-        G_\Lambda(L(T), L_2, T_2)
-    }{
-        \int_0^\infty \dd{L(0)} \int_0^\infty \dd{L(T)}
-        G_\Lambda(L_1, L(0), T_1)
-        G_\Lambda(L(0), L(T), T)
-        G_\Lambda(L(T), L_2, T_2)
-    }
-    ,
+    \frac{1}{Z}
+    G_\Lambda(L_1, L(0), T_1)
+    G_\Lambda(L(0), L(T), T)
+    G_\Lambda(L(T), L_2, T_2),
 \end{equation}
-where $T > 0$. From this probability distribution we can compute the expectation value
+where $T > 0$ and again $Z$ ensures proper normalisation. From this probability distribution we can compute the expectation value
 \begin{equation}
     \ev{L(0) L(T)}(T)
     =
@@ -149,9 +137,9 @@ where the absolute value comes from the fact that by symmetry $T$ and $-T$ shoul
     .
 \end{equation}
 
-Later on these quantities will be measured on the discrete model. In order to compare to these quantities, one needs to make the substitutions $L = a \ell$ and $T = a t$. The observables are rescaled in the obvious way as $\sigma_L = a \sigma_\ell$ and $\gamma_L = a^2 \gamma_\ell$, such that all factors of $a$ match. The cosmological constant $\Lambda$ can be related using Eq. \eqref{eq:exp_ell}, resulting in
+Later on these quantities will be measured on the discrete model. In order to compare discrete and continuum quantities, one needs to make the substitutions $L = a \ell$ and $T = a t$. The observables are rescaled in the obvious way as $\sigma_L = a \sigma_\ell$ and $\gamma_L = a^2 \gamma_\ell$, such that all factors of $a$ match. The cosmological constant $\Lambda$ can be rescaled using Eq. \eqref{eq:exp_ell}, resulting in
 \begin{equation}
     \Lambda = \frac{1}{a^2 \ev{\ell}^2}
     .
 \end{equation}
-However, in our implementation of the discrete model $\ev{\ell}$ will be fixed, and its value must be provided as an input parameter $L$\footnote{Yet another unfortunate naming convention: in this context $L$ is a discrete parameter provided as an input for the model, whereas before it denoted the continuous length of some spacelike slice.} (See section \ref{sec:implementation}).
+However, in our implementation of the discrete model $\ev{\ell}$ will be fixed, and its value must be provided as an input parameter\footnote{Yet another unfortunate naming convention: in this context $L$ is a discrete parameter provided as an input for the model, whereas before it denoted the continuous length of some spacelike slice.} $L$ (See section \ref{sec:implementation}).
