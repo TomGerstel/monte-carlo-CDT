@@ -42,7 +42,7 @@ Using these observations we find that the Euclidean action for a 2-dimensional t
 \begin{equation}
     S[T] = \lambda N(T),
 \end{equation}
-where $\lambda$ is a constant related to the cosmological constant $\Lambda$. For now we can just interpret it as a model parameter.
+where $\lambda$ is a dimensionless constant related to the cosmological constant $\Lambda$. For now we can just interpret it as a model parameter.
 
 To simplify the symmetry factor $C(T)$ we label all triangles\footnote{This is of course also convenient when encoding the triangulation in a computer.}. Each triangulation can be labelled in $N(T)!$ ways, so the Euclidean path integral (or partition sum) becomes
 \begin{equation}
@@ -55,24 +55,103 @@ where the summation is now over all labelled triangulations. It is possible to s
 \begin{equation}\label{eq:part_sum}
     Z
     =
-    \sum_{n = 0}^\infty \Omega(n) \frac{e^{- \lambda n}}{n!}
+    \sum_{N = 0}^\infty \Omega(N) \frac{e^{- \lambda N}}{N!}
     ,
 \end{equation}
-where $\Omega(n)$ denotes the number of labelled triangulations with $n$ triangles.
+where $\Omega(N)$ denotes the number of labelled triangulations with $N$ triangles.
 
 \subsection{Continuum Limit}
-% Ik wil naar deze vergelijkingen kunnen verwijzen, ze mogen gerust verandert en verplaatst als ze maar ergens staan
-\begin{equation}\label{eq:cov_ell}
-    \text{Cov}\big[\ell(0), \ell(t)\big] = \Exp{\qty(\ell(0) - L)\qty(\ell(t) - L)}
-    = \frac{1}{2\Lambda} e^{- 2\abs{t}\sqrt{\Lambda}}
+
+Since we are studying a regularised path integral, it is interesting to consider what happens if we let the regularisation parameter $a$ go to zero. In this continuum limit lengths and timespans scale as $L = a \ell$ and $T = a t$,respectively\footnote{Indeed, unfortunately there is yet another quantity for which $T$ is the most natural (and conventional) choice.}. The parameter $\lambda$ undergoes an additive renormalisation
+\begin{equation}
+    \Lambda = \frac{\lambda - \ln 2}{a^2}
+    .
 \end{equation}
-\begin{equation}\label{eq:std_ell}
-    \sigma_\ell^2 = \text{Var}\big[\ell(t)\big] = \text{Cov}(t = 0)
-    = \frac{1}{2\Lambda}
+
+In order to extract information from this continuum limit, it would be useful to have an expression for the continuum propagator. In this context, the propagator is proportional to the probability that a spacelike slice of length $L_1$ evolves into a slice of length $L_2$ over some time interval of size $T$. Fortunately, an analytic expression for this propagator has been found, and it is given by the beautiful expression \cite{1998}
+\begin{equation}
+    G_\Lambda(L_1, L_2, T)
+    =
+    \frac{
+        e^{-\qty[\coth \sqrt{\Lambda} T] \sqrt{\Lambda} (L_1 + L_2)}
+    }{
+        \sinh \sqrt{\Lambda} T
+    }
+    \frac{\sqrt{\Lambda L_1 L_2}}{L_2}
+    I_1 \qty(\frac{2 \sqrt{\Lambda L_1 L_2}}{\sinh \sqrt{\Lambda} T})
+    ,
 \end{equation}
+where $I_1(x)$ is a modified Bessel function of the first kind.
+
+To be able to extract information from this propagator, we look at the limit $\sqrt{\Lambda} T \gg 1$. In this regime, we can approximate the propagator as
+\begin{equation}
+    G_\Lambda(L_1, L_2, T)
+    \approx
+    4 \Lambda L_1 e^{-\sqrt{\Lambda} (L_1 + L_2 + T)}
+    .
+\end{equation}
+In the limits $\sqrt{\Lambda} T_1, \sqrt{\Lambda} T_2 \gg 1$, the probability distribution\footnote{Note that due to the large time regime we restrict ourselves to, we expect this distribution to be independent of the time at which $L$ is considered.} for the length $L$ is given by
+\begin{equation}
+    p(L)
+    =
+    \frac{
+        G_\Lambda(L_1, L, T_1)
+        G_\Lambda(L, L_2, T_2)
+    }{
+        \int_0^\infty \dd{L}
+        G_\Lambda(L_1, L, T_1)
+        G_\Lambda(L, L_2, T_2)
+    }
+    =
+    4 \Lambda L e^{-2 \sqrt{\Lambda} L}
+    .
+\end{equation}
+We can then of course compute the mean of this probability distribution. It is given by
 \begin{equation}\label{eq:exp_ell}
-    \Exp{\ell(t)} = \frac{1}{\sqrt{\Lambda}} = L
+    \ev{L} = \frac{1}{\sqrt{\Lambda}}.
+\end{equation}
+And its variance is given by
+\begin{equation}\label{eq:std_ell}
+    \sigma_L^2 = \ev{L^2} - \ev{L}^2 = \frac{1}{2 \Lambda}
+    .
 \end{equation}
 
-% Describe continuum limit of CDT, mainly include things that will be used as observables later on.
+The quantities we have discussed so far only describe the global behaviour of the typical length $L$ of a spacelike slice in our universe. While these provide useful checks on our model, we would also like to consider more interesting quantities that show how different lengths are related in time. In particular, we would like to compute the autocovariance of $L$ as a function of $T$. To this end we compute (in the limits $\sqrt{\Lambda} T_1, \sqrt{\Lambda} T_2 \gg 1$ but with $\sqrt{\Lambda} T = \mathcal{O}(1)$) the joint probability distribution
+\begin{equation}
+    p(L(0), L(T); T)
+    =
+    \frac{
+        G_\Lambda(L_1, L(0), T_1)
+        G_\Lambda(L(0), L(T), T)
+        G_\Lambda(L(T), L_2, T_2)
+    }{
+        \int_0^\infty \dd{L(0)} \int_0^\infty \dd{L(T)}
+        G_\Lambda(L_1, L(0), T_1)
+        G_\Lambda(L(0), L(T), T)
+        G_\Lambda(L(T), L_2, T_2)
+    }
+    ,
+\end{equation}
+where $T > 0$. From this probability distribution we can compute the expectation value
+\begin{equation}
+    \ev{L(0) L(T)}(T)
+    =
+    \frac{e^{-2 \sqrt{\Lambda} \abs{T}}}{2 \Lambda} + \frac{1}{\Lambda}
+    ,
+\end{equation}
+where the absolute value comes from the fact that by symmetry $T$ and $-T$ should give the same result. Then we find that the autocovariance is
+\begin{equation}\label{eq:cov_ell}
+    \gamma_L(T)
+    =
+    \ev{L(0) L(T)} - \ev{L(0)} \ev{L(T)}
+    =
+    \frac{e^{-2 \sqrt{\Lambda} \abs{T}}}{2 \Lambda}
+    .
+\end{equation}
 
+Later on these quantities will be measured on the discrete model. In order to compare to these quantities, one needs to make the substitutions $L = a \ell$ and $T = a t$. The observables are rescaled in the obvious way as $\sigma_L = a \sigma_\ell$ and $\gamma_L = a^2 \gamma_\ell$, such that all factors of $a$ match. The cosmological constant $\Lambda$ can be related using Eq. \eqref{eq:exp_ell}, resulting in
+\begin{equation}
+    \Lambda = \frac{1}{a^2 \ev{\ell}^2}
+    .
+\end{equation}
+However, in our implementation of the discrete model $\ev{\ell}$ will be fixed and its value must be provided as an input parameter $L$\footnote{Yet another unfortunate naming convention: in this context $L$ is a discrete parameter provided as an input for the model, whereas before it denoted the continuous length of some spacelike slice.} (See section \ref{sec:implementation}).
