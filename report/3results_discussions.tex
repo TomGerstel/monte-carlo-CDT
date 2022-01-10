@@ -171,7 +171,7 @@ Now, to compare these measurement results to theory it is important to realise t
 An alternative is to visualise the theoretical covariance alongside the measured covariance such that we can at least visually inspect whether the data matches the expected results.
 To plot the theoretical covariance \eqref{eq:cov_ell}, a value for $\Lambda$ is required.
 The obvious choice is to let $\Lambda = 1/L^2$ as is theoretically expected.
-However, we know from the measurements of $\sigma_\ell$ that it is underestimated, and since $\sigma_\ell^2$ is precisely the normalisation of the covariance using $\Lambda = 1/L^2$ would mean we have this underestimation for all $t$.
+However, we know from the measurements of $\sigma_\ell$ that it is underestimated. And since $\sigma_\ell^2$ is precisely the normalisation of the covariance, using $\Lambda = 1/L^2$ would mean we have this underestimation for all $t$.
 And because we already analysed $\sigma_\ell$, the absolute magnitude of the covariance is not that interesting; it is much more interesting to look whether the exponent of the covariance matches theoretical expectations.
 For this reason, we use the values of $\Lambda$ estimated for the different $L$ as seen in Fig. \ref{fig:Lambda_estimate}, such that we can check whether the rate of decay relates to the respective estimate of $\Lambda$ in the correct way.
 The theoretical covariance with these $\Lambda$ are also plotted in Fig. \ref{fig:cov_plot} in red, but are not very clearly visible.
@@ -200,7 +200,7 @@ The results of scaling are displayed in Fig. \ref{fig:cov_collapsed} as well as 
 \end{figure}
 From these plots it is evident that the curves collapse well for small $t$, and that there are discrepancies for larger $t$ as expected.
 
-To make this more quantitative we would want to fit the expected covariance with a general exponential function and compare the different estimation of $\Lambda$ as a result of this fit to each other and to $L$.
+To make this more quantitative we would want to fit the expected covariance with a general exponential function and compare the different estimations of $\Lambda$ as a result of this fit to each other and to $1/L^2$.
 However, to be able to fit an exponential we need a large enough part of the covariance $\rho_\ell(t)$ for which $t$ can be considered `small'.
 This means that $T$ needs to be larger for a given $L$ than we currently use.
 It may also be possible to include higher order terms in the theoretical prediction of the covariance such that the theoretical prediction is valid for larger $t$.
@@ -221,17 +221,10 @@ However, since the computation time increases with $N^{3/2}$, this put constrain
 The determination of the equilibration time and correlation time is important to performing the simulation.
 However, for this project great effort was taken to determine these times to reasonable accuracy to be able to predict $t_\text{eq}$ and $t_\text{cor}$ for any given $T$ and $L$.
 Knowing the computational effort that went into determining these still rather inaccurate predictions, doing it this way is likely not worth it; it is much more fruitful to pick the system sizes one wishes to simulate carefully and determine the equilibration and correlation time for these systems specifically.
-Unfortunately, we only later in the project realised what the interesting system sizes were, so we could not optimally use the determined $t_\text{eq}$ and $t_\text{cor}$ anyway.
+Unfortunately, we only later in the project realised what the interesting system sizes were $L \ll T$, so we could not optimally use the determined $t_\text{eq}$ and $t_\text{cor}$ anyway.
+Experience showed that taking the determined $t_\text{eq} = 200 \, \text{sweeps}$ as burn-in time is also sufficient in this regime, and that the correlation time still scales with $N^{3/2}$ for a constant $T/L$ ratio, however the crude approximation of $t_\text{cor}$ does not seem to be accurate at higher $T/L$ ratio's.
 Also, although we expect $t_\text{eq}$ to be independent of $T$, it should be checked to really make sure any system one does measurements one is thermalised.
 If this is not the case and the total amount of measurements is low, the first few measurements could contribute to a significant error to the end results.
 
 Finally, there are many more interesting observable to measure in 2D CDT, some of which are already discussed in section \ref{sec:observables}.
 If the time permits it is highly recommended measuring some of these observables, but we could not find the time in this project to look at these.
-
-%TODO%
-% Maybe include the discussion of missing dependence on T for equilibration time?
-
-\paragraph{from pre analysis} Later in the project we realised that the system sizes of interest were those where $L \ll T$, which is not the case for the systems the equilibration time and correlation time are measured for.
-Re-computation of these quantities takes a lot of computational effort, and there was unfortunately not enough time available to do this.
-Experience showed that taking $200 \, \text{sweeps}$ as burn-in time is also sufficient in this regime, and that the correlation time still scales with $N^{3/2}$ for a constant $T/L$ ratio.
-The crude approximation for the correlation time does however not seem to be accurate for larger $T/L$ ratio's, as the correlation times seem lower than this estimate would suggest.
