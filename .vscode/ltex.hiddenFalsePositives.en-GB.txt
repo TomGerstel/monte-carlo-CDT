@@ -4,3 +4,4 @@
 {"rule":"CD_NN","sentence":"^\\QThis is done in such a way that an order 4 vertex is created between the selected and inserted edges (see Fig.\\E$"}
 {"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QIt would be very interesting to get a better view on how the results convergence under increasing \\E(?:Dummy|Ina|Jimmy-)[0-9]+$"}
 {"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QIt would be very interesting to get a better view on how the results convergence under increasing \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q, but unfortunately we could not measure this within the time constraint of this project.\\E$"}
+{"rule":"DT_JJ_NO_NOUN","sentence":"^\\QThat this relation holds can be easily seen from Euler's Formula: V - E + F = 0 for a 2-torus.\\E$"}
