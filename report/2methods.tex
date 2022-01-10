@@ -174,7 +174,7 @@ Because $N$ is fixed it is clear that this move obeys detailed balance. Note tha
 \paragraph{Data Structures}
 % triangles have local information -> faster markov chain
 % order 4 list
-How can one actually save a triangulation inside a computer? There are of course more than one ways to approach this. By far the most common operation of the simulation is performing Markov Chain steps. It therefore makes sense to choose a data structure in which it is easy (i.e. fast) to execute these updates. Thus we choose to store only adjacency information.
+How can one actually save a triangulation inside a computer? There are of course multiple ways to approach this. By far the most common operation of the simulation is performing Markov Chain steps. It therefore makes sense to choose a data structure in which it is easy (i.e. fast) to execute these updates. Thus, we choose to store only adjacency information.
 
 In particular, we keep a list of all \verb|triangles|. Then for each \verb|Triangle| we store three labels corresponding to each of their neighbours (neighbours to the \verb|left|, \verb|right| and in the \verb|time|like directions), as well as its \verb|Orientation| (whether it points \verb|Up| or \verb|Down|). Finally, for convenience a list of \verb|order_four| vertices is stored (labelled by the \verb|Triangle| northwest of the vertex). All of this information is stored in a \verb|Universe| structure. In pseudocode the \verb|Universe| is defined as:
 \begin{verbatim}
@@ -198,20 +198,54 @@ With these data structures the implementation of the moves is relatively straigh
 
 In order to actually execute the shard move, six pairs of neighbours need to be reassigned, and a single \verb|order_four| vertex is moved\footnote{If the order 4 vertices were labelled by the triangles northeast of them, even this would not be necessary. In that case the order 4 vertex would automatically move with the shard to its new location. Unfortunately we only realised this near the very end of the project.}. For the flip move, two pairs of neighbours need to be updated. There are two vertices that might become \verb|order_four|, these should be checked individually. Additionally, there are two that, if they were \verb|order_four| before the move, they certainly no longer are afterwards. These four vertices are marked with green circles in Fig. \ref{fig:flip_move}.
 
+Note that by performing the moves in this way in this data structure, the computational effort of performing a move does not scale with the size of the lattice and the computational complexity is $\order{1}$
+
 \paragraph{Length Measurements}
 % Explain how length profile is measured
-
 So far we have focussed on how the update rules are implemented. However, another very important aspect of the simulation is doing measurements. Perhaps the most obvious thing one can measure on a triangulation is the volume of each timeslice. In our case, each timeslice is a one-dimensional ring, so its volume (or length) can be described by the number of edges (or equivalently the number of vertices) it consists of. Doing this for every timeslice $t$ results in a \emph{length profile} $\ell(t)$. All other observables considered in this work are derived from $\ell(t)$, see \ref{sec:observables} for more details.
 
-But how can this measurement be implemented in our \verb|Universe|? First we choose (it does not really matter how) a \verb|Triangle| to use as reference. We keep walking to the \verb|right| until we reach the original \verb|Triangle| again. The amount of \verb|Up|ward pointing \verb|Triangle|s we passed is then the length $\ell(0)$ of the first timeslice. We can then move to the next timeslice by going to the \verb|time|like neighbour of a \verb|Down|ward pointing \verb|Triangle|. This is repeated until we encounter the first \verb|Triangle| again.
+But how can this measurement be implemented in our \verb|Universe|? First we choose (it does not really matter how) a \verb|Triangle| to use as reference. We keep walking to the \verb|right| until we reach the original \verb|Triangle| again. The amount of \verb|Up|ward pointing \verb|Triangle|s we passed is then the length $\ell(0)$ of the first timeslice, specifically of the lower boundary timeslice as we count length by the amount of spacelike edges. We can then move to the next timeslice by going to the \verb|time|like neighbour of a \verb|Down|ward pointing \verb|Triangle|. This is repeated until we encounter the first \verb|Triangle| again.
 
-\paragraph{Commandline Interface}
+Note that taking this measurement has a computational complexity of $\order{N}$ as it needs to loop through all triangles.
+As measurements need to happen far less frequently than performing Markov chain Monte Carlo moves it makes sense to choose a data structure for which the moves have lower computational complexity.
+
+\paragraph{Visualisation}
+Besides being able to inspect the length profile, it is also interesting to be able to visually inspect the triangulation directly.
+To be able to do this we recreate the triangles from vertices with coordinates to create a mesh which can then be encoded in a standard computer graphics mesh format or directly rendered by \textsc{Wolfram Mathematica} as we did.
+
+To do this, a list of vertices needs to be created which are linked to the triangles they form the corners of.
+This is done similarly to the length profile measurements.
+We start at a \verb|Triangle|, label all three vertices and store the triplet of the vertices making up the triangles in clockwise fashion.
+Using \verb|right| we go to the next \verb|Triangle|, label the new vertex which is part of this triangle and store the triplet of vertices making sure that the vertices which are already labelled do not get relabelled.
+This is repeated until we walk back to the original triangle of this timeslice, making sure that the last \verb|Triangle| in the timeslice introduces no new label as all three vertices have already been labelled.
+Then we move to the next timeslice by using a \verb|time|like neighbour of a \verb|Down|ward pointing, and repeat the process.
+Note that for the layers after the first the bottom vertices have already been labelled, so one need to make sure these do not get relabelled.
+This is repeated until the last timeslice before one is back in the original timeslice.
+Then we chose to use a cylindrical visualisation, which makes a cut in the real toroidal topology of the triangulation. So instead of linking the vertices of the first and last timeslice, we simply give the lower vertices of the first timeslice and upper vertices of the last timeslice different labels.
+One can create all triangles making up to full toroidal topology without creating a cut, but then one need to be really careful to make sure the labels of the upper vertices of the last timeslice correspond to the correct vertices.
+
+After the list of vertex labels and the triplets of these labels have been created, the coordinates of the vertices need to be determined also called choosing the \emph{embedding}.
+We choose a timeslice preserving cylindrical embedding, where the vertices of a timeslice are equally spread around a circle with a circumference reflecting the length of that timeslice and subsequent timeslices are placed parallel to one other a corresponding distance away.
+This has the result that all spacelike edges are roughly the same length as one other and as the distance between timeslices. The relative rotation of the timeslices is chosen such that one of the timelike edges has the shortest distance possible between the timeslices; an alternative choice of rotation is to choose it such that the average length of the timelike edges is minimal.
+Using this method we can produce visualisations of the triangulations like the one 
+displayed in Fig. \ref{fig:triangulation_visualisation}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/triangulation.pdf}
+    \caption{A visualisation of a small triangulation using a timeslice preserving cylindrical embedding}
+    \label{fig:triangulation_visualisation}
+\end{figure}
+
+\paragraph{Command-line Interface}
 % explain all relevant input parameters of the cli
 In order to actually run a simulation, we of course need to provide some concrete parameter values. The most obvious ones are related to the system size. The number of triangles is fixed, so that would seem like a logical input parameter. However, instead we choose to provide the number of timeslices $T$ and the initial length per timeslice $L$ as input. The total number of triangles is then $N = 2 T L$. This makes it easier to change $T$ and $L$ independently of each other.
 
-Another input paramter has to do with the fact that we are using two different types of Markov Chain moves. We need some way of choosing between these two moves. Therefore, we introduce a move rate $r$. In particular $r$ is the probability that any given move will be a shard move. Note that introducing this rate $r$ does not affect detailed balance: we simply multiply both sides of the detailed balance equation by $r$ (for the shard move) or $1 - r$ (for the flip move). This move ratio can be set separately for the equilibration phase and the measurement phase.
+Another input parameter has to do with the fact that we are using two different types of Markov Chain moves. We need some way of choosing between these two moves. Therefore, we introduce a move rate $r$. In particular $r$ is the probability that any given move will be a shard move. Note that introducing this rate $r$ does not affect detailed balance: we simply multiply both sides of the detailed balance equation by $r$ (for the shard move) or $1 - r$ (for the flip move). This move ratio can be set separately for the equilibration phase and the measurement phase.
 
-Finally, there are some parameters that are related to the Monte Carlo measurements. The obvious one is of course which observable is measured: the whole length profile $\ell(t)$ or only its standard deviation $\sigma_\ell$. Other parameters include the number of measurements to take, the number of sweeps\footnote{A sweep is defined as $2 T L$ Markov Chain steps.} inbetween measurements, the length of the equilibration phase and a path to which the data is written.
+Finally, there are some parameters that are related to the Monte Carlo measurements. The obvious one is of course which observable is measured: the whole length profile $\ell(t)$ or only its standard deviation $\sigma_\ell$. Other parameters include the number of measurements to take, the number of sweeps\footnote{A sweep is defined as $2 T L$ Markov Chain steps.} in-between measurements, the length of the equilibration phase and a path to which the data is written.
+
+
 
 \subsection{Observables} \label{sec:observables}
 % Explain choice of observables, possibly alternatives that were considered but not measured

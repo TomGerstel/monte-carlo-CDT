@@ -187,12 +187,52 @@ The theoretical covariance with these $\Lambda$ are also plotted in Fig. \ref{fi
 So to see the relevant behaviour at small $t$ better, Fig. \ref{fig:cov_log_plot} show the same data for small $t$ with a logarithmic $y$-axis.
 
 From Fig. \ref{fig:cov_log_plot} it appears that for small $t$ the measured covariance is indeed linear as expected for the logarithmic plot. And comparing it to the theoretical covariance plotted in red, it seems that the measured covariance also shows the correct exponent, represented by the slope in the logarithmic plot.
-For larger $t$ there is deviation from this lea... %TODO continue here%
-% \input{timothys_mail.tex}
+For larger $t$ there is deviation from the theoretical line, which it to be expected as the theoretical equation has higher order corrections for larger $t$.
 
+Another way to visualise how well the covariance for different $L$ fit the theoretically expected covariance \eqref{eq:cov_ell} is to scale the covariance and the time difference $t$ such that all covariance measurements should collapse around one curve.
+To do this we scale the covariance by $2\Lambda$ and $t$ by $1/2\sqrt{\Lambda}$, such that all curves should collapse around $\exp(-t)$.
+The results of scaling are displayed in Fig. \ref{fig:cov_collapsed} as well as a logarithmic plot for small $t$ in Fig. \ref{fig:cov_log_collapsed}, along with $\exp(-t)$ in red.
+\begin{figure}[ht]
+    \begin{minipage}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/cov_collapsed.pdf}
+        \caption{Scaled covariance with reference collapse function in red.}
+        \label{fig:cov_collapsed}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/cov_collapsed_log.pdf}
+        \caption{Logarithmic plot of scaled covariance.}
+        \label{fig:cov_log_collapsed}
+    \end{minipage}
+\end{figure}
+From these plots it is evident that the curves collapse well for small $t$, and that there are discrepancies for larger $t$ as expected.
+
+To make this more quantitative we would want to fit the expected covariance with a general exponential function and compare the different estimation of $\Lambda$ as a result of this fit to each other and to $L$.
+However, to be able to fit an exponential we need a large enough part of the covariance $\rho_\ell(t)$ for which $t$ can be considered `small'.
+This means that $T$ needs to be larger for a given $L$ than we currently use.
+It may also be possible to include higher order terms in the theoretical prediction of the covariance such that the theoretical prediction is valid for larger $t$.
+Finally, since what we really want is to find the exponent of Eq. \eqref{eq:cov_ell} for small $t$ and this is equal to the slope at $t = 0$, we might be able to get a reasonable approximation of this slope by considering only the first few points and for example using spline interpolation or a polynomial fit to find the slope at $t=0$.
+
+% \input{timothys_mail.tex}
 
 
 \subsection{Discussion}
 % Discussion of the interpretation and validity of the results
 % Explaination of the difficulties in determining useful results
 % Suggestions on improving these measurements
+The measurements of the standard deviation $\sigma_\ell$ and of the covariance $\rho_\ell(t)$ agree with the theoretical predictions.
+The main concern is the found results have a systematic underestimation of the standard deviation and thus also the covariance as explained due to finite $T$.
+So, what should really be done to better understand the dependence of the results on $T$ is to repeat these measurements on different $T/L$ ratio's.
+However, since the computation time increases with $N^{3/2}$, this put constraints on system sizes that can be simulated within a reasonable amount of time.
+
+The determination of the equilibration time and correlation time is important to performing the simulation.
+However, for this project great effort was taken to determine these times to reasonable accuracy to be able to predict $t_\text{eq}$ and $t_\text{cor}$ for any given $T$ and $L$.
+Knowing the computational effort that went into determining these still rather inaccurate predictions, doing it this way is likely not worth it; it is much more fruitful to pick the system sizes one wishes to simulate carefully and determine the equilibration and correlation time for these systems specifically.
+Unfortunately, we only later in the project realised what the interesting system sizes were, so we could not optimally use the determined $t_\text{eq}$ and $t_\text{cor}$ anyway.
+Also, although we expect $t_\text{eq}$ to be independent of $T$, it should be checked to really make sure any system one does measurements one is thermalised.
+If this is not the case and the total amount of measurements is low, the first few measurements could contribute to a significant error to the end results.
+
+Finally, there are many more interesting observable to measure in 2D CDT, some of which are already discussed in section \ref{sec:observables}.
+If the time permits it is highly recommended measuring some of these observables, but we could not find the time in this project to look at these.

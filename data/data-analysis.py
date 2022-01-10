@@ -200,19 +200,19 @@ for ci, i in enumerate(seq):
 t = np.linspace(-1, 20.0, 100)
 plt.plot(t, np.exp(-t), color='r', alpha=0.7, label=r'ref: $e^{-t}$')
 
-# ## Linear scale
-# plt.xlim(-0.5, 20.0)
-# plt.ylim(-0.2, 1.1)
-## First part log scale
-plt.xlim(-0.1, 1.8)
-plt.yscale('log')
-plt.yticks([1., 0.1])
-plt.ylim(0.03, 1.5)
+## Linear scale
+plt.xlim(-0.5, 20.0)
+plt.ylim(-0.2, 1.1)
+# ## First part log scale
+# plt.xlim(-0.1, 1.8)
+# plt.yscale('log')
+# plt.yticks([1., 0.1])
+# plt.ylim(0.03, 1.5)
 
 plt.legend()
 
-plt.xlabel("$2 t \sqrt{\Lambda}$ (time difference)")
-plt.ylabel("$1 / 2\Lambda$ Covariance in $L$")
+plt.xlabel("$2 t \sqrt{\Lambda}$ (scaled time difference)")
+plt.ylabel("$2 \Lambda \cdot$ Covariance in $L$")
 plt.title(r"Covariance collapse, with $Cov[L(0), L[t]] = e^{- 2 \,t \,\sqrt{\Lambda}} / 2\Lambda$")
-# plt.savefig("cov_collapsed_log.pdf", bbox_inches='tight')
+# plt.savefig("cov_collapsed.pdf", bbox_inches='tight')
 plt.show()
