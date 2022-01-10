@@ -4,7 +4,7 @@ In this section we will present and discuss the results found for these observab
 
 \subsection{Pre-analysis}
 % Determination of the equilibration time and correlation time
-Before the actual measurements can be performed some data analysis need to be done beforehand.
+Before the actual measurements can be performed some data analysis need to be done.
 
 \paragraph{Equilibration}
 To be able to take measurements of the wanted observables in the Markov-chain Monte Carlo simulation the system needs to be thermalised. Which is to say that the system should be in a ``typical'' state, such that the expectation value of an observable at any timestep in the simulation is the same as that of any other.
@@ -27,7 +27,7 @@ This works well because initially $\sigma_\ell = 0$ as the starting triangulatio
     \begin{minipage}[t]{0.48\linewidth}
         \centering
         \includegraphics[width=0.95\linewidth]{img/teq-Ldep.pdf}
-        \caption{Equilibration time for different sizes of $L$, based on 10 samples for each system size. Determined at move ratio $r=0.4$.}
+        \caption{Equilibration time for different sizes of $L$, based on 10 samples for each system size. Determined at move rate $r=0.4$.}
         \label{fig:teq_Ldep}
     \end{minipage}
 \end{figure}
@@ -38,7 +38,7 @@ Then instead of determining the equilibration time for every system we wish to m
 To do this we measured $t_\text{eq}$ for different values of $L$ and repeated each measurement 10 times to obtain more accurate results and get an estimate of the error in the results.
 This yields the results in terms of sweeps presented in Fig. \ref{fig:teq_Ldep} (note that $N = 2 L T$).
 
-The found results show no clear dependence of $t_\text{eq}$ on the system size, and since we only wish to obtain an order estimate of it seems reasonable to assume that \emph{in terms of sweeps} the equilibration time is independent of the system size.
+The found results show no clear dependence of $t_\text{eq}$ on the system size, and since we only wish to obtain an order of magnitude estimate, it seems reasonable to assume that \emph{in terms of sweeps} the equilibration time is independent of the system size.
 We then take the equilibration time to be $t_\text{eq} = 200 \, \text{sweeps}$ for all simulations to be safe.
 This is a very crude approximation of the equilibration time, but since $200 \, \text{sweeps}$ is relatively small it seems unnecessary to put more work in a better estimate of the equilibration time.
 
@@ -50,7 +50,7 @@ Having many correlated measurements is not useful as they do not make the final 
 Moreover, to be able to make and estimate of the error in the final results, it is crucial to know the correlation between measurements.
 
 To estimate the correlation time we will again use $\sigma_\ell$ as observable, as this is much easier than using the function $\rho_\ell(t)$.
-The correlation time is then estimated as usual by determining the \emph{autocorrelation} of the standard deviation observable over for time:
+The correlation time is then estimated as usual by determining the \emph{autocorrelation} of the standard deviation observable over time:
 \begin{equation*}
     \rho(t) = \frac{1}{Z} \, \sum_{i = 1}^{M - t} \qty(\sigma_{\ell, i} - \bar{\sigma}_\ell) \qty(\sigma_{\ell, i + t} - \bar{\sigma}_\ell),
 \end{equation*}
@@ -60,18 +60,18 @@ Now for long enough measurements we expect that the autocorrelation follows expo
 So to estimate $t_\text{cor}$ we simulate a long trace of $\sigma_\ell$ and fit an exponential decay to the autocorrelation of that trace.
 To estimate the error on the estimate of the correlation time we can repeat the measurements several times; or we can simulate a very long trace and divide the trace up in batches which we treat as separate measurements, which simply saves on thermalisation.
 
-We would like the autocorrelation to be as small as possible. So we can tune the introduced move ratio $r$ such that the autocorrelation is minimized.
-To achieve this we estimate the autocorrelation for different move ratio's, the results of which are displayed in Fig. \ref{fig:tcor_rdep}.
+We would like the autocorrelation to be as small as possible. So we can tune the introduced move rate $r$ such that the autocorrelation is minimized.
+To achieve this we estimate the autocorrelation for different move rates, the results of which are displayed in Fig. \ref{fig:tcor_rdep}.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.7\linewidth]{img/tcor_r_t20_l80.pdf}
-    \caption{Correlation time as function of the move-ratio.}
+    \caption{Correlation time as function of the move rate.}
     \label{fig:tcor_rdep}
 \end{figure}
 From this figure one can clearly see that move rates close to $0.0$ or $1.0$ have a very long correlation time.
-This makes sense as only flip moves cannot change the length profile at all and without flip moves there are no new places created for shard moves to occur, so the shards move around between the same places.
+This makes sense as only flip moves cannot change the length profile at all and without flip moves there are no new order 4 vertices created for shard moves to occur, so the shards move around between the same places.
 It also appears that the correlation time is not very sensitive to the move rate $r$, as the correlation time estimate remains roughly constant for $r$ between $0.3$ and $0.5$.
-So it seems save to simply pick $r = 0.4$ as there is no need to tune the rate to a very specific value.
+So it seems safe to simply pick $r = 0.4$ as there is no need to tune the rate to a very specific value.
 
 Then finally we wish to estimate the dependence of the correlation time on the system size. To do this we estimate the correlation time for multiple system sizes like was done for the equilibration time.
 We measured the correlation for different values of $T$ and $L$ keeping the other constant. The results of these measurements are presented in Fig. \ref{fig:tcor_L} and \ref{fig:tcor_T}.
@@ -96,7 +96,7 @@ However, under changing $T$ the $t_\text{cor}$ seems to be growing roughly linea
 This estimate is very crude, but keep in mind that the final results do not actually depend on this measurement of the correlation time. It helps to know the correlation time to be able to only save relevant data, but it will not affect the final results.
 So this approximation is sufficient for the purposes of this simulation.
 
-Note that this linear scaling in $T$ of the correlation time (in terms of sweeps), means that the amount of Markov-chain Monte Carlo steps grows like $N^{3/2}$ for a constant ratio $T/L$. This scaling means that our computation time will increase like $N^{3/2}$ the system size is increased, and puts a limit on the system sizes that can be measured.
+Note that this linear scaling in $T$ of the correlation time (in terms of sweeps), means that the amount of Markov-chain Monte Carlo steps grows like $LT^2$, or alternatively like $N^{3/2}$ for a constant ratio $T/L$. This scaling means that our computation time will increase like $N^{3/2}$ the system size is increased, and puts a limit on the system sizes that can be measured.
 
 
 \subsection{Measurements}
@@ -104,7 +104,7 @@ With the system in equilibrium and an estimate for the correlation time, we can 
 We wish to compare the measured standard deviation and covariance to the theoretical expectation of 2D CDT, as determined in the $T \rightarrow \infty$ limit.
 To simulate measurements in this limit we wish to choose $T$ such that $L \ll T$; in this case we use $T = 20 \, L$ as larger values of $T$ have a large impact on computation time.
 We can then compute the \emph{length profile} $\ell(t)$ over a range of $L$ values.
-Within time constraints, we were able to measure a range of $L = 15, 20, \dots, 50$; we performed $100$ measurements on each $L$ at $\sqrt{0.4 \, N} \, \text{sweep}$ intervals, which is chosen as the correlation time appears to be roughly $t_\text{cor} \approx 3 \sqrt{N} \text{sweep}$\footnote{This is different from the estimate of $t_\text{cor}$ determined before, this discrepancy is further discussed in \ref{sec:discussion}} at this $T/L$ ratio.
+Within time constraints, we were able to measure a range of $L = 15, 20, \dots, 50$; we performed $100$ measurements for each $L$ at $ 4 L = \sqrt{0.4 \, N}$ sweep intervals, which is chosen as the correlation time appears to be roughly $t_\text{cor} \approx 3 \sqrt{N}$ sweeps\footnote{This is different from the estimate of $t_\text{cor}$ determined before, this discrepancy is further discussed in \ref{sec:discussion}} at this $T/L$ ratio.
 
 \paragraph{Standard deviation}
 % Presentation of the results of the standard deviation of the length profile
@@ -115,9 +115,9 @@ From Eq. \eqref{eq:exp_ell} we expect the cosmological constant and equivalently
 \end{equation}
 
 To estimate $\sigma_\ell$ and the error in the estimation the standard deviation is computed from the length profile, according to Eq. \eqref{eq:std_meas}, for every measurement after which \emph{batching}\footnote{In \emph{batching} correlated measurements are divided in $M$ batches larger than $t_\text{cor}$ and each batch is averaged to obtain $M$ uncorrelated measurements that are considered \emph{independent identically distributed}.
-The observable is than estimated by taking the mean of the obtained measurements, and the error is estimated by the standard deviation of the obtained measurements divided by $\sqrt{M - 1}.$
-} is used. For these measurements 10 batches were used, and the batches are checked to have no not significant autocorrelation.
-The results of this analysis for the different values of $L$ is presented in Fig. \ref{fig:std_estimate} together with a power-law fit ($a \, e^{\nu}$).
+    The observable is then estimated by taking the mean of the obtained measurements, and the error is estimated by the standard deviation of the obtained measurements divided by $\sqrt{M - 1}.$
+} is used. For these measurements 10 batches were used, and the batches are checked to have no significant autocorrelation.
+The results of this analysis for the different values of $L$ is presented in Fig. \ref{fig:std_estimate} together with a power-law fit ($\sigma_\ell = a \, L^{\nu}$).
 \begin{figure}[ht]
     \begin{minipage}[t]{0.49\linewidth}
         \centering
@@ -135,10 +135,10 @@ The results of this analysis for the different values of $L$ is presented in Fig
 \end{figure}
 
 For the fit is found that $a = 0.67 \pm 0.05$ and $\nu = 1.00 \pm 0.02$, thus we see that as expected by Eq. \eqref{eq:std_theory} $\sigma_\ell$ indeed grows linearly in $L$ with good accuracy and $0.71$ falls within the $68\%$ confidence interval of $a$.
-However, from the plot in Fig. \ref{eq:std_ell} it seems that the measurements systematically underestimate the standard deviation.
+However, from the plot in Fig. \ref{fig:std_estimate} it seems that the measurements systematically underestimate the standard deviation.
 Since the theoretical result falls within the error, this may simply be coincidence and requires more measurements to decrease the error.
 However, this is likely a systematic error made due to having finite $T$, as $\ell(t)$ can only change a finite amount between adjacent timeslices, so having a finite $T$ means that $\ell(t)$ can possibly not fluctuate as far from $L$ as it could for $T \rightarrow \infty$.
-To investigate this, and in general the effect of different $T/L$ ratio's, these measurements should be repeated for different values of $T$.
+To investigate this, and in general the effect of different $T/L$ ratios, these measurements should be repeated for different values of $T$.
 It would be very interesting to get a better view on how the results convergence under increasing $L$, but unfortunately we could not measure this within the time constraint of this project.
 
 From the estimates of $\sigma_\ell$ we can also estimate the cosmological constant $\Lambda$ of the simulated systems, which is used later. This is done simply by the transformation of stochastic variables $\Lambda = 1/2\sigma_\ell^2$, and transforming the mean value and error as usual.
@@ -148,7 +148,7 @@ The resulting $\Lambda$ estimates for different $L$ are displayed in Fig. \ref{f
 
 \paragraph{Length covariance}
 % Presentation of the results of the analysis of the length correlation of the length profile
-Next we can also analyse the \emph{length covariance} $\rho_\ell(t)$ from the measured length profiles, and compare then to the theoretical covariance \eqref{eq:cov_ell}, now using the discrete $t$ and $\Lambda$ instead.
+Next we can also analyse the \emph{length covariance} $\rho_\ell(t)$ from the measured length profiles, and compare them to the theoretical covariance \eqref{eq:cov_ell}, now using the discrete $t$ and $\Lambda$ instead.
 We compute the covariance for every measurement according to Eq. \eqref{eq:cov_meas} and use the same \emph{batching} method to estimate the covariance and error at every $t$.
 The resulting estimates are displayed in Fig. \ref{fig:cov_plot} with $68\%$ confidence intervals.
 \begin{figure}[ht]
@@ -167,7 +167,7 @@ The resulting estimates are displayed in Fig. \ref{fig:cov_plot} with $68\%$ con
     \end{minipage}
 \end{figure}
 
-Now, to compare these measurement results to theory it is important to realise that Eq. \eqref{eq:cov_ell} are only valid for\footnote{Again note that here $T$ is the amount of timeslices and $t$ the discrete time difference corresponding to the continuous time difference $T$ in Eq. \eqref{eq:cov_ell}} $t \ll T$, which makes it difficult to fit a general exponential through the measured covariance as this exponential relation is only expected to hold for small $t$.
+Now, to compare these measurement results to theory it is important to realise that Eq. \eqref{eq:cov_ell} is only valid for\footnote{Again note that here $T$ is the amount of timeslices and $t$ the discrete time difference corresponding to the continuous time difference $T$ in Eq. \eqref{eq:cov_ell}} $t \ll T$, which makes it difficult to fit a general exponential through the measured covariance as this exponential relation is only expected to hold for small $t$.
 An alternative is to visualise the theoretical covariance alongside the measured covariance such that we can at least visually inspect whether the data matches the expected results.
 To plot the theoretical covariance \eqref{eq:cov_ell}, a value for $\Lambda$ is required.
 The obvious choice is to let $\Lambda = 1/L^2$ as is theoretically expected.
@@ -175,7 +175,7 @@ However, we know from the measurements of $\sigma_\ell$ that it is underestimate
 And because we already analysed $\sigma_\ell$, the absolute magnitude of the covariance is not that interesting; it is much more interesting to look whether the exponent of the covariance matches theoretical expectations.
 For this reason, we use the values of $\Lambda$ estimated for the different $L$ as seen in Fig. \ref{fig:Lambda_estimate}, such that we can check whether the rate of decay relates to the respective estimate of $\Lambda$ in the correct way.
 The theoretical covariance with these $\Lambda$ are also plotted in Fig. \ref{fig:cov_plot} in red, but are not very clearly visible.
-So to see the relevant behaviour at small $t$ better, Fig. \ref{fig:cov_log_plot} show the same data for small $t$ with a logarithmic $y$-axis.
+So to see the relevant behaviour at small $t$ better, Fig. \ref{fig:cov_log_plot} shows the same data for small $t$ with a logarithmic $y$-axis.
 
 From Fig. \ref{fig:cov_log_plot} it appears that for small $t$ the measured covariance is indeed linear as expected for the logarithmic plot. And comparing it to the theoretical covariance plotted in red, it seems that the measured covariance also shows the correct exponent, represented by the slope in the logarithmic plot.
 For larger $t$ there is deviation from the theoretical line, which it to be expected as the theoretical equation has higher order corrections for larger $t$.
@@ -215,16 +215,13 @@ Finally, since what we really want is to find the exponent of Eq. \eqref{eq:cov_
 % Suggestions on improving these measurements
 The measurements of the standard deviation $\sigma_\ell$ and of the covariance $\rho_\ell(t)$ agree with the theoretical predictions.
 The main concern is the found results have a systematic underestimation of the standard deviation and thus also the covariance as explained due to finite $T$.
-So, what should really be done to better understand the dependence of the results on $T$ is to repeat these measurements on different $T/L$ ratio's.
-However, since the computation time increases with $N^{3/2}$, this put constraints on system sizes that can be simulated within a reasonable amount of time.
+So, what should really be done to better understand the dependence of the results on $T$ is to repeat these measurements for different $T/L$ ratios.
+However, since the computation time increases with $N^{3/2}$, this puts constraints on system sizes that can be simulated within a reasonable amount of time.
 
 The determination of the equilibration time and correlation time is important to performing the simulation.
 However, for this project great effort was taken to determine these times to reasonable accuracy to be able to predict $t_\text{eq}$ and $t_\text{cor}$ for any given $T$ and $L$.
 Knowing the computational effort that went into determining these still rather inaccurate predictions, doing it this way is likely not worth it; it is much more fruitful to pick the system sizes one wishes to simulate carefully and determine the equilibration and correlation time for these systems specifically.
-Unfortunately, we only later in the project realised what the interesting system sizes were $L \ll T$, so we could not optimally use the determined $t_\text{eq}$ and $t_\text{cor}$ anyway.
-Experience showed that taking the determined $t_\text{eq} = 200 \, \text{sweeps}$ as burn-in time is also sufficient in this regime, and that the correlation time still scales with $N^{3/2}$ for a constant $T/L$ ratio, however the crude approximation of $t_\text{cor}$ does not seem to be accurate at higher $T/L$ ratio's.
-Also, although we expect $t_\text{eq}$ to be independent of $T$, it should be checked to really make sure any system one does measurements one is thermalised.
-If this is not the case and the total amount of measurements is low, the first few measurements could contribute to a significant error to the end results.
-
-Finally, there are many more interesting observable to measure in 2D CDT, some of which are already discussed in section \ref{sec:observables}.
-If the time permits it is highly recommended measuring some of these observables, but we could not find the time in this project to look at these.
+Unfortunately, we only later in the project realised that the interesting system sizes were $L \ll T$, so we could not optimally use the determined $t_\text{eq}$ and $t_\text{cor}$ anyway.
+Experience showed that taking the determined $t_\text{eq} = 200 \, \text{sweeps}$ as burn-in time is also sufficient in this regime, and that the correlation time still scales with $N^{3/2}$ for a constant $T/L$ ratio, however the crude approximation of $t_\text{cor}$ does not seem to be accurate at higher $T/L$ ratios.
+Also, although we expect $t_\text{eq}$ to be independent of $T$, it should be checked to really make sure any system one does measurements on is thermalised.
+If this is not the case and the total amount of measurements is low, the first few measurements could contribute to a significant error in the end results.
