@@ -4,23 +4,23 @@
 
 The goal is now to extract information from the distribution defined by \eqref{eq:part_sum}. Expectation values of observables can be sampled using a Monte Carlo approach. Suppose we sample $n$ triangulations $T^{(i)}$ from \eqref{eq:part_sum}. The expectation value of an observable $f(T)$ can then in theory be obtained from
 \begin{equation}
-    \ev{f(T)}
-    =
     \lim_{n \to \infty} \frac{1}{n} \sum_{i = 1}^n f(T^{(i)})
-    .
+    \overset{d}{=}
+    \ev{f(T)}
+    ,
 \end{equation}
-Directly sampling triangulations can be very difficult. Instead, we use a Markov Chain to explore the space of all possible triangulations. Hence, the label Markov Chain Monte Carlo (MCMC) for our approach.
+where the $d$ above the equality denotes that this is a convergence in distribution. Directly sampling triangulations is not viable. Instead, we use a Markov Chain to explore the space of all possible triangulations. Hence, the label Markov Chain Monte Carlo (MCMC) for our approach.
 
-However, sampling from \eqref{eq:part_sum} is not very practical. It turns out that $\Omega(N) \sim N! 2^N$. This means that for $\lambda > \ln 2$ large volumes are suppressed so that a typical triangulation will contain only a handful of triangles.
+Sampling from \eqref{eq:part_sum} is not practical. It turns out that $\Omega(N) \sim N! 2^N$. This means that for $\lambda > \ln 2$ large volumes are suppressed so that a typical triangulation will contain only a handful of triangles.
 However, when $\lambda < \ln 2$ the partition sum \eqref{eq:part_sum} diverges and the problem is ill-defined.
 A solution is to consider only triangulations of a certain fixed volume at a time.
 An advantage of this approach is that the desired distribution becomes uniform, since the weight of each triangulation depends only on its volume.
-In practice, this can be obtained by using Markov Chain updates that keep the number of triangles fixed.
+In practice, this can be achieved by using Markov Chain updates that keep the number of triangles fixed.
 
 \subsection{Update rules}
 % Should we also include alternative update rules we attempted? And why the don't work? It does show the amount of work and consideration we put into constcuting an effective MCMC simulation, but Im not sure.
 \paragraph{Ergodicity}
-An important property of a triangulation is how its volume is distributed over different timeslices. It therefore makes sense to choose an update rule that can change the length $\ell(t)$ at some timeslice $t$. However, because we wish to fix the volume this change in length should be compensated elsewhere. Thus, we choose a move that takes an edge and accompanying triangles (we refer to such objects as "shards") from some source location, and moves it to some destination. This "shard move" is shown schematically in Fig. \ref{fig:shard_move}. However, this move alone is not enough to satisfy ergodicity. Thus, we introduce another move that can flip the diagonal between two triangles. This "flip move" is shown schematically in Fig. \ref{fig:flip_move}. According to \cite{2012}, this combination of update rules is ergodic.
+An important property of a triangulation is how its volume is distributed over different timeslices. It therefore makes sense to choose an update rule that can change the length $\ell(t)$ at some time $t$. However, because we wish to fix the volume this change in length should be compensated elsewhere. Thus, we choose a move that takes an edge and accompanying triangles (we refer to such objects as "shards") from some source location, and moves it to some destination. This "shard move" is shown schematically in Fig. \ref{fig:shard_move}. However, this move alone is not enough to be able to reach all possible triangulations. Thus, we introduce another move that can flip the diagonal between two triangles. This "flip move" is shown schematically in Fig. \ref{fig:flip_move}. According to \cite{2012}, this combination of update rules is ergodic.
 
 \begin{figure}
     \centering
@@ -155,17 +155,17 @@ But this is not the whole story. Using these update rules we can now sample all 
 \end{equation}
 for any two triangulations $T$ and $T'$. Here $p(T \to T')$ is the probability to go from $T$ to $T'$ in a single Markov Chain step.
 
-First consider the shard move. In order to be able to remove a shard, we need a vertex of order 4 (i.e.: a vertex with 4 edges)\footnote{If you are worried that such a vertex might not always exist, you are correct. However, if this is the case we can simply perform the flip move instead.}. Start by uniformly choosing such a vertex. To be consistent, we always remove the shard to the right of the selected vertex. Then we uniformly choose a spacelike edge (which is not the edge in the shard) and insert the shard to the left of it. This is done in such a way that an order 4 vertex is created between the selected and inserted edges (see Fig. \ref{fig:shard_move}). The probability of performing a particular instance of this move is then\footnote{Note that here $T$ and $T'$ must be two triangulations that are related by an application of a single shard move. If they are not, the probabilities vanish in both directions and detailed balance is satisfied automatically.}
+First consider the shard move. In order to be able to remove a shard, we need a vertex of order 4 (i.e.: a vertex with 4 edges)\footnote{If you are worried that such a vertex might not always exist, you are correct. However, if this is the case we can simply perform the flip move instead.}. Start by uniformly choosing such a vertex. To be consistent, we always remove the shard to the right of the selected vertex. Then we uniformly choose a spacelike edge (which is not the edge in the shard) and insert the shard to the left of it. This is done in such a way that an order 4 vertex is created between the selected and inserted edges (see Fig. \ref{fig:shard_move}). The probability of performing a particular instance of this move is then\footnote{Note that here $T$ and $T'$ must be two triangulations that are related by a single application of a shard move. If they are not, the probabilities vanish in both directions and detailed balance is satisfied automatically.}
 \begin{equation}
     p_{\text{shard}}(T \to T') = \frac{1}{V_4 (N/2 - 1)},
 \end{equation}
-with $V_4$ the number of order 4 vertices, and $n$ the number of triangles. Note that this move preserves $V_4$: One order 4 vertex is always destroyed where the shard is taken, and one is always created where it is inserted. Any surrounding vertices are not affected. Since $N$ is also constant, the inverse move will have identical probability and detailed balance is satisfied.
+with $V_4$ the number of order 4 vertices, and $N$ the number of triangles. Note that this move preserves $V_4$: One order 4 vertex is always destroyed where the shard is taken, and one is always created where it is inserted. Any surrounding vertices are not affected. Since $N$ is also constant, the inverse move will have identical probability and detailed balance is satisfied.
 
-Now consider the flip move. This move is possible where neighbouring triangles have opposite orientation. First uniformly choose a triangle. To be definite, consider its neighbour to the right. If these two triangles have opposite orientation, perform the flip. If this is not the case, reject the move but still count it as a step in the Markov Chain. The probability of a particular move of this type is
+Now consider the flip move. This move is possible where neighbouring triangles have opposite orientation. First uniformly choose a triangle. To be definite, consider its neighbour to the right. If these two triangles have opposite orientation, perform the flip. If this is not the case, reject the move but still count it as a step in the Markov Chain. The probability of performing a particular instance of this move
 \begin{equation}
-    p_{\text{flip}}(T \to T') = \frac{1}{n}.
+    p_{\text{flip}}(T \to T') = \frac{1}{N}.
 \end{equation}
-Because $N$ is fixed it is clear that this move obeys detailed balance. Note that since both these moves independently satisfy detailed balance, they can always be performed in any sequence. See section \ref{sec:implementation} for more details.
+Because $N$ is fixed it is clear that this move obeys detailed balance. Note that since both these moves independently satisfy detailed balance, they can be performed in any sequence. See section \ref{sec:implementation} for more details on how these two moves are combined.
 
 \subsection{Implementation}\label{sec:implementation}
 % This was probably the most substantional amount of work of this project, so I think this should be reflected in the size of this part
@@ -174,9 +174,9 @@ Because $N$ is fixed it is clear that this move obeys detailed balance. Note tha
 \paragraph{Data Structures}
 % triangles have local information -> faster markov chain
 % order 4 list
-How can one actually save a triangulation inside a computer? There are of course multiple ways to approach this. By far the most common operation of the simulation is performing Markov Chain steps. It therefore makes sense to choose a data structure in which it is easy (i.e. fast) to execute these updates. Thus, we choose to store only adjacency information.
+How can one actually represent a triangulation inside a computer? There are of course multiple ways to approach this. By far the most frequent operation in the model is performing Markov Chain steps. It therefore makes sense to choose a data structure in which it is easy (i.e. fast) to execute these steps. To facilitate this, we choose to store only adjacency information. Because of this, the computation time of executing a Markov Chain step is constant, and does not scale with the system size. However, the computation time of doing measurements does scale linearly with $N$. But this is not so bad, since measurements are only performed in a fraction of all Markov Chain steps.
 
-In particular, we keep a list of all \verb|triangles|. Then for each \verb|Triangle| we store three labels corresponding to each of their neighbours (neighbours to the \verb|left|, \verb|right| and in the \verb|time|like directions), as well as its \verb|Orientation| (whether it points \verb|Up| or \verb|Down|). Finally, for convenience a list of \verb|order_four| vertices is stored (labelled by the \verb|Triangle| northwest of the vertex). All of this information is stored in a \verb|Universe| structure. In pseudocode the \verb|Universe| is defined as:
+In particular, we keep a list of all \verb|triangles|. Then for each \verb|Triangle| we store three labels corresponding to each of their neighbours (neighbours to the \verb|left|, \verb|right| and in the \verb|time|like directions), as well as its \verb|Orientation| (whether it points \verb|Up| or \verb|Down|). Finally, for quick access a list of \verb|order_four| vertices is stored (labelled by the \verb|Triangle| northwest of the vertex). All of this information is stored in the \verb|Universe| structure. In pseudocode the \verb|Universe| is defined as:
 \begin{verbatim}
     Universe = {
         triangles: [Triangle],
@@ -196,18 +196,13 @@ Note that we use \verb|int|egers to label \verb|Triangle|s by index in the list 
 
 With these data structures the implementation of the moves is relatively straightforward. Uniformly sampling a \verb|triangle| or \verb|order_four| vertex can be done by simply generating a random \verb|int|eger between $1$ and the length of \verb|triangles| or \verb|order_four|, respectively. Sampling a spacelike edge is achieved by sampling a \verb|triangle| and selecting its spacelike edge.
 
-In order to actually execute the shard move, six pairs of neighbours need to be reassigned, and a single \verb|order_four| vertex is moved\footnote{If the order 4 vertices were labelled by the triangles northeast of them, even this would not be necessary. In that case the order 4 vertex would automatically move with the shard to its new location. Unfortunately we only realised this near the very end of the project.}. For the flip move, two pairs of neighbours need to be updated. There are two vertices that might become \verb|order_four|, these should be checked individually. Additionally, there are two that, if they were \verb|order_four| before the move, they certainly no longer are afterwards. These four vertices are marked with green circles in Fig. \ref{fig:flip_move}.
-
-Note that by performing the moves in this way in this data structure, the computational effort of performing a move does not scale with the size of the lattice and the computational complexity is $\order{1}$
+In order to actually execute the shard move, six pairs of neighbours need to be reassigned, and a single \verb|order_four| vertex is moved\footnote{If the order 4 vertices were labelled by the triangles northeast of them, even this would not be necessary. In that case the order 4 vertex would automatically move with the shard to its new location. Unfortunately we only realised this near the very end of the project.}. For the flip move, two pairs of neighbours need to be updated. There are two vertices that might become \verb|order_four|. Additionally, there are two that, if they were \verb|order_four| before the move, they certainly no longer are afterwards. These four vertices are marked with green circles in Fig. \ref{fig:flip_move}, and they should be checked explicitly.
 
 \paragraph{Length Measurements}
 % Explain how length profile is measured
-So far we have focussed on how the update rules are implemented. However, another very important aspect of the simulation is doing measurements. Perhaps the most obvious thing one can measure on a triangulation is the volume of each timeslice. In our case, each timeslice is a one-dimensional ring, so its volume (or length) can be described by the number of edges (or equivalently the number of vertices) it consists of. Doing this for every timeslice $t$ results in a \emph{length profile} $\ell(t)$. All other observables considered in this work are derived from $\ell(t)$, see \ref{sec:observables} for more details.
+So far we have focussed on how the update rules are implemented. However, another very important aspect of the simulation is doing measurements. Perhaps the most obvious thing one can measure on a triangulation is the volume of each timeslice. In our case, each timeslice is a one-dimensional ring, so its volume (or length) can be described by the number of edges (or equivalently the number of vertices) it consists of. Doing this for every timeslice $t$ results in a \emph{length profile} $\ell(t)$. All other observables considered in this work are derived from $\ell(t)$, see section \ref{sec:observables} for more details.
 
-But how can this measurement be implemented in our \verb|Universe|? First we choose (it does not really matter how) a \verb|Triangle| to use as reference. We keep walking to the \verb|right| until we reach the original \verb|Triangle| again. The amount of \verb|Up|ward pointing \verb|Triangle|s we passed is then the length $\ell(0)$ of the first timeslice, specifically of the lower boundary timeslice as we count length by the amount of spacelike edges. We can then move to the next timeslice by going to the \verb|time|like neighbour of a \verb|Down|ward pointing \verb|Triangle|. This is repeated until we encounter the first \verb|Triangle| again.
-
-Note that taking this measurement has a computational complexity of $\order{N}$ as it needs to loop through all triangles.
-As measurements need to happen far less frequently than performing Markov chain Monte Carlo moves it makes sense to choose a data structure for which the moves have lower computational complexity.
+But how can this measurement be performed on our \verb|Universe|? First we choose (it does not really matter how) a \verb|Triangle| to use as reference. We keep walking to the \verb|right| until we reach the original \verb|Triangle| again. The amount of \verb|Up|ward pointing \verb|Triangle|s we passed is then the length $\ell(0)$ of the first timeslice, specifically of the lower boundary timeslice as we count length by the amount of spacelike edges. We can then move to the next timeslice by going to the \verb|time|like neighbour of a \verb|Down|ward pointing \verb|Triangle|. This is repeated until we encounter the first \verb|Triangle| again.
 
 \paragraph{Visualisation}
 Besides being able to inspect the length profile, it is also interesting to be able to visually inspect the triangulation directly.
@@ -227,7 +222,7 @@ One can create all triangles making up to full toroidal topology without creatin
 After the list of vertex labels and the triplets of these labels have been created, the coordinates of the vertices need to be determined also called choosing the \emph{embedding}.
 We choose a timeslice preserving cylindrical embedding, where the vertices of a timeslice are equally spread around a circle with a circumference reflecting the length of that timeslice and subsequent timeslices are placed parallel to one other a corresponding distance away.
 This has the result that all spacelike edges are roughly the same length as one other and as the distance between timeslices. The relative rotation of the timeslices is chosen such that one of the timelike edges has the shortest distance possible between the timeslices; an alternative choice of rotation is to choose it such that the average length of the timelike edges is minimal.
-Using this method we can produce visualisations of the triangulations like the one 
+Using this method we can produce visualisations of the triangulations like the one
 displayed in Fig. \ref{fig:triangulation_visualisation}.
 
 \begin{figure}[h]
