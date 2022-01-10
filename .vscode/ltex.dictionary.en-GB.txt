@@ -7,3 +7,5 @@ Eq
 oneother
 timelike
 simplices
+Minkowskian
+autocovariance
