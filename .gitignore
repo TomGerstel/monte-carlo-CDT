@@ -20,3 +20,4 @@ data/personal
 !report/img/*.pdf
 report/out
 slides/out
+!report.pdf
