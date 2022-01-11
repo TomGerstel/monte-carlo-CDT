@@ -108,10 +108,10 @@ Within time constraints, we were able to measure a range of $L = 15, 20, \dots, 
 
 \paragraph{Standard deviation}
 % Presentation of the results of the standard deviation of the length profile
-The data from the simulation can be analysed to obtain estimates of $\sigma_\ell$. In principle, it would be possible to determine $\Lambda$ based on either the mean length (using Eq. \eqref{eq:exp_ell}) or the variance $\sigma_\ell$ (using Eq. \eqref{eq:std_ell}). In the end, we choose to use the latter, as will be explained in the text later on.
+The data from the simulation can be analysed to obtain estimates of $\sigma_\ell$. In principle, it would be possible to estimate $\Lambda$ based on either the mean length (using Eq. \eqref{eq:exp_ell}) or the variance $\sigma_\ell$ (using Eq. \eqref{eq:std_ell}). In the end, we choose to use the latter, as will be explained in the text later on.
 From Eq. \eqref{eq:exp_ell} we expect the cosmological constant and equivalently the standard deviation to depend on the system size like\footnote{In this context $\Lambda$ refers to what the cosmological constant would be for $a = 1$. A more correct but clumsy notation would be $a^2 \Lambda$.}:
 \begin{equation}\label{eq:std_theory}
-    \Lambda = \frac{1}{L^2}, \qquad \sigma_\ell = \frac{L}{\sqrt{2}} \approx 0.71 \, L.
+    \Lambda = \frac{1}{L^2}, \qquad \Exp{\sigma_\ell} = \frac{L}{\sqrt{2}} \approx 0.71 \, L.
 \end{equation}
 
 To estimate $\sigma_\ell$ and the error in the estimation the standard deviation is computed from the length profile, according to Eq. \eqref{eq:std_meas}, for every measurement after which \emph{batching}\footnote{In \emph{batching} correlated measurements are divided in $M$ batches larger than $t_\text{cor}$ and each batch is averaged to obtain $M$ uncorrelated measurements that are considered \emph{independent identically distributed}.
@@ -137,7 +137,7 @@ The results of this analysis for the different values of $L$ is presented in Fig
 For the fit is found that $a = 0.67 \pm 0.05$ and $\nu = 1.00 \pm 0.02$, thus we see that as expected by Eq. \eqref{eq:std_theory} $\sigma_\ell$ indeed grows linearly in $L$ with good accuracy and $0.71$ falls within the $68\%$ confidence interval of $a$.
 However, from the plot in Fig. \ref{fig:std_estimate} it seems that the measurements systematically underestimate the standard deviation, as is discussed in section \ref{sec:discussion}.
 
-From the estimates of $\sigma_\ell$ we can also estimate the cosmological constant $\Lambda$ of the simulated systems, which is used later. This is done simply by the transformation of stochastic variables $\Lambda = 1/2\sigma_\ell^2$, and transforming the mean value and error as usual.
+From the estimates of $\sigma_\ell$ we can also estimate the cosmological constant $\Lambda$ of the simulated systems, which is used later. This is done simply by using the estimator $\Lambda = 1/2\sigma_\ell^2$, and determining the mean value and error accordingly.
 The resulting $\Lambda$ estimates for different $L$ are displayed in Fig. \ref{fig:Lambda_estimate}. From this no real additional information can be extracted as it is simply a transformation, but we can confirm that the cosmological constant closely relates to $L$ with the expected relation \eqref{eq:std_theory}.
 
 
