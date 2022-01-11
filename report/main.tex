@@ -6,7 +6,7 @@
 \usepackage[hidelinks]{hyperref} % Creates clickable links (+ hide the red box)
 \usepackage{csquotes} % Improves the looks of quotes `' and ``'' (used by biblatex references)
 \usepackage{tikz} % Allows fancy diagrams
-\usepackage{graphicx} % Adds many graphic support tweaks
+\usepackage{graphicx} % Adds many graphic support tweaksd
 
 % Adds and improves mathematical notation
 \usepackage{physics}
@@ -15,7 +15,6 @@
 
 
 \addbibresource{main.bib}
-
 \newcommand{\Exp}[1]{\big\langle #1 \big\rangle}
 % some TikZ style shortcut definitions
 \tikzstyle{order4}=[
@@ -47,6 +46,11 @@
 \begin{document}
 
 \maketitle
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/torus_triangulation.pdf}
+\end{figure}
 
 \begin{abstract} % (including research question and main results)
     Causal Dynamical Triangulation is a method to regularise the gravitational path integral by building a piece-wise flat spacetime from simplices.
