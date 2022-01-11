@@ -108,10 +108,10 @@ Within time constraints, we were able to measure a range of $L = 15, 20, \dots, 
 
 \paragraph{Standard deviation}
 % Presentation of the results of the standard deviation of the length profile
-The data from the simulation can be analysed to obtain estimates of $\sigma_\ell$, and using Eq. \eqref{eq:std_ell} estimates for $\Lambda$.
-From Eq. \eqref{eq:exp_ell} we expect the cosmological constant and equivalently the standard deviation to depend on the system size like:
+The data from the simulation can be analysed to obtain estimates of $\sigma_\ell$. In principle, it would be possible to determine $\Lambda$ based on either the mean length (using Eq. \eqref{eq:exp_ell}) or the variance $\sigma_\ell$ (using Eq. \eqref{eq:std_ell}). In the end, we choose to use the latter, as will be explained in the text later on.
+From Eq. \eqref{eq:exp_ell} we expect the cosmological constant and equivalently the standard deviation to depend on the system size like\footnote{In this context $\Lambda$ refers to what the cosmological constant would be for $a = 1$. A more correct but clumsy notation would be $a^2 \Lambda$.}:
 \begin{equation}\label{eq:std_theory}
-    \Exp{\Lambda} = \frac{1}{L^2}, \qquad \Exp{\sigma_\ell} = \frac{L}{\sqrt{2}} \approx 0.71 \, L.
+    \Lambda = \frac{1}{L^2}, \qquad \sigma_\ell = \frac{L}{\sqrt{2}} \approx 0.71 \, L.
 \end{equation}
 
 To estimate $\sigma_\ell$ and the error in the estimation the standard deviation is computed from the length profile, according to Eq. \eqref{eq:std_meas}, for every measurement after which \emph{batching}\footnote{In \emph{batching} correlated measurements are divided in $M$ batches larger than $t_\text{cor}$ and each batch is averaged to obtain $M$ uncorrelated measurements that are considered \emph{independent identically distributed}.
