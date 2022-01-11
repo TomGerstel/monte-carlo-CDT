@@ -396,9 +396,9 @@ impl Universe {
                 (0..length)
                     .map(|i| {
                         VertexPosition(
-                            (router + rinner*((i as f32) + shift).cos()) * ((t as f32) + shift).cos(),
-                            (router + rinner*((i as f32) + shift).cos()) * ((t as f32) + shift).sin(),
-                            rinner*((i as f32) + shift).sin(),
+                            (router + rinner*((i as f32 + shift)/rinner).cos()) * ((t as f32 + shift)/router).cos(),
+                            (router + rinner*((i as f32 + shift)/rinner).cos()) * ((t as f32 + shift)/router).sin(),
+                            rinner*((i as f32 + shift)/rinner).sin(),
                         )
                     })
                     .collect(),
@@ -411,6 +411,22 @@ impl Universe {
         let origin = 0;
         let vertices = self.triangle_vertices(origin);
         let vertex_coordinates = self.vertex_coordinates(origin);
+        vertices
+            .iter()
+            .map(|triangle| {
+                (
+                    vertex_coordinates[triangle.0 .0][triangle.0 .1],
+                    vertex_coordinates[triangle.1 .0][triangle.1 .1],
+                    vertex_coordinates[triangle.2 .0][triangle.2 .1],
+                )
+            })
+            .collect()
+    }
+
+    pub fn torus_triangle_coordinates(&self) -> Vec<(VertexPosition, VertexPosition, VertexPosition)> {
+        let origin = 0;
+        let vertices = self.torus_triangle_vertices(origin);
+        let vertex_coordinates = self.torus_vertex_coordinates(origin);
         vertices
             .iter()
             .map(|triangle| {

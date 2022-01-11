@@ -186,7 +186,7 @@ fn measurement() -> std::io::Result<()> {
 }
 
 fn write_triangulation_mesh(universe: &universe::Universe, data_path: &str) -> std::io::Result<()> {
-    let mesh = universe.triangle_coordinates();
+    let mesh = universe.torus_triangle_coordinates();
 
     
     let mut output = BufWriter::new(File::create(data_path).unwrap());
