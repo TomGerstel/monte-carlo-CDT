@@ -1,3 +1,13 @@
+A 2D Causal Dynamical Triangulation project for the course Monte Carlo Techniques at Radboud University, including a Rust model for generating random 2D CDT triangulation using Markov-chain Monte Carlo.
+
+## Repository overview
+- The Rust project is directly in the main repo directory, with the source code in the `src` directory
+- The Python data analysis is included as Python scripts with notebook cell-like comments, as can be executed by VSCode, in `data`. If more convenient these scripts have been converted to Jupyter notebooks and included in `data/jupyter`, these may run out-of-the-box due to missing or misplaced data folders and may (despite our best efforts) not be entirely up-to-date, so for the latest data analysis check the Python scripts.
+- The important data of the actual measurements is also included in `data`. The many data files used in the preliminary data analysis which seemed to not be as relevant later in the project is not included, because of its large size, little relevance and expected use.
+- The $\LaTeX$ source for the report is in the `report` directory, and for the presentation in `slides`
+- The used Mathematica notebooks and triangulation meshes are included in `extras`
+
+## Project planning
 - Topic theme: 2D Quantum Gravity using Causal Dynamical Triangulations. Challenges include finding meaningful observables and interpreting them. 
 - Topic goal: Create a MCMC that generates triangulations according to the desired distribution. Measure observables such as correlations of timeslice sizes, lightcone structure, curvature, etc. Potentially study effects of switching to a different topology or different boundary conditions.
 - Model: Either a cylindrical or toroidal 2D CDT QG. Parameters include the coupling lambda (cosmological constant), number of time slices T (should be large enough in order to obtain meaningful data), number (or distribution, requiring mean and width parameter) of triangles (should also be large enough). For the cylindrical model also the spatial size of the initial and final time slice is an input parameter.
