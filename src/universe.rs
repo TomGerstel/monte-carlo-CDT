@@ -281,7 +281,7 @@ impl Universe {
                 match triangles[marker].orientation {
                     Orientation::Up => {
                         let right_index = (lower_index + 1) % lengths[t]; // Determine next index
-                                                                          // Add triangle with orientation based on right-handedness
+                        // Add triangle with orientation based on right-handedness
                         triangle_vertices.push((
                             Vertex(t, lower_index),
                             Vertex(t + 1, upper_index),
@@ -294,7 +294,7 @@ impl Universe {
                             next_origin = Some(triangles[marker].time)
                         }
                         let right_index = (upper_index + 1) % lengths[(t + 1) % t_max]; // Determine next index
-                                                                                        // Add triangle with orientation based on right-handedness
+                                                                                                                // Add triangle with orientation based on right-handedness
                         triangle_vertices.push((
                             Vertex(t + 1, upper_index),
                             Vertex(t + 1, right_index),
@@ -325,6 +325,80 @@ impl Universe {
                             n / TAU * (TAU / n * (i as f32) + shift).cos(),
                             n / TAU * (TAU / n * (i as f32) + shift).sin(),
                             t as f32,
+                        )
+                    })
+                    .collect(),
+            )
+        }
+        vertex_positions
+    }
+
+    fn torus_triangle_vertices(&self, origin: usize) -> Vec<(Vertex, Vertex, Vertex)> {
+        // Walk through the slices similarly to find the length profile but now returning triangulation
+        let triangles = &self.triangles;
+
+        // Determine the length profile
+        let lengths = self.length_profile(origin);
+        let t_max = lengths.len();
+
+        let mut triangle_vertices: Vec<(Vertex, Vertex, Vertex)> =
+            Vec::with_capacity(self.triangles.len() / 2);
+        let mut marker = origin; // Marks the current triangle
+                                 // Loop over all timeslices
+        for t in 0..t_max {
+            let mut lower_index: usize = 0;
+            let mut upper_index: usize = 0;
+            let mut next_origin: Option<usize> = None;
+            for _ in 0..(lengths[t] + lengths[(t + 1) % t_max]) {
+                // Loop over all triangles
+                match triangles[marker].orientation {
+                    Orientation::Up => {
+                        let right_index = (lower_index + 1) % lengths[t]; // Determine next index
+                        // Add triangle with orientation based on right-handedness
+                        triangle_vertices.push((
+                            Vertex(t, lower_index),
+                            Vertex(t + 1, upper_index),
+                            Vertex(t, right_index),
+                        ));
+                        lower_index = right_index // Update index
+                    }
+                    Orientation::Down => {
+                        if next_origin.is_none() {
+                            next_origin = Some(triangles[marker].time)
+                        }
+                        let right_index = (upper_index + 1) % lengths[(t + 1) % t_max]; // Determine next index
+                        // Add triangle with orientation based on right-handedness
+                        triangle_vertices.push((
+                            Vertex(t + 1, upper_index),
+                            Vertex(t + 1, right_index),
+                            Vertex(t, lower_index),
+                        ));
+                        upper_index = right_index // Update index
+                    }
+                }
+                marker = triangles[marker].right;
+            }
+            marker = next_origin.expect("Somehow there was no down-triangle in timeslice");
+        }
+        triangle_vertices
+    }
+
+    fn torus_vertex_coordinates(&self, origin: usize) -> Vec<Vec<VertexPosition>> {
+        let lengths = self.length_profile(origin);
+        let t_max = lengths.len();
+        let mut vertex_positions: Vec<Vec<VertexPosition>> = Vec::with_capacity(t_max + 1);
+        for t in 0..t_max + 1 {
+            let length = lengths[t % t_max];
+            let shift = 0.0f32; // TODO: make shift such that the total length of the timelike connections is minimized
+            let rinner = (length as f32) / TAU;
+            let router = (t_max as f32) / TAU;
+            vertex_positions.push(
+                (0..length)
+                    .map(|i| {
+                        VertexPosition(
+                            (router + rinner*((i as f32) + shift).cos()) * ((t as f32) + shift).cos(),
+                            (router + rinner*((i as f32) + shift).cos()) * ((t as f32) + shift).sin(),
+                            rinner*((i as f32) + shift).sin(),
                         )
                     })
                     .collect(),

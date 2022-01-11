@@ -5,3 +5,4 @@
 {"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QIt would be very interesting to get a better view on how the results convergence under increasing \\E(?:Dummy|Ina|Jimmy-)[0-9]+$"}
 {"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QIt would be very interesting to get a better view on how the results convergence under increasing \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q, but unfortunately we could not measure this within the time constraint of this project.\\E$"}
 {"rule":"DT_JJ_NO_NOUN","sentence":"^\\QThat this relation holds can be easily seen from Euler's Formula: V - E + F = 0 for a 2-torus.\\E$"}
+{"rule":"NON_STANDARD_WORD","sentence":"^\\QIn performing this labelling, one needs to make sure that the same vertex never gets relabelled such that all |Triangle|s connected to the vertex Then we chose to use a cylindrical visualisation, which makes a cut in the real toroidal topology of the triangulation.\\E$"}
