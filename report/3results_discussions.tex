@@ -135,11 +135,7 @@ The results of this analysis for the different values of $L$ is presented in Fig
 \end{figure}
 
 For the fit is found that $a = 0.67 \pm 0.05$ and $\nu = 1.00 \pm 0.02$, thus we see that as expected by Eq. \eqref{eq:std_theory} $\sigma_\ell$ indeed grows linearly in $L$ with good accuracy and $0.71$ falls within the $68\%$ confidence interval of $a$.
-However, from the plot in Fig. \ref{fig:std_estimate} it seems that the measurements systematically underestimate the standard deviation.
-Since the theoretical result falls within the error, this may simply be coincidence and requires more measurements to decrease the error.
-However, this is likely a systematic error made due to having finite $T$, as $\ell(t)$ can only change a finite amount between adjacent timeslices, so having a finite $T$ means that $\ell(t)$ can possibly not fluctuate as far from $L$ as it could for $T \rightarrow \infty$.
-To investigate this, and in general the effect of different $T/L$ ratios, these measurements should be repeated for different values of $T$.
-It would be very interesting to get a better view on how the results convergence under increasing $L$, but unfortunately we could not measure this within the time constraint of this project.
+However, from the plot in Fig. \ref{fig:std_estimate} it seems that the measurements systematically underestimate the standard deviation, as is discussed in section \ref{sec:discussion}.
 
 From the estimates of $\sigma_\ell$ we can also estimate the cosmological constant $\Lambda$ of the simulated systems, which is used later. This is done simply by the transformation of stochastic variables $\Lambda = 1/2\sigma_\ell^2$, and transforming the mean value and error as usual.
 The resulting $\Lambda$ estimates for different $L$ are displayed in Fig. \ref{fig:Lambda_estimate}. From this no real additional information can be extracted as it is simply a transformation, but we can confirm that the cosmological constant closely relates to $L$ with the expected relation \eqref{eq:std_theory}.
@@ -200,28 +196,29 @@ The results of scaling are displayed in Fig. \ref{fig:cov_collapsed} as well as 
 \end{figure}
 From these plots it is evident that the curves collapse well for small $t$, and that there are discrepancies for larger $t$ as expected.
 
-To make this more quantitative we would want to fit the expected covariance with a general exponential function and compare the different estimations of $\Lambda$ as a result of this fit to each other and to $1/L^2$.
-However, to be able to fit an exponential we need a large enough part of the covariance $\rho_\ell(t)$ for which $t$ can be considered `small'.
-This means that $T$ needs to be larger for a given $L$ than we currently use.
-It may also be possible to include higher order terms in the theoretical prediction of the covariance such that the theoretical prediction is valid for larger $t$.
-Finally, since what we really want is to find the exponent of Eq. \eqref{eq:cov_ell} for small $t$ and this is equal to the slope at $t = 0$, we might be able to get a reasonable approximation of this slope by considering only the first few points and for example using spline interpolation or a polynomial fit to find the slope at $t=0$.
-
-% \input{timothys_mail.tex}
-
 
 \subsection{Discussion}\label{sec:discussion}
 % Discussion of the interpretation and validity of the results
 % Explaination of the difficulties in determining useful results
 % Suggestions on improving these measurements
-The measurements of the standard deviation $\sigma_\ell$ and of the covariance $\rho_\ell(t)$ agree with the theoretical predictions.
-The main concern is the found results have a systematic underestimation of the standard deviation and thus also the covariance as explained due to finite $T$.
-So, what should really be done to better understand the dependence of the results on $T$ is to repeat these measurements for different $T/L$ ratios.
-However, since the computation time increases with $N^{3/2}$, this puts constraints on system sizes that can be simulated within a reasonable amount of time.
-
 The determination of the equilibration time and correlation time is important to performing the simulation.
 However, for this project great effort was taken to determine these times to reasonable accuracy to be able to predict $t_\text{eq}$ and $t_\text{cor}$ for any given $T$ and $L$.
 Knowing the computational effort that went into determining these still rather inaccurate predictions, doing it this way is likely not worth it; it is much more fruitful to pick the system sizes one wishes to simulate carefully and determine the equilibration and correlation time for these systems specifically.
 Unfortunately, we only later in the project realised that the interesting system sizes were $L \ll T$, so we could not optimally use the determined $t_\text{eq}$ and $t_\text{cor}$ anyway.
 Experience showed that taking the determined $t_\text{eq} = 200 \, \text{sweeps}$ as burn-in time is also sufficient in this regime, and that the correlation time still scales with $N^{3/2}$ for a constant $T/L$ ratio, however the crude approximation of $t_\text{cor}$ does not seem to be accurate at higher $T/L$ ratios.
-Also, although we expect $t_\text{eq}$ to be independent of $T$, it should be checked to really make sure any system one does measurements on is thermalised.
-If this is not the case and the total amount of measurements is low, the first few measurements could contribute to a significant error in the end results.
+Also, although we expect $t_\text{eq}$ to be independent of $T$, it should be checked to really make sure any system one does measurements on is thermalised, for if this is not the case and the total amount of measurements is low, the first few measurements could contribute to a significant error in the end results.
+
+Moreover, the measurements of the standard deviation $\sigma_\ell$ and of the covariance $\rho_\ell(t)$ agree with the theoretical predictions within error margins.
+However, the found results appear have a systematic underestimation of the standard deviation and thus also the covariance.
+Since the theoretical result falls within the error, this may simply be coincidence and would require more measurements to decrease the error.
+However, this is likely a systematic error made due to having finite $T$, as $\ell(t)$ can only change a finite amount between adjacent timeslices, so having a finite $T$ means that it is possible for $\ell(t)$ to fluctuate less from $L$ than it could for $T \rightarrow \infty$.
+To investigate this, and in general the effect of different $T/L$ rates, these measurements should be repeated for different values of $T$.
+But unfortunately we could not measure this within the time constraint of this project, as well as the scaling of computation time with $N^{3/2}$ making this computationally difficult.
+
+Another point of this discussion is that the results of the covariance $\rho_\ell(t)$ measurements can only be checked visually, making it difficult to judge whether the results match the theoretical prediction.
+To make this more quantitative we would want to fit the expected covariance with a general exponential function and compare the different estimations of $\Lambda$ as a result of this fit to each other and to $1/L^2$.
+However, to be able to fit an exponential we need a large enough part of the covariance $\rho_\ell(t)$ for which $t$ can be considered `small'.
+This means that $T$ needs to be larger for a given $L$ than we currently use.
+It may also be possible to include higher order terms in the theoretical prediction of the covariance such that the theoretical prediction is valid for larger $t$.
+Finally, since what we really want is to find the exponent of Eq. \eqref{eq:cov_ell} for small $t$ and this is equal to the slope at $t = 0$, we might be able to get a reasonable approximation of this slope by considering only the first few points and for example using spline interpolation or a polynomial fit to find the slope at $t=0$.
+So we would again want to investigate this by using multiple $T/L$ rates.
